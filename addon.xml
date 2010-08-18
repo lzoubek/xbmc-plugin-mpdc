@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.program.mpdc"
+       name="MPDClient"
+       version="0.9.0"
+       provider-name="lzoubek">
+  <requires>
+    <import addon="xbmc.python" version="1.0"/>
+  </requires>
+  <extension point="xbmc.python.script" library="default.py" />
+  <extension point="xbmc.addon.metadata">
+    <platform>all</platform>
+    <summary>MPD client</summary>
+    <description>This script allows you to drive your MPD server directly from xbmc.</description>
+  </extension>
+</addon>

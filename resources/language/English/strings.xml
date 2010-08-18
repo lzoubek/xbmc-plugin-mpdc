@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">MPD host</string>
+    <string id="30001">MPD port</string>
+    <string id="30002">Profile name</string>
+    <string id="30003">Not Playing</string>
+    <string id="30004">Paused</string>
+    <string id="30005">Not connected</string>
+    <string id="30006">Playing</string>
+    <string id="30007">Checking availability of servers, please wait...</string>
+    <string id="30008">Select profile</string>
+    <string id="30009">Available</string>
+    <string id="30010">Offline</string>
+    <string id="30011">Connected to</string>
+    <string id="30110">Profile 1</string>
+    <string id="30111">Profile 2</string>
+    <string id="30112">Profile 3</string>
+    <string id="30013">Skip profile selection and always use Profile 1</string>
+    <string id="30014">General</string>
+	</strings>
+
