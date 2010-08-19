@@ -9,7 +9,9 @@
   <extension point="xbmc.python.script" library="default.py" />
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
-    <summary>MPD client</summary>
-    <description>This script allows you to drive your MPD server directly from xbmc.</description>
+    <summary lang="en">An MPD client</summary>
+    <summary lang="cz">MPD klient</summary>
+    <description lang="en">MPDClient allows you to drive your MPD server directly from XBMC. Currently supports 3 server profiles, player commands, playlist navigation.</description>
+    <description lang="en">MPD klient umožňuje ovládat MPD server přímo z XBMC. Momentálně podporuje 3 profily, ovládání přehrávání, navigaci v playlistu.</description>
   </extension>
 </addon>

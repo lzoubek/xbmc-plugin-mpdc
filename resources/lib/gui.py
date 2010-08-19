@@ -130,13 +130,18 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.toggleVisible( SHUFFLE_OFF, SHUFFLE_ON )					
 			if change == 'playlist':
 					playlist = self.client.playlistinfo()
+					current = self.client.currentsong()					
+					self.update_fields(current,['id'])
+					current_id = current['id']
 					self.getControl( CURRENT_PLAYLIST ).reset()
 					for item in playlist:
 						self.update_fields(item,['title','artist','album'])
 						listitem = xbmcgui.ListItem( label=item['title'])						
 						listitem.setProperty( 'id', item['id'] )						
 						listitem.setProperty( 'artist', item['artist'] )
-						listitem.setProperty( 'album', item['album'] )						
+						listitem.setProperty( 'album', item['album'] )
+						if item['id'] == current_id:
+							listitem.setIconImage(state['state']+'-item.png')						
 						self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
 #		print 'Changes handled'
 
@@ -154,9 +159,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		return current['artist'] + ' - ' + current['album'] + ' - ' + current['title'] 
 
 	def update_playlist(self,state,current) :
-		itemid='0'
-		if 'id' in current:
-			itemid = current['id']
+		self.update_fields(current,['id'])		
+		itemid = current['id']
 		playlist = 	self.getControl(CURRENT_PLAYLIST)
 		for i in range(0,playlist.size()):
 			item = playlist.getListItem(i)
