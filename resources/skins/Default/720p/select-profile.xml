@@ -9,36 +9,36 @@
   <animation effect="fade" time="250">WindowClose</animation>
   <controls>
     <control type="group">
-      <posx>320</posx>
+      <posx>440</posx>
       <posy>200</posy>
       <control type="image">
         <posx>0</posx>
         <posy>0</posy>
-        <width>640</width>
-        <height>400</height>
+        <width>400</width>
+        <height>300</height>
         <texture border="40">ContentPanel.png</texture>
       </control>
-      <!-- ** Required ** Do not change <id> or <type> -->
-            
+
       <control type="label" id="100">
         <description>textarea</description>
-        <posx>20</posx>
-        <posy>20</posy>
-        <width>600</width>
-        <height>40</height>
+        <posx>10</posx>
+        <posy>10</posy>
+        <width>380</width>
+        <height>80</height>
         <font>font18</font>
         <textcolor>white</textcolor>
         <aligny>center</aligny>
         <align>center</align>
+        <wrapmultiline>true</wrapmultiline>
       </control>
 
     
 
       <!-- ** Required ** Do not change <id> or <type> -->
       <control type="list" id="120">
-        <posx>20</posx>
-        <posy>126</posy>
-        <width>550</width>
+        <posx>10</posx>
+        <posy>90</posy>
+        <width>380</width>
         <height>120</height>
         <onleft>120</onleft>
         <onright>120</onright>
@@ -57,28 +57,27 @@
           
 		
           <control type="label">
-            <posx>240</posx>
+            <posx>20</posx>
             <posy>0</posy>
-            <width>300</width>
+            <width>340</width>
+            <height>38</height>
+            <font>font18</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <info>ListItem.Label</info>
+          </control>
+          
+          <control type="label">
+            <posx>270</posx>
+            <posy>0</posy>
+            <width>130</width>
             <height>38</height>
             <font>font18</font>
             <aligny>center</aligny>
             <textcolor>white</textcolor>
             <selectedcolor>green</selectedcolor>
             <align>center</align>
-            <info>ListItem.Label</info>
-          </control>
-          
-          <control type="label">
-            <posx>500</posx>
-            <posy>0</posy>
-            <width>180</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>right</align>
             <info>ListItem.Property(status)</info>
           </control>
           
@@ -95,40 +94,36 @@
             <texture>MenuItemFO.png</texture>
             <visible>Control.HasFocus(120)</visible>
           </control>
-          
-
-		
           <control type="label">
-            <posx>240</posx>
+            <posx>20</posx>
             <posy>0</posy>
-            <width>300</width>
+            <width>340</width>
+            <height>38</height>
+            <font>font18</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <info>ListItem.Label</info>
+          </control>
+          
+          <control type="label">
+            <posx>270</posx>
+            <posy>0</posy>
+            <width>130</width>
             <height>38</height>
             <font>font18</font>
             <aligny>center</aligny>
             <textcolor>white</textcolor>
             <selectedcolor>green</selectedcolor>
             <align>center</align>
-            <info>ListItem.Label</info>
-          </control>
-          
-          <control type="label">
-            <posx>500</posx>
-            <posy>0</posy>
-            <width>180</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>right</align>
             <info>ListItem.Property(status)</info>
           </control>
           
         </focusedlayout>
       </control>
       	<control type="button" id="101">
-		<posx>260</posx>
-		<posy>300</posy>
+		<posx>140</posx>
+		<posy>230</posy>
 		<width>120</width>
 		<height>48</height>
 		<align>center</align>

@@ -46,7 +46,8 @@ STR_STOPPED=Addon.getLocalizedString(30003)
 STR_PAUSED=Addon.getLocalizedString(30004)
 STR_NOT_CONNECTED=Addon.getLocalizedString(30005)
 STR_CONNECTED_TO=Addon.getLocalizedString(30011) 
-STR_PLAYING=Addon.getLocalizedString(30006)     
+STR_PLAYING=Addon.getLocalizedString(30006) 
+STR_PROFILE_NAME=Addon.getLocalizedString(30002)     
 
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -64,7 +65,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def onInit (self ):
 		self.getControl( PAUSE ).setVisible( False )
-		self.getControl( PROFILE ).setLabel(self.profile_name)		
+		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)		
 		self._connect()
 	def _connect(self):
 		try:				
