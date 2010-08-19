@@ -29,11 +29,13 @@ SETTINGS = 101
 sys.path.append( os.path.join ( os.getcwd(), 'resources','lib') )
 import gui,mpd
 
+STATUS_ON='on'
+STATUS_OFF='off'
 STR_CONNECTING=Addon.getLocalizedString(30007) 
 STR_SELECT_PROFILE=Addon.getLocalizedString(30008)
 STR_HOST_ONLINE=Addon.getLocalizedString(30009)
 STR_HOST_OFFLINE=Addon.getLocalizedString(30010)
-STR_SETTINGS='Settings'
+STR_SETTINGS=Addon.getLocalizedString(30012)
 class MpdProfile:
 	
 	def __init__(self,profile_id):
@@ -42,19 +44,21 @@ class MpdProfile:
 		self.host = Addon.getSetting(self.id+'_mpd_host')	
 		self.port = Addon.getSetting(self.id+'_mpd_port')
 		self.status = STR_HOST_OFFLINE
+		self.stat=STATUS_OFF
 
 	def update(self):
 		self.name = Addon.getSetting(self.id+'_name')
 		self.host = Addon.getSetting(self.id+'_mpd_host')	
 		self.port = Addon.getSetting(self.id+'_mpd_port')
 		self.status = STR_HOST_OFFLINE
-		self.status = STR_HOST_OFFLINE
+		self.stat=STATUS_OFF
 		try:
 			client = mpd.MPDClient()
 			client.connect(self.host,int(self.port))
 			client.close()
 			client.disconnect()
 			self.status = STR_HOST_ONLINE
+			self.stat=STATUS_ON
 		except:
 			pass
 
@@ -78,7 +82,8 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 			item.update()
 			listitem = xbmcgui.ListItem( label=item.name)						
 			listitem.setProperty( 'id', item.id )												
-			listitem.setProperty( 'status', item.status )						
+			listitem.setProperty( 'status', item.status )
+			listitem.setProperty( 'stat', item.stat )						
 			self.getControl( SERVER_LIST ).addItem( listitem )
 		self.getControl( STATUS ).setLabel( STR_SELECT_PROFILE )
 	    	
@@ -92,7 +97,7 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 			self.update_servers()
 		if controlId == SERVER_LIST:
 			seekid = self.getControl( SERVER_LIST ).getSelectedItem().getProperty('id')
-			if self.getControl( SERVER_LIST ).getSelectedItem().getProperty('status') == STR_HOST_ONLINE:
+			if self.getControl( SERVER_LIST ).getSelectedItem().getProperty('stat') == STATUS_ON:
 				ui = gui.GUI( 'mpd-client-main.xml',os.getcwd(), 'Default',seekid)
 				ui.doModal()
 				del ui

@@ -13,10 +13,11 @@
     <string id="30009">Available</string>
     <string id="30010">Offline</string>
     <string id="30011">Connected to</string>
+    <string id="30012">Settings</string>
     <string id="30110">Profile 1</string>
     <string id="30111">Profile 2</string>
     <string id="30112">Profile 3</string>
-    <string id="30013">Skip profile selection and always use Profile 1</string>
+    <string id="30013">Skip profile selection and always use 'Profile 1'</string>
     <string id="30014">General</string>
 	</strings>
 

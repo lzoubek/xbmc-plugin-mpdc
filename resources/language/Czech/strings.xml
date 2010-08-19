@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- settings labels -->
+    <string id="30000">MPD host</string>
+    <string id="30001">MPD port</string>
+    <string id="30002">Název profilu</string>
+    <string id="30003">Zastaven</string>
+    <string id="30004">Pozastaven</string>
+    <string id="30005">Nelze se připojit</string>
+    <string id="30006">Přehrávám</string>
+    <string id="30007">Zjišťují dosptupnost servrů, prosím počkejte...</string>
+    <string id="30008">Vyberte profil</string>
+    <string id="30009">Dostupný</string>
+    <string id="30010">Offline</string>
+    <string id="30011">Připojen k</string>
+    <string id="30012">Nastavení</string>
+    <string id="30110">Profil 1</string>
+    <string id="30111">Profil 2</string>
+    <string id="30112">Profil 3</string>
+    <string id="30013">Přeskočit výběr profilů a rovnou použít 'Profil 1'</string>
+    <string id="30014">Obecné</string>
+	</strings>
+
