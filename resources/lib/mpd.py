@@ -272,7 +272,7 @@ class MPDClient(object):
         try:
             for retval in self._command_list:
                 yield retval()
-        finally:
+        except:
             self._command_list = None
         self._fetch_nothing()
 
@@ -280,7 +280,7 @@ class MPDClient(object):
         try:
             for item in iterator:
                 yield item
-        finally:
+        except:
             self._iterating = False
 
     def _wrap_iterator(self, iterator):
