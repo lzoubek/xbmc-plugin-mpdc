@@ -133,13 +133,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					current = self.client.currentsong()					
 					self.update_fields(current,['id'])
 					current_id = current['id']
-					self.getControl( CURRENT_PLAYLIST ).reset()
+					self.getControl( CURRENT_PLAYLIST ).reset()					
 					for item in playlist:
 						self.update_fields(item,['title','artist','album'])
 						listitem = xbmcgui.ListItem( label=item['title'])						
 						listitem.setProperty( 'id', item['id'] )						
 						listitem.setProperty( 'artist', item['artist'] )
 						listitem.setProperty( 'album', item['album'] )
+						if item['title'] == '' and item['artist'] == '' and item['album'] == '':
+							listitem.setProperty( 'file' , item['file'] )
 						if item['id'] == current_id:
 							listitem.setIconImage(state['state']+'-item.png')						
 						self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
@@ -156,6 +158,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def currentSong(self,current) :
 		self.update_fields(current,['artist','album','title'])
+		if current['title'] == '' and current['artist'] == '' and current['album'] == '':
+			return current['file']
 		return current['artist'] + ' - ' + current['album'] + ' - ' + current['title'] 
 
 	def update_playlist(self,state,current) :

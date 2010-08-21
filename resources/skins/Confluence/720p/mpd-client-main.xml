@@ -26,7 +26,7 @@
             <posy>12</posy>
             <width>82</width>
             <height>82</height>
-            <texture>mpd_logo.png</texture>
+            <texture>mpd-logo.png</texture>
             
         </control>
              
@@ -176,17 +176,17 @@
       
       <control type="image">
         <posx>20</posx>
-        <posy>110</posy>
-        <width>1050</width>
+        <posy>112</posy>
+        <width>1055</width>
         <height>2</height>
-        <texture>GMseparator.png</texture>
+        <texture>VSeparator.png</texture>
       </control>
       <control type="image">
         <posx>20</posx>
-        <posy>535</posy>
-        <width>1050</width>
+        <posy>530</posy>
+        <width>1055</width>
         <height>2</height>
-        <texture>GMseparator.png</texture>
+        <texture>VSeparator.png</texture>
       </control>
      
 
@@ -219,6 +219,19 @@
 			<height>38</height>
 			<info>ListItem.Icon</info>
 			</control>
+		<!-- display file property through whole line instead of ID3 tags (if they are empty at all) -->
+          <control type="label">
+            <posx>40</posx>
+            <posy>0</posy>
+            <width>1000</width>
+            <height>38</height>
+            <font>font18</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Property(file)</info>
+          </control>
 		
           <control type="label">
             <posx>40</posx>
@@ -232,6 +245,7 @@
             <align>left</align>
             <info>ListItem.Property(artist)</info>
           </control>
+
           
           <control type="label">
             <posx>200</posx>
@@ -281,7 +295,18 @@
 			<height>38</height>
 			<info>ListItem.Icon</info>
 			</control>
-				
+          <control type="label">
+            <posx>40</posx>
+            <posy>0</posy>
+            <width>1000</width>
+            <height>38</height>
+            <font>font18</font>
+            <aligny>center</aligny>
+            <textcolor>white</textcolor>
+            <selectedcolor>green</selectedcolor>
+            <align>left</align>
+            <info>ListItem.Property(file)</info>
+          </control>				
           <control type="label">
             <posx>40</posx>
             <posy>0</posy>
@@ -325,16 +350,16 @@
       </control>
       <control type="group">
         <posx>1055</posx>
-        <posy>120</posy>
+        <posy>115</posy>
         <control type="scrollbar" id="121">
           <description>scroll bar indicator for lists</description>
           <posx>0</posx>
           <posy>0</posy>
-          <width>12</width>
-          <height>380</height>
-          <texturesliderbackground border="6">default-scroll_back.png</texturesliderbackground>
-          <texturesliderbar border="6">default-scroll_mid.png</texturesliderbar>
-          <texturesliderbarfocus border="6">default-scroll_mid.png</texturesliderbarfocus>
+          <width>24</width>
+          <height>410</height>
+          <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
+          <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
+          <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
           <textureslidernib>-</textureslidernib>
           <textureslidernibfocus>-</textureslidernibfocus>
           <orientation>vertical</orientation>

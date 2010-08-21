@@ -98,17 +98,17 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		if controlId == SERVER_LIST:
 			seekid = self.getControl( SERVER_LIST ).getSelectedItem().getProperty('id')
 			if self.getControl( SERVER_LIST ).getSelectedItem().getProperty('stat') == STATUS_ON:
-				ui = gui.GUI( 'mpd-client-main.xml',os.getcwd(), 'Default',seekid)
+				ui = gui.GUI( 'mpd-client-main.xml',os.getcwd(), 'Confluence',seekid)
 				ui.doModal()
 				del ui
 
 skip_selector = Addon.getSetting('skip-selector')
 if 'true' == skip_selector:
-	ui = gui.GUI( 'mpd-client-main.xml',os.getcwd(), 'Default','0')
+	ui = gui.GUI( 'mpd-client-main.xml',os.getcwd(), 'Confluence','0')
 	ui.doModal()
 	del ui
 else:	
-	selectorUI = SelectMPDProfile( 'select-profile.xml',os.getcwd(), 'Default')		
+	selectorUI = SelectMPDProfile( 'select-profile.xml',os.getcwd(), 'Confluence')		
 	selectorUI.profiles = [MpdProfile('0'),MpdProfile('1'),MpdProfile('2')]
 	selectorUI.doModal()
 	del selectorUI
