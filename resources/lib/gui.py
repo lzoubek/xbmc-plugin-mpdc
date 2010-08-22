@@ -107,8 +107,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		for change in changes:
 			if change == 'player':
 				current = self.client.currentsong()
-				print 
-				print current
 				if state['state'] =='play':					
 					self.toggleVisible( PLAY, PAUSE )
 					self.getControl( STATUS ).setLabel(STR_PLAYING + ' : ' + self.currentSong(current))
