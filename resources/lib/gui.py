@@ -18,7 +18,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import sys,os,threading,select
+import sys,os,threading,select,time
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 import rmpd,mpd
 
@@ -107,6 +107,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		for change in changes:
 			if change == 'player':
 				current = self.client.currentsong()
+				print 
+				print current
 				if state['state'] =='play':					
 					self.toggleVisible( PLAY, PAUSE )
 					self.getControl( STATUS ).setLabel(STR_PLAYING + ' : ' + self.currentSong(current))
@@ -136,12 +138,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.getControl( CURRENT_PLAYLIST ).reset()					
 					index = 0
 					for item in playlist:
-						self.update_fields(item,['title','artist','album'])
+						self.update_fields(item,['title','artist','album','time'])
 						listitem = xbmcgui.ListItem( label=item['title'])
 						listitem.setProperty( 'index', str(index))						
 						listitem.setProperty( 'id', item['id'] )						
 						listitem.setProperty( 'artist', item['artist'] )
 						listitem.setProperty( 'album', item['album'] )
+						if not item['time'] == '':
+							listitem.setProperty( 'time', time.strftime("%M:%S",time.gmtime(float(item['time']))) )
 						if item['title'] == '' and item['artist'] == '' and item['album'] == '':
 							listitem.setProperty( 'file' , item['file'] )
 						if item['id'] == current_id:
