@@ -134,9 +134,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.update_fields(current,['id'])
 					current_id = current['id']
 					self.getControl( CURRENT_PLAYLIST ).reset()					
+					index = 0
 					for item in playlist:
 						self.update_fields(item,['title','artist','album'])
-						listitem = xbmcgui.ListItem( label=item['title'])						
+						listitem = xbmcgui.ListItem( label=item['title'])
+						listitem.setProperty( 'index', str(index))						
 						listitem.setProperty( 'id', item['id'] )						
 						listitem.setProperty( 'artist', item['artist'] )
 						listitem.setProperty( 'album', item['album'] )
@@ -145,6 +147,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						if item['id'] == current_id:
 							listitem.setIconImage(state['state']+'-item.png')						
 						self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
+						index  = index + 1
 #		print 'Changes handled'
 
 	def toggleVisible(self,cFrom,cTo):
@@ -171,6 +174,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			item.setIconImage('')
 			if item.getProperty('id') == itemid:
 				item.setIconImage(state+'-item.png')
+				playlist.selectItem(int(item.getProperty('index')))		
 							
 	def onAction(self, action):
 #		print 'OnAction '+str(action)
