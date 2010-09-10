@@ -18,12 +18,12 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import sys,os,threading,select,time
+import sys,os,time
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import rmpd,mpd
+import pmpd
 
 #get actioncodes from keymap.xml
-ACTION_PREVIOUS_MENU = 10
+ACTION_CLOSE = [6,10,216,247,257,275,61448,61467]
 ACTION_SELECT_ITEM = 7
 # control IDs
 STATUS = 100
@@ -52,13 +52,12 @@ STR_PROFILE_NAME=Addon.getLocalizedString(30002)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
 	def __init__( self, *args, **kwargs ):
-		self.client = rmpd.RMPDClient()
-		self.poller = rmpd.RMPDClient()
+		self.client = pmpd.PMPDClient()
+		self.client.register_callback(self._handle_changes)
 		self.profile_id=args[3]
 		self.profile_name=Addon.getSetting(self.profile_id+'_name')
 		self.mpd_host = Addon.getSetting(self.profile_id+'_mpd_host')
-		self.mpd_port = Addon.getSetting(self.profile_id+'_mpd_port')
-		self.cond = threading.Condition()			
+		self.mpd_port = Addon.getSetting(self.profile_id+'_mpd_port')		
 		
 	def onFocus (self,controlId ):
 		self.controlId=controlId
@@ -77,29 +76,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return
 #		print 'Connected to  MPD v' + self.client.mpd_version
 		self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
-		self._handle_changes(['playlist','player','options'])
-		self.thread = threading.Thread(target=self._poll_info)
-		self.thread.setDaemon(True)
-		self.thread.start()				
-
-	def _poll_info(self):
-		self.poller.connect(self.mpd_host,int(self.mpd_port))				
-		while 1:					
-			self.poller.send_idle()
-			select.select([self.poller],[],[],1)
-			try:
-				changes =  self.poller.fetch_idle()				
-			except:
-				return
-					
-			try:
-				self._handle_changes(changes)
-			except mpd.ConnectionError:
-				print 'Cannot handle changes - connection error'
-				return
-			except:
-				return
-
+		self._handle_changes(['playlist','player','options'])			
 
 	def _handle_changes(self,changes):
 		state = self.client.status()
@@ -180,31 +157,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 							
 	def onAction(self, action):
 #		print 'OnAction '+str(action)
-		if action == ACTION_PREVIOUS_MENU:
-			self.disconnect()			
+		if action.getButtonCode() in ACTION_CLOSE:
+			self.client.disconnect()			
 			self.close()
-	
-	def disconnect(self):
-		try:
-			self.client.close()
-		except:
-			pass
-		try:			
-			self.client.disconnect()				
-		except:
-			pass
-		try:	
-			self.poller.noidle()
-		except:
-			pass			
-		try:
-			self.poller.close()
-		except:
-			pass
-		try:			
-			self.poller.disconnect()
-		except:
-			pass
 			
 	def onClick( self, controlId ):
 		try:

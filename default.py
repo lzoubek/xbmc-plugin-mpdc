@@ -23,7 +23,7 @@ import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 SERVER_LIST = 120
-ACTION_PREVIOUS_MENU = 10
+ACTION_CLOSE = [6,10,216,247,257,275,61448,61467]
 STATUS = 100
 SETTINGS = 101
 sys.path.append( os.path.join ( os.getcwd(), 'resources','lib') )
@@ -88,7 +88,7 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		self.getControl( STATUS ).setLabel( STR_SELECT_PROFILE )
 	    	
 	def onAction(self, action):
-		if action == ACTION_PREVIOUS_MENU:						
+		if action.getButtonCode() in ACTION_CLOSE:						
 			self.close()		
 	
 	def onClick( self, controlId ):
