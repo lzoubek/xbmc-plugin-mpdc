@@ -47,7 +47,9 @@ STR_PAUSED=Addon.getLocalizedString(30004)
 STR_NOT_CONNECTED=Addon.getLocalizedString(30005)
 STR_CONNECTED_TO=Addon.getLocalizedString(30011) 
 STR_PLAYING=Addon.getLocalizedString(30006) 
-STR_PROFILE_NAME=Addon.getLocalizedString(30002)     
+STR_PROFILE_NAME=Addon.getLocalizedString(30002)
+STR_CONNECTING_TITLE=Addon.getLocalizedString(30015) 
+STR_GETTING_DATA=Addon.getLocalizedString(30016)      
 
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -67,16 +69,21 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)		
 		self._connect()
 	def _connect(self):
+		p = xbmcgui.DialogProgress()
+		p.create(STR_CONNECTING_TITLE,STR_CONNECTING_TITLE+' '+self.mpd_host+':'+self.mpd_port)
 		try:				
 #			print 'Connecting  to  MPD ' + self.mpd_host + ':'+self.mpd_port 
 			self.client.connect(self.mpd_host,int(self.mpd_port))
 		except:
 			self.getControl ( STATUS ).setLabel(STR_NOT_CONNECTED)
 #			print 'Cannot connect'
+			p.close()
 			return
 #		print 'Connected to  MPD v' + self.client.mpd_version
 		self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
-		self._handle_changes(['playlist','player','options'])			
+		p.update(50,STR_GETTING_DATA)
+		self._handle_changes(['playlist','player','options'])
+		p.close()			
 
 	def _handle_changes(self,changes):
 		state = self.client.status()

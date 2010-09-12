@@ -8,7 +8,7 @@
     <string id="30004">Pozastaven</string>
     <string id="30005">Nelze se připojit</string>
     <string id="30006">Přehrávám</string>
-    <string id="30007">Zjišťují dosptupnost servrů, prosím počkejte...</string>
+    <string id="30007">Zjišťuji dosptupnost servrů, prosím počkejte...</string>
     <string id="30008">Vyberte profil</string>
     <string id="30009">Dostupný</string>
     <string id="30010">Offline</string>
@@ -19,5 +19,7 @@
     <string id="30112">Profil 3</string>
     <string id="30013">Přeskočit výběr profilů a rovnou použít 'Profil 1'</string>
     <string id="30014">Obecné</string>
+    <string id="30015">Připojuji</string>
+    <string id="30016">Získávám data</string>
 	</strings>
 

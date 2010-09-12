@@ -31,7 +31,8 @@ import gui,mpd
 
 STATUS_ON='on'
 STATUS_OFF='off'
-STR_CONNECTING=Addon.getLocalizedString(30007) 
+STR_CONNECTING=Addon.getLocalizedString(30007)
+STR_CONNECTING_TITLE=Addon.getLocalizedString(30015) 
 STR_SELECT_PROFILE=Addon.getLocalizedString(30008)
 STR_HOST_ONLINE=Addon.getLocalizedString(30009)
 STR_HOST_OFFLINE=Addon.getLocalizedString(30010)
@@ -78,14 +79,20 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 	def update_servers( self ):
 		self.getControl( SERVER_LIST ).reset()
 		self.getControl( STATUS ).setLabel( STR_CONNECTING )
+		p = xbmcgui.DialogProgress()
+		p.create(STR_CONNECTING_TITLE,STR_CONNECTING)
+		percent = 1
 		for item in self.profiles:
 			item.update()
+			percent = percent+33
+			p.update(percent)
 			listitem = xbmcgui.ListItem( label=item.name)						
 			listitem.setProperty( 'id', item.id )												
 			listitem.setProperty( 'status', item.status )
 			listitem.setProperty( 'stat', item.stat )						
 			self.getControl( SERVER_LIST ).addItem( listitem )
 		self.getControl( STATUS ).setLabel( STR_SELECT_PROFILE )
+		p.close()
 	    	
 	def onAction(self, action):
 		if action.getButtonCode() in ACTION_CLOSE:						
