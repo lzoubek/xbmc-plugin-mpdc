@@ -22,5 +22,8 @@
     <string id="30015">Connecting</string>
     <string id="30016">Getting info</string>
     <string id="30017">Disconnecting</string>
+    <string id="30200">Queue</string>
+    <string id="30201">File Browser</string>
+    <string id="30202">Artist Browser</string>
 	</strings>
 

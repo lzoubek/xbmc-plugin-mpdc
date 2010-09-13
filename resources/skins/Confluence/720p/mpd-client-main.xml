@@ -9,7 +9,43 @@
   <animation effect="fade" time="250">WindowClose</animation>
   <controls>
     <control type="group">
-      <posx>100</posx>
+		<posx>0</posx>
+		<posy>50</posy>
+		<control type="image">
+			<posx>10</posx>
+			<posy>0</posy>
+			<width>170</width>
+			<height>600</height>
+			<texture>ContentPanel.png</texture>
+		</control>
+		<control type="button" id="1000">
+			<posx>0</posx>
+			<posy>30</posy>
+			<width>180</width>
+			<height>48</height>
+			<align>center</align>
+			<label>SCRIPT30200</label>
+			<visible>true</visible>
+			<onup>120</onup>
+			
+			<texturenofocus>button-nofocus.png</texturenofocus>
+			<texturefocus>button-focus.png</texturefocus>
+		</control>
+		<control type="button" id="1001">
+			<posx>0</posx>
+			<posy>80</posy>
+			<width>180</width>
+			<height>48</height>
+			<align>center</align>
+			<visible>true</visible>
+			<label>30201</label>
+			<onup>120</onup>
+			<texturenofocus>button-nofocus.png</texturenofocus>
+			<texturefocus>button-focus.png</texturefocus>
+		</control>		
+    </control>
+    <control type="group">
+      <posx>180</posx>
       <posy>50</posy>
       <control type="image">
         <posx>0</posx>

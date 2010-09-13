@@ -81,7 +81,7 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		self.getControl( STATUS ).setLabel( STR_CONNECTING )
 		p = xbmcgui.DialogProgress()
 		p.create(STR_CONNECTING_TITLE,STR_CONNECTING)
-		percent = 1
+		percent = 0
 		for item in self.profiles:
 			item.update()
 			if p.iscanceled():

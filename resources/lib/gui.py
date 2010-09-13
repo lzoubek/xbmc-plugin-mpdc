@@ -38,7 +38,8 @@ SHUFFLE_OFF = 702
 SHUFFLE_ON = 703
 CURRENT_PLAYLIST = 120
 PROFILE=101
-
+QUEUE_SW=1000
+FILE_BROWSER_SW=1001
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 #String IDs
@@ -67,7 +68,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def onInit (self ):
 		self.getControl( PAUSE ).setVisible( False )
-		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)		
+		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)	
 		self._connect()
 	def _connect(self):
 		p = xbmcgui.DialogProgress()
