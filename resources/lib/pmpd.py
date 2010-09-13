@@ -8,6 +8,7 @@ class PMPDClient(object):
 		self.callback = None
 		self.thread = threading.Thread(target=self._poll)
 		self.thread.setDaemon(True)
+		self.event = threading.Event()
 		
 	def register_callback(self,callback):
 		self.callback = callback
@@ -46,13 +47,15 @@ class PMPDClient(object):
 			self.poller.disconnect()
 		except:
 			pass
+#		print 'waiting for poller thread'
+		self.thread.join()
 #		print 'client disconnected'
 		
 	def _poll(self):
-		while 1:
-			self.poller.send_idle()
-			select.select([self.poller],[],[],1)
+		while 1:			
 			try:
+				self.poller.send_idle()
+				select.select([self.poller],[],[],1)
 				changes = self.poller.fetch_idle()
 			except:
 #				print "poller error"

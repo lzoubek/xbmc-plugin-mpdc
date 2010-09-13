@@ -48,7 +48,8 @@ STR_NOT_CONNECTED=Addon.getLocalizedString(30005)
 STR_CONNECTED_TO=Addon.getLocalizedString(30011) 
 STR_PLAYING=Addon.getLocalizedString(30006) 
 STR_PROFILE_NAME=Addon.getLocalizedString(30002)
-STR_CONNECTING_TITLE=Addon.getLocalizedString(30015) 
+STR_CONNECTING_TITLE=Addon.getLocalizedString(30015)
+STR_DISCONNECTING_TITLE=Addon.getLocalizedString(30017) 
 STR_GETTING_DATA=Addon.getLocalizedString(30016)      
 
 class GUI ( xbmcgui.WindowXMLDialog ) :
@@ -71,6 +72,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _connect(self):
 		p = xbmcgui.DialogProgress()
 		p.create(STR_CONNECTING_TITLE,STR_CONNECTING_TITLE+' '+self.mpd_host+':'+self.mpd_port)
+		p.update(0)
 		try:				
 #			print 'Connecting  to  MPD ' + self.mpd_host + ':'+self.mpd_port 
 			self.client.connect(self.mpd_host,int(self.mpd_port))
@@ -165,8 +167,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def onAction(self, action):
 #		print 'OnAction '+str(action)
 		if action.getButtonCode() in ACTION_CLOSE:
-			self.client.disconnect()			
+			self.disconnect()			
 			self.close()
+	def disconnect(self):
+		p = xbmcgui.DialogProgress()
+		p.create(STR_DISCONNECTING_TITLE)
+		p.update(0)
+		self.client.disconnect()
+		p.close()
 			
 	def onClick( self, controlId ):
 		try:

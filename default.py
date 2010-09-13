@@ -84,6 +84,8 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		percent = 1
 		for item in self.profiles:
 			item.update()
+			if p.iscanceled():
+				break
 			percent = percent+33
 			p.update(percent)
 			listitem = xbmcgui.ListItem( label=item.name)						
