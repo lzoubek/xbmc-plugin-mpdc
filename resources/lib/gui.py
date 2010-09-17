@@ -23,7 +23,8 @@ import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 import pmpd
 
 #get actioncodes from keymap.xml
-ACTION_CLOSE = [6,10,216,247,257,275,61448,61467]
+ACTION_CLOSE = [6,10,257,275,216,247,61467]
+ACTION_BACK = [61448]
 ACTION_SELECT_ITEM = 7
 # control IDs
 STATUS = 100
@@ -196,6 +197,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if action.getButtonCode() in ACTION_CLOSE:
 			self.disconnect()			
 			self.close()
+			return
+		elif action.getButtonCode() in ACTION_BACK and self.getFocusId() == (FILE_BROWSER):
+			print 'going back'
+			self._update_file_browser(self.getControl(FILE_BROWSER).getListItem(0).getProperty('directory'))
+			
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
 		p.create(STR_DISCONNECTING_TITLE)
