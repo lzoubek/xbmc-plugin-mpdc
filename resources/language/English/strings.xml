@@ -13,7 +13,7 @@
     <string id="30009">Available</string>
     <string id="30010">Offline</string>
     <string id="30011">Connected to</string>
-    <string id="30012">Settings</string>
+    <string id="112">Settings</string>
     <string id="30110">Profile 1</string>
     <string id="30111">Profile 2</string>
     <string id="30112">Profile 3</string>
@@ -22,8 +22,8 @@
     <string id="30015">Connecting</string>
     <string id="30016">Getting info</string>
     <string id="30017">Disconnecting</string>
-    <string id="30200">Queue</string>
-    <string id="30201">File Browser</string>
-    <string id="30202">Artist Browser</string>
+    <string id="200">Queue</string>
+    <string id="201">File Browser</string>
+    <string id="202">Artist Browser</string>
 	</strings>
 

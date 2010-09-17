@@ -9,8 +9,12 @@
   <animation effect="fade" time="250">WindowClose</animation>
   <controls>
     <control type="group">
+		<description>left control group (switches content in right control group)</description>
 		<posx>0</posx>
 		<posy>50</posy>
+
+		
+		
 		<control type="image">
 			<posx>10</posx>
 			<posy>0</posy>
@@ -18,35 +22,83 @@
 			<height>600</height>
 			<texture>ContentPanel.png</texture>
 		</control>
-		<control type="button" id="1000">
+		
+		<control type="list" id="1000">
 			<posx>0</posx>
-			<posy>30</posy>
-			<width>180</width>
-			<height>48</height>
-			<align>center</align>
-			<label>SCRIPT30200</label>
-			<visible>true</visible>
-			<onup>120</onup>
-			
-			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>
-		</control>
-		<control type="button" id="1001">
-			<posx>0</posx>
-			<posy>80</posy>
-			<width>180</width>
-			<height>48</height>
-			<align>center</align>
-			<visible>true</visible>
-			<label>30201</label>
-			<onup>120</onup>
-			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>
-		</control>		
+			<posy>50</posy>
+			<width>170</width>
+			<height>500</height>
+			<onright>99</onright>
+			<viewtype>list</viewtype>
+			<scrolltime>200</scrolltime>			
+				<content>
+				  <item id="1001">
+					<label>SCRIPT200</label>
+					<onclick>nothing</onclick>
+					<visible>true</visible>
+				  </item>
+				  <item id="1002">
+					<label>SCRIPT201</label>
+					<visible>true</visible>
+					<onclick>nothing</onclick>
+					<onclick></onclick>
+					<onright>130</onright>
+				  </item>
+				  <item id="1003">
+					<label>SCRIPT202</label>
+					<visible>true</visible>
+					<onclick>nothing</onclick>
+					<onclick></onclick>
+				  </item>
+				</content>						    
+			      <itemlayout width="170" height="80">
+						  <control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>170</width>
+							<height>38</height>
+							<texture>MenuItemNF.png</texture>
+						  </control> 
+						<control type="label">
+							<posx>160</posx>
+							<posy>0</posy>
+							<width>170</width>
+							<height>38</height>
+							<font>font18</font>
+							<aligny>center</aligny>
+							<selectedcolor>green</selectedcolor>
+							<align>right</align>
+							<info>ListItem.Label</info>
+						</control>
+				  </itemlayout>
+				  <focusedlayout width="170" height="80">
+				          <control type="image">
+							<posx>0</posx>
+							<posy>0</posy>
+							<width>170</width>
+							<height>38</height>
+							<texture>MenuItemFO.png</texture>							
+						  </control>
+						<control type="label">
+							<posx>160</posx>
+							<posy>0</posy>
+							<width>170</width>
+							<height>38</height>
+							<font>font18</font>
+							<aligny>center</aligny>
+							<selectedcolor>green</selectedcolor>
+							<align>right</align>
+							<info>ListItem.Label</info>
+						</control>
+				  </focusedlayout>
+        </control>
+		
+		
     </control>
-    <control type="group">
+    <control type="group" id="99">
       <posx>180</posx>
       <posy>50</posy>
+      <description>main group</description>
       <control type="image">
         <posx>0</posx>
         <posy>0</posy>
@@ -65,7 +117,8 @@
             <texture>mpd-logo.png</texture>
             
         </control>
-             
+        <include file="playlist.xml"/>
+            
 	<control type="button" id="666">
 		<posx>120</posx>
 		<posy>15</posy>
@@ -224,210 +277,398 @@
         <height>2</height>
         <texture>VSeparator.png</texture>
       </control>
-     
-
-      <!-- ** Required ** Do not change <id> or <type> -->
-      <control type="list" id="120">
-        <posx>20</posx>
-        <posy>115</posy>
-        <width>1040</width>
-        <height>410</height>
-        <onleft>120</onleft>
-        <onright>120</onright>
-        <onup>667</onup>
-        <ondown>110</ondown>
-        <viewtype label="535">list</viewtype>
-        <pagecontrol>121</pagecontrol>
-        <scrolltime>200</scrolltime>
-        <itemlayout height="38">
-          <control type="image">
-            <posx>0</posx>
-            <posy>36</posy>
-            <width>1040</width>
-            <height>38</height>
-            <texture>MenuItemNF.png</texture>
-          </control>         
-          
-          <control type="image">
+      
+     <!-- START playlist control group--> 
+      	<control type="group">
+      <posx>20</posx>
+      <posy>115</posy>
+      <description>playlist group</description>
+      <visible>Container(1000).HasFocus(1001)</visible>
+		  <control type="list" id="120">
 			<posx>0</posx>
 			<posy>0</posy>
-			<width>38</width>
-			<height>38</height>
-			<info>ListItem.Icon</info>
-			</control>
-		<!-- display file property through whole line instead of ID3 tags (if they are empty at all) -->
-          <control type="label">
-            <posx>40</posx>
-            <posy>0</posy>
-            <width>1000</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(file)</info>
-          </control>
-		
-          <control type="label">
-            <posx>40</posx>
-            <posy>0</posy>
-            <width>150</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(artist)</info>
-          </control>
+			<width>1040</width>
+			<height>410</height>
+			<onleft>1000</onleft>
+			<onright>120</onright>
+			<onup>667</onup>
+			<ondown>110</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>121</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="38">
+			  <control type="image">
+				<posx>0</posx>
+				<posy>36</posy>
+				<width>1040</width>
+				<height>38</height>
+				<texture>MenuItemNF.png</texture>
+			  </control>         
+			  
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>38</width>
+				<height>38</height>
+				<info>ListItem.Icon</info>
+				</control>
+			<!-- display file property through whole line instead of ID3 tags (if they are empty at all) -->
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>1000</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(file)</info>
+			  </control>
+			
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>150</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(artist)</info>
+			  </control>
 
-          
-          <control type="label">
-            <posx>200</posx>
-            <posy>0</posy>
-            <width>180</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(album)</info>
-          </control>
-          
-          <control type="label">
-            <posx>395</posx>
-            <posy>0</posy>
-            <width>600</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Label</info>
-          </control>
-          
-		<control type="label">
-            <posx>1030</posx>
-            <posy>0</posy>
-            <width>80</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <align>right</align>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(time)</info>
-          </control>
-          
-
-
-        </itemlayout>
-        <focusedlayout height="38">
-          <control type="image">
-            <posx>0</posx>
-            <posy>0</posy>
-            <width>1040</width>
-            <height>38</height>
-            <texture>MenuItemFO.png</texture>
-            <visible>Control.HasFocus(120)</visible>
-          </control>
-          
-          <control type="image">
-			<posx>0</posx>
-			<posy>0</posy>
-			<width>38</width>
-			<height>38</height>
-			<info>ListItem.Icon</info>
-			</control>
-          <control type="label">
-            <posx>40</posx>
-            <posy>0</posy>
-            <width>1000</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(file)</info>
-          </control>				
-          <control type="label">
-            <posx>40</posx>
-            <posy>0</posy>
-            <width>150</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(artist)</info>
-          </control>
-          
-          <control type="label">
-            <posx>200</posx>
-            <posy>0</posy>
-            <width>180</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(album)</info>
-          </control>
-          
-          <control type="label">
-            <posx>395</posx>
-            <posy>0</posy>
-            <width>600</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Label</info>
-          </control>
-		<control type="label">
-            <posx>1030</posx>
-            <posy>0</posy>
-            <width>80</width>
-            <height>38</height>
-            <font>font18</font>
-            <aligny>center</aligny>
-            <align>right</align>
-            <textcolor>white</textcolor>
-            <selectedcolor>green</selectedcolor>
-            <align>left</align>
-            <info>ListItem.Property(time)</info>
-          </control>          
-          
-        </focusedlayout>
-      </control>
+			  
+			  <control type="label">
+				<posx>200</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(album)</info>
+			  </control>
+			  
+			  <control type="label">
+				<posx>395</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			  </control>
+			  
+			<control type="label">
+				<posx>1030</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<align>right</align>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(time)</info>
+			  </control>
+			</itemlayout>
+			<focusedlayout height="38">
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1040</width>
+				<height>38</height>
+				<texture>MenuItemFO.png</texture>
+				<visible>Control.HasFocus(120)</visible>
+			  </control>
+			  
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>38</width>
+				<height>38</height>
+				<info>ListItem.Icon</info>
+				</control>
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>1000</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(file)</info>
+			  </control>				
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>150</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(artist)</info>
+			  </control>
+			  
+			  <control type="label">
+				<posx>200</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(album)</info>
+			  </control>
+			  
+			  <control type="label">
+				<posx>395</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			  </control>
+			<control type="label">
+				<posx>1030</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<align>right</align>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(time)</info>
+			  </control>          			  
+			</focusedlayout>
+		  </control>
+		  
+			  <control type="group">
+				<posx>1035</posx>
+				<posy>0</posy>
+					<control type="scrollbar" id="121">
+					  <description>scroll bar indicator for lists</description>
+					  <posx>0</posx>
+					  <posy>0</posy>
+					  <width>24</width>
+					  <height>410</height>
+					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
+					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
+					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					  <textureslidernib>-</textureslidernib>
+					  <textureslidernibfocus>-</textureslidernibfocus>
+					  <orientation>vertical</orientation>
+					  <showonepage>false</showonepage>
+					  <visible>Control.IsVisible(120)</visible>
+					</control>
+			  </control>
+		  
+	  </control>
+      <!-- END playlist control group--> 
+      
+      <!-- START playlist control group--> 
       <control type="group">
-        <posx>1055</posx>
-        <posy>115</posy>
-        <control type="scrollbar" id="121">
-          <description>scroll bar indicator for lists</description>
-          <posx>0</posx>
-          <posy>0</posy>
-          <width>24</width>
-          <height>410</height>
-          <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
-          <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
-          <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
-          <textureslidernib>-</textureslidernib>
-          <textureslidernibfocus>-</textureslidernibfocus>
-          <orientation>vertical</orientation>
-          <showonepage>false</showonepage>
-          <visible>Control.IsVisible(120)</visible>
-        </control>
-      </control>
+      <posx>20</posx>
+      <posy>115</posy>
+      <description>playlist group</description>
+      <visible>Container(1000).HasFocus(1002)</visible>
+		  <control type="list" id="130">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1040</width>
+			<height>410</height>
+			<onleft>1000</onleft>
+			<onright>120</onright>
+			<onup>667</onup>
+			<ondown>110</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>121</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="38">
+			  <control type="image">
+				<posx>0</posx>
+				<posy>36</posy>
+				<width>1040</width>
+				<height>38</height>
+				<texture>MenuItemNF.png</texture>
+			  </control>         
+			  
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>38</width>
+				<height>38</height>
+				<info>ListItem.Icon</info>
+				</control>
+			<!-- display file property through whole line instead of ID3 tags (if they are empty at all) -->
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>1000</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(file)</info>
+			  </control>
+			
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>150</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(artist)</info>
+			  </control>
+
+			  
+			  <control type="label">
+				<posx>200</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(album)</info>
+			  </control>
+			  
+			  <control type="label">
+				<posx>395</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			  </control>
+			  
+			</itemlayout>
+			<focusedlayout height="38">
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1040</width>
+				<height>38</height>
+				<texture>MenuItemFO.png</texture>
+				<visible>Control.HasFocus(130)</visible>
+			  </control>
+			  
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>38</width>
+				<height>38</height>
+				<info>ListItem.Icon</info>
+				</control>
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>1000</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(file)</info>
+			  </control>				
+			  <control type="label">
+				<posx>40</posx>
+				<posy>0</posy>
+				<width>150</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(artist)</info>
+			  </control>
+			  
+			  <control type="label">
+				<posx>200</posx>
+				<posy>0</posy>
+				<width>180</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(album)</info>
+			  </control>
+			  
+			  <control type="label">
+				<posx>395</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			  </control>
+        			  
+			</focusedlayout>
+		  </control>
+		  
+			  <control type="group">
+				<posx>1035</posx>
+				<posy>0</posy>
+					<control type="scrollbar" id="131">
+					  <description>scroll bar indicator for lists</description>
+					  <posx>0</posx>
+					  <posy>0</posy>
+					  <width>24</width>
+					  <height>410</height>
+					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
+					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
+					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					  <textureslidernib>-</textureslidernib>
+					  <textureslidernibfocus>-</textureslidernibfocus>
+					  <orientation>vertical</orientation>
+					  <showonepage>false</showonepage>
+					  <visible>Control.IsVisible(130)</visible>
+					</control>
+			  </control>
+		  
+	  </control>
+      <!-- END file browser control group--> 
+     
 
     </control>
   </controls>

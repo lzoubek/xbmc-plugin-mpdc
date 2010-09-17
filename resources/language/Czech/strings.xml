@@ -13,7 +13,7 @@
     <string id="30009">Dostupný</string>
     <string id="30010">Offline</string>
     <string id="30011">Připojen k</string>
-    <string id="30012">Nastavení</string>
+    <string id="112">Nastavení</string>
     <string id="30110">Profil 1</string>
     <string id="30111">Profil 2</string>
     <string id="30112">Profil 3</string>
@@ -22,8 +22,8 @@
     <string id="30015">Připojuji</string>
     <string id="30016">Získávám data</string>
     <string id="30017">Odpojuji</string>
-        <string id="30200">Queue</string>
-    <string id="30201">File Browser</string>
-    <string id="30202">Artist Browser</string>
+    <string id="200">Queue</string>
+    <string id="201">File Browser</string>
+    <string id="202">Artist Browser</string>
 	</strings>
 

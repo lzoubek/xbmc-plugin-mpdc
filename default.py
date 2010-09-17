@@ -22,6 +22,10 @@ import sys,os
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
+__settings__ = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
+
+__language__ = __settings__.getLocalizedString
+
 SERVER_LIST = 120
 ACTION_CLOSE = [6,10,216,247,257,275,61448,61467]
 STATUS = 100
@@ -36,7 +40,6 @@ STR_CONNECTING_TITLE=Addon.getLocalizedString(30015)
 STR_SELECT_PROFILE=Addon.getLocalizedString(30008)
 STR_HOST_ONLINE=Addon.getLocalizedString(30009)
 STR_HOST_OFFLINE=Addon.getLocalizedString(30010)
-STR_SETTINGS=Addon.getLocalizedString(30012)
 class MpdProfile:
 	
 	def __init__(self,profile_id):
@@ -60,6 +63,7 @@ class MpdProfile:
 			client.disconnect()
 			self.status = STR_HOST_ONLINE
 			self.stat=STATUS_ON
+			
 		except:
 			pass
 
@@ -73,7 +77,6 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		self.controlId=controlId
 		
 	def onInit (self ):		
-		self.getControl (SETTINGS).setLabel( STR_SETTINGS )
 		self.update_servers()
 			
 	def update_servers( self ):

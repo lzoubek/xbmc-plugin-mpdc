@@ -37,9 +37,8 @@ REPEAT_ON = 701
 SHUFFLE_OFF = 702
 SHUFFLE_ON = 703
 CURRENT_PLAYLIST = 120
+FILE_BROWSER = 130
 PROFILE=101
-QUEUE_SW=1000
-FILE_BROWSER_SW=1001
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 #String IDs
@@ -68,8 +67,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def onInit (self ):
 		self.getControl( PAUSE ).setVisible( False )
-		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)	
+		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)					
 		self._connect()
+		#print self.client.lsinfo('jezz')
+		#print self.client.list('album','Soulfly')
+		#print self.client.list('artist')
+		#print self.client.lsinfo('jezz/_new')
 	def _connect(self):
 		p = xbmcgui.DialogProgress()
 		p.create(STR_CONNECTING_TITLE,STR_CONNECTING_TITLE+' '+self.mpd_host+':'+self.mpd_port)
@@ -84,9 +87,24 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return
 #		print 'Connected to  MPD v' + self.client.mpd_version
 		self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
-		p.update(50,STR_GETTING_DATA)
+		p.update(33,STR_GETTING_DATA)
 		self._handle_changes(['playlist','player','options'])
+		p.update(66,STR_GETTING_DATA)
+		self._update_file_browser()
 		p.close()			
+
+	def _update_file_browser(self,uri=None):
+		if uri == None:
+			dirs = self.client.lsinfo()
+		else:
+			dirs = self.client.lsinfo(uri)
+		print dirs
+		self.getControl(FILE_BROWSER).reset()
+		for item in dirs:
+			if 'directory' in item:
+				listitem = xbmcgui.ListItem( label=item['directory'])
+				listitem.setProperty('type','directory')
+				self.getControl(FILE_BROWSER).addItem(listitem)
 
 	def _handle_changes(self,changes):
 		state = self.client.status()
