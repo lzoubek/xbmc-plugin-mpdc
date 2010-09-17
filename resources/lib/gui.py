@@ -18,7 +18,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import sys,os,time
+import sys,os,time,re
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 import pmpd
 
@@ -94,18 +94,26 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		p.close()			
 
 	def _update_file_browser(self,uri=None):
+
+		self.getControl(FILE_BROWSER).reset()
 		if uri == None:
 			dirs = self.client.lsinfo()
 		else:
 			dirs = self.client.lsinfo(uri)
+			listitem = xbmcgui.ListItem( label='..')
+			listitem.setProperty('directory',os.path.dirname(uri))
+			self.getControl(FILE_BROWSER).addItem(listitem)
 		print dirs
-		self.getControl(FILE_BROWSER).reset()
 		for item in dirs:
 			if 'directory' in item:
-				listitem = xbmcgui.ListItem( label=item['directory'])
-				listitem.setProperty('type','directory')
+				listitem = xbmcgui.ListItem( label=os.path.basename(item['directory']))
+				listitem.setProperty('directory',item['directory'])
 				self.getControl(FILE_BROWSER).addItem(listitem)
-
+			elif 'file' in item:
+				listitem = xbmcgui.ListItem( label=os.path.basename(item['file']))			
+				listitem.setProperty('directory',os.path.dirname(item['file']))				
+				self.getControl(FILE_BROWSER).addItem(listitem)
+			
 	def _handle_changes(self,changes):
 		state = self.client.status()
 #		print 'Handling changes - ' + str(changes)
@@ -224,7 +232,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				elif status['state'] == 'pause' and status['songid'] == seekid:
 					self.client.play()
 				else:	
-					self.client.seekid(seekid,0) 
+					self.client.seekid(seekid,0)
+			elif controlId == FILE_BROWSER:
+				self._update_file_browser(self.getControl(FILE_BROWSER).getSelectedItem().getProperty('directory')) 
 		except mpd.ProtocolError:
 			self.disconnect()
 			self.getControl( STATUS ).setLabel(STR_NOT_CONNECTED)

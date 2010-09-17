@@ -28,20 +28,18 @@
 			<posy>50</posy>
 			<width>170</width>
 			<height>500</height>
-			<onright>99</onright>
 			<viewtype>list</viewtype>
 			<scrolltime>200</scrolltime>			
 				<content>
 				  <item id="1001">
 					<label>SCRIPT200</label>
-					<onclick>nothing</onclick>
+					<onclick>Control.SetFocus(120)</onclick>
 					<visible>true</visible>
 				  </item>
 				  <item id="1002">
 					<label>SCRIPT201</label>
 					<visible>true</visible>
-					<onclick>nothing</onclick>
-					<onclick></onclick>
+					<onclick>Control.SetFocus(130)</onclick>
 					<onright>130</onright>
 				  </item>
 				  <item id="1003">
@@ -58,7 +56,8 @@
 							<width>170</width>
 							<height>38</height>
 							<texture>MenuItemNF.png</texture>
-						  </control> 
+						  </control>
+
 						<control type="label">
 							<posx>160</posx>
 							<posy>0</posy>
@@ -77,8 +76,9 @@
 							<posy>0</posy>
 							<width>170</width>
 							<height>38</height>
-							<texture>MenuItemFO.png</texture>							
-						  </control>
+							<texture>MenuItemFO.png</texture>
+							<visible>Control.HasFocus(1000)</visible>							
+						  </control> 
 						<control type="label">
 							<posx>160</posx>
 							<posy>0</posy>
@@ -92,10 +92,26 @@
 						</control>
 				  </focusedlayout>
         </control>
-		
+		<control type="image">
+							<posx>0</posx>
+							<posy>50</posy>
+							<width>38</width>
+							<height>38</height>
+							<texture>active-group.png</texture>
+							<visible>Control.IsVisible(1200)</visible>
+			</control>
+					<control type="image">
+							<posx>0</posx>
+							<posy>130</posy>
+							<width>38</width>
+							<height>38</height>
+							<texture>active-group.png</texture>
+							<visible>Control.IsVisible(1300)</visible>
+			</control>
 		
     </control>
-    <control type="group" id="99">
+    
+    <control type="group">
       <posx>180</posx>
       <posy>50</posy>
       <description>main group</description>
@@ -128,6 +144,7 @@
 		<texturenofocus>OSDPrevTrackNF.png</texturenofocus>
 		<texturefocus>OSDPrevTrackFO.png</texturefocus>
 		<onright>667</onright>
+		<onleft>1000</onleft>
 		<ondown>120</ondown>
 	</control>
 
@@ -279,7 +296,7 @@
       </control>
       
      <!-- START playlist control group--> 
-      	<control type="group">
+      	<control type="group" id="1200">
       <posx>20</posx>
       <posy>115</posy>
       <description>playlist group</description>
@@ -487,7 +504,7 @@
       <!-- END playlist control group--> 
       
       <!-- START playlist control group--> 
-      <control type="group">
+      <control type="group" id="1300">
       <posx>20</posx>
       <posy>115</posy>
       <description>playlist group</description>
@@ -502,7 +519,7 @@
 			<onup>667</onup>
 			<ondown>110</ondown>
 			<viewtype label="535">list</viewtype>
-			<pagecontrol>121</pagecontrol>
+			<pagecontrol>131</pagecontrol>
 			<scrolltime>200</scrolltime>
 			<itemlayout height="38">
 			  <control type="image">
