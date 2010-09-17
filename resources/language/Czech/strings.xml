@@ -22,8 +22,9 @@
     <string id="30015">Připojuji</string>
     <string id="30016">Získávám data</string>
     <string id="30017">Odpojuji</string>
-    <string id="200">Queue</string>
-    <string id="201">File Browser</string>
-    <string id="202">Artist Browser</string>
+    <string id="200">Fronta</string>
+    <string id="201">Soubory</string>
+    <string id="202">Autoři</string>
+    <string id="203">Playlisty</string>
 	</strings>
 

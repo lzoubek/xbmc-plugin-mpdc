@@ -23,7 +23,8 @@
     <string id="30016">Getting info</string>
     <string id="30017">Disconnecting</string>
     <string id="200">Queue</string>
-    <string id="201">File Browser</string>
-    <string id="202">Artist Browser</string>
+    <string id="201">Files</string>
+    <string id="202">Artists</string>
+    <string id="203">Playlists</string>
 	</strings>
 
