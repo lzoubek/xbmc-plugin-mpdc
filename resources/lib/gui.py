@@ -48,6 +48,7 @@ SHUFFLE_ON = 703
 CURRENT_PLAYLIST = 120
 FILE_BROWSER = 130
 PROFILE=101
+CLEAR_QUEUE=1201
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 #String IDs
@@ -259,7 +260,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			elif controlId == SHUFFLE_OFF:
 				self.client.random(1)
 			elif controlId == SHUFFLE_ON:
-				self.client.random(0)				
+				self.client.random(0)
+			elif controlId == CLEAR_QUEUE:
+				self.client.stop()
+				self.client.clear()				
 			elif controlId == CURRENT_PLAYLIST:
 				print self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getLabel()
 				seekid = self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getProperty('id')
