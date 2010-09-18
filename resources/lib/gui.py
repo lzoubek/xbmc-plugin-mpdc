@@ -117,11 +117,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		for item in dirs:
 			if 'directory' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['directory']))
+				listitem.setProperty('type','directory')
 				listitem.setProperty('directory',item['directory'])
 				self.getControl(FILE_BROWSER).addItem(listitem)
 			elif 'file' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['file']))			
-				listitem.setProperty('directory',os.path.dirname(item['file']))				
+				listitem.setProperty('type','file')
+				listitem.setProperty('directory',os.path.dirname(item['file']))
+				listitem.setProperty('file',item['file'])				
 				self.getControl(FILE_BROWSER).addItem(listitem)
 			
 	def _handle_changes(self,changes):
@@ -203,7 +206,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	
 	def queue_item(self):
 		if self.getFocusId() == FILE_BROWSER:
-				uri = self.getControl(FILE_BROWSER).getSelectedItem().getProperty('directory')
+				item = self.getControl(FILE_BROWSER).getSelectedItem()
+				uri = item.getProperty(item.getProperty('type'))
 				self.client.add(uri)
 				self.getControl( STATUS ).setLabel(uri+ ' '+STR_WAS_QUEUED)					
 
