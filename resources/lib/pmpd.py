@@ -26,7 +26,7 @@ class PMPDClient(object):
 		self.thread.start()
 		
 	def disconnect(self):
-#		print 'disconnecting'
+		print 'disconnecting'
 		try:
 			self.client.close()
 		except:
@@ -47,9 +47,10 @@ class PMPDClient(object):
 			self.poller.disconnect()
 		except:
 			pass
-#		print 'waiting for poller thread'
-		self.thread.join()
-#		print 'client disconnected'
+		print 'waiting for poller thread'
+		if self.thread.isAlive():
+			self.thread.join()
+		print 'client disconnected'
 		
 	def _poll(self):
 		while 1:			

@@ -20,7 +20,7 @@
 # */
 import sys,os,time,re
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd
+import pmpd,mpd
 
 #get actioncodes from keymap.xml
 ACTION_CLOSE = [6,10,257,275,216,247,61467]
