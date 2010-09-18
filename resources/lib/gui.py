@@ -20,7 +20,7 @@
 # */
 import sys,os,time,re
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd,mpd
+import pmpd,mpd,dialog
 
 #get actioncodes from keymap.xml
 ACTION_SELECT_ITEM = 7
@@ -50,6 +50,7 @@ FILE_BROWSER = 130
 PROFILE=101
 CLEAR_QUEUE=1201
 SAVE_QUEUE_AS=1202
+PLAYLIST_BROWSER=1401
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 #String IDs
@@ -65,8 +66,13 @@ STR_GETTING_QUEUE=Addon.getLocalizedString(30016)
 STR_GETTING_PLAYLISTS=Addon.getLocalizedString(30019)
 STR_GETTING_ARTISTS=Addon.getLocalizedString(30020)
 STR_WAS_QUEUED=Addon.getLocalizedString(30018)      
-STR_PLAYLIST_SAVED=Addon.getLocalizedString(30021)      
-
+STR_PLAYLIST_SAVED=Addon.getLocalizedString(30021)
+STR_SELECT_ACTION=Addon.getLocalizedString(30022)
+STR_LOAD_ADD=Addon.getLocalizedString(30023)
+STR_DELETE=Addon.getLocalizedString(30024)      
+STR_LOAD_REPLACE=Addon.getLocalizedString(30025)
+STR_RENAME=Addon.getLocalizedString(30026)
+STR_SAVE_AS=Addon.getLocalizedString(205)  
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
 	def __init__( self, *args, **kwargs ):
@@ -106,9 +112,18 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self._handle_changes(['playlist','player','options'])
 		p.update(50,STR_GETTING_PLAYLISTS)
 		self._update_file_browser('')
+		self._update_playlist_browser()
 		p.update(75,STR_GETTING_ARTISTS)
 		p.close()			
 
+	def _update_playlist_browser(self):
+		self.getControl(PLAYLIST_BROWSER).reset()
+		for item in self.client.listplaylists():
+#			print self.client.listplaylistinfo(item['playlist'])
+			listitem = xbmcgui.ListItem(label=item['playlist'])
+			listitem.setIconImage('DefaultPlaylist.png')
+			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
+			
 	def _update_file_browser(self,uri=None):
 
 		self.getControl(FILE_BROWSER).reset()
@@ -120,7 +135,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem.setProperty('directory',os.path.dirname(uri))
 			listitem.setIconImage('DefaultFolderBack.png')
 			self.getControl(FILE_BROWSER).addItem(listitem)
-		print dirs
+		
 		for item in dirs:
 			if 'directory' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['directory']))
@@ -138,7 +153,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			
 	def _handle_changes(self,changes):
 		state = self.client.status()
-#		print 'Handling changes - ' + str(changes)
+		print 'Handling changes - ' + str(changes)
 		for change in changes:
 			if change == 'player':
 				current = self.client.currentsong()
@@ -163,6 +178,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.toggleVisible( SHUFFLE_ON, SHUFFLE_OFF )
 				elif state['random'] == '1':
 					self.toggleVisible( SHUFFLE_OFF, SHUFFLE_ON )					
+			if change == 'stored_playlist':
+				self._update_playlist_browser()
 			if change == 'playlist':
 					playlist = self.client.playlistinfo()
 					current = self.client.currentsong()					
@@ -245,7 +262,32 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		p.update(0)
 		self.client.disconnect()
 		p.close()
+	
+	def _playlist_contextmenu(self):
+		ret = self.dialog(STR_SELECT_ACTION,[STR_LOAD_ADD,STR_LOAD_REPLACE,STR_RENAME,STR_DELETE])
+		playlist = self.getControl(PLAYLIST_BROWSER).getSelectedItem().getLabel()
+		if ret == 0:
+			self.client.load(playlist)
+		elif ret == 1:
+			self.client.command_list_ok_begin()
+			self.client.clear()
+			self.client.load(playlist)
+			self.client.command_list_end()
+		elif ret == 2:
+				kb = xbmc.Keyboard(playlist,STR_RENAME,False)
+				kb.doModal()
+				if kb.isConfirmed():					
+					self.client.rename(playlist,kb.getText())
+		elif ret == 3:
+			self.client.rm(playlist)
 			
+	def dialog(self,title,list):
+		d = dialog.Dialog('menu-dialog.xml',os.getcwd(),'Confluence','0')
+		d.list=list
+		d.title = title
+		d.doModal()
+		return d.result
+						
 	def onClick( self, controlId ):
 		try:
 			if controlId == PLAY:
@@ -270,11 +312,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self.client.stop()
 				self.client.clear()
 			elif controlId == SAVE_QUEUE_AS:
-				kb = xbmc.Keyboard('playlist','Enter name',False)
+				kb = xbmc.Keyboard('playlist',STR_SAVE_AS,False)
 				kb.doModal()
 				if kb.isConfirmed():					
 					self.client.save(kb.getText())
 					self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
+			elif controlId == PLAYLIST_BROWSER:
+				self._playlist_contextmenu()
 			elif controlId == CURRENT_PLAYLIST:
 				print self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getLabel()
 				seekid = self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getProperty('id')

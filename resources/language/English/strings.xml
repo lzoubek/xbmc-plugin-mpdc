@@ -26,6 +26,11 @@
     <string id="30019">Getting playlists</string>
     <string id="30020">Getting artists</string>
     <string id="30021">Playlist saved</string>
+    <string id="30022">Select action</string>
+    <string id="30023">Load (Add)</string>
+    <string id="30024">Delete</string>
+    <string id="30025">Load (Replace)</string>
+    <string id="30026">Rename</string>
     <string id="200">Queue</string>
     <string id="201">Files</string>
     <string id="202">Artists</string>

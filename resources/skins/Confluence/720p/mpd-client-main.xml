@@ -51,7 +51,7 @@
 				  <item id="1004">
 					<label>SCRIPT203</label>
 					<visible>true</visible>
-					<onclick>nothing</onclick>
+					<onclick>Control.SetFocus(1401)</onclick>
 					<onclick></onclick>
 				  </item>				  
 				</content>						    
@@ -571,7 +571,7 @@
 				<info>ListItem.Icon</info>
 			  </control>			  
 			  <control type="label">
-				<posx>40</posx>
+				<posx>45</posx>
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
@@ -600,7 +600,7 @@
 				<info>ListItem.Icon</info>
 				</control>
 			  <control type="label">
-				<posx>40</posx>
+				<posx>45</posx>
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
@@ -634,7 +634,106 @@
 			  </control>		  
 	  </control>
       <!-- END file browser control group--> 
-     
+
+
+      <!-- START playlists browser control group--> 
+      <control type="group" id="1400">
+      <posx>20</posx>
+      <posy>115</posy>
+      <description>playlists browser group</description>
+      <visible>Container(1000).HasFocus(1004)</visible>
+		  <control type="list" id="1401">
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>1040</width>
+			<height>410</height>
+			<onleft>1000</onleft>
+			<onright>120</onright>
+			<onup>667</onup>
+			<ondown>110</ondown>
+			<viewtype label="535">list</viewtype>
+			<pagecontrol>1402</pagecontrol>
+			<scrolltime>200</scrolltime>
+			<itemlayout height="38">
+			  <control type="image">
+				<posx>0</posx>
+				<posy>36</posy>
+				<width>1040</width>
+				<height>38</height>
+				<texture>MenuItemNF.png</texture>
+			  </control>         			  
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>38</width>
+				<height>38</height>
+				<info>ListItem.Icon</info>
+			  </control>			  
+			  <control type="label">
+				<posx>45</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			  </control>			  
+			</itemlayout>
+			<focusedlayout height="38">
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>1040</width>
+				<height>38</height>
+				<texture>MenuItemFO.png</texture>
+				<visible>Control.HasFocus(1401)</visible>
+			  </control>			  
+			  <control type="image">
+				<posx>0</posx>
+				<posy>0</posy>
+				<width>38</width>
+				<height>38</height>
+				<info>ListItem.Icon</info>
+				</control>
+			  <control type="label">
+				<posx>45</posx>
+				<posy>0</posy>
+				<width>600</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Label</info>
+			  </control>       			  
+			</focusedlayout>
+		  </control>		  
+			  <control type="group">
+				<posx>1035</posx>
+				<posy>0</posy>
+					<control type="scrollbar" id="1402">
+					  <description>scroll bar indicator for lists</description>
+					  <posx>0</posx>
+					  <posy>0</posy>
+					  <width>24</width>
+					  <height>410</height>
+					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
+					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
+					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
+					  <textureslidernib>-</textureslidernib>
+					  <textureslidernibfocus>-</textureslidernibfocus>
+					  <orientation>vertical</orientation>
+					  <showonepage>false</showonepage>
+					  <visible>Control.IsVisible(1401)</visible>
+					</control>
+			  </control>		  
+	  </control>
+      <!-- END playlists browser control group--> 
+          
 
     </control>
   </controls>

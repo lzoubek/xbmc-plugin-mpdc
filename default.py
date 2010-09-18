@@ -31,7 +31,7 @@ ACTION_CLOSE = [6,10,216,247,257,275,61448,61467]
 STATUS = 100
 SETTINGS = 101
 sys.path.append( os.path.join ( os.getcwd(), 'resources','lib') )
-import gui,mpd
+import gui,mpd,dialog
 
 STATUS_ON='on'
 STATUS_OFF='off'
@@ -119,7 +119,7 @@ if 'true' == skip_selector:
 	ui = gui.GUI( 'mpd-client-main.xml',os.getcwd(), 'Confluence','0')
 	ui.doModal()
 	del ui
-else:	
+else:
 	selectorUI = SelectMPDProfile( 'select-profile.xml',os.getcwd(), 'Confluence')		
 	selectorUI.profiles = [MpdProfile('0'),MpdProfile('1'),MpdProfile('2')]
 	selectorUI.doModal()
