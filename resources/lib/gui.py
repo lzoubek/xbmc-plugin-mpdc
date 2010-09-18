@@ -59,7 +59,9 @@ STR_PLAYING=Addon.getLocalizedString(30006)
 STR_PROFILE_NAME=Addon.getLocalizedString(30002)
 STR_CONNECTING_TITLE=Addon.getLocalizedString(30015)
 STR_DISCONNECTING_TITLE=Addon.getLocalizedString(30017) 
-STR_GETTING_DATA=Addon.getLocalizedString(30016)
+STR_GETTING_QUEUE=Addon.getLocalizedString(30016)
+STR_GETTING_PLAYLISTS=Addon.getLocalizedString(30019)
+STR_GETTING_ARTISTS=Addon.getLocalizedString(30020)
 STR_WAS_QUEUED=Addon.getLocalizedString(30018)      
 
 class GUI ( xbmcgui.WindowXMLDialog ) :
@@ -97,10 +99,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return
 #		print 'Connected to  MPD v' + self.client.mpd_version
 		self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
-		p.update(33,STR_GETTING_DATA)
+		p.update(25,STR_GETTING_QUEUE)
 		self._handle_changes(['playlist','player','options'])
-		p.update(66,STR_GETTING_DATA)
+		p.update(50,STR_GETTING_PLAYLISTS)
 		self._update_file_browser()
+		p.update(75,STR_GETTING_ARTISTS)
 		p.close()			
 
 	def _update_file_browser(self,uri=None):
