@@ -311,12 +311,26 @@
           <control type="button" id="1201">
 			<posx>500</posx>
 			<posy>-60</posy>
-			<width>120</width>
+			<width>160</width>
 			<height>48</height>
 			<align>center</align>
 			<visible>true</visible>
 			<label>SCRIPT204</label>
 			<ondown>120</ondown>
+			<onright>1202</onright>
+			<texturenofocus>button-nofocus.png</texturenofocus>
+			<texturefocus>button-focus.png</texturefocus>		
+		</control>
+        <control type="button" id="1202">
+			<posx>670</posx>
+			<posy>-60</posy>
+			<width>160</width>
+			<height>48</height>
+			<align>center</align>
+			<visible>true</visible>
+			<label>SCRIPT205</label>
+			<ondown>120</ondown>
+			<onleft>1201</onleft>
 			<texturenofocus>button-nofocus.png</texturenofocus>
 			<texturefocus>button-focus.png</texturefocus>		
 		</control>

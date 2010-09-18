@@ -25,10 +25,12 @@
     <string id="30018">was added to queue</string>
     <string id="30019">Getting playlists</string>
     <string id="30020">Getting artists</string>
+    <string id="30021">Playlist saved</string>
     <string id="200">Queue</string>
     <string id="201">Files</string>
     <string id="202">Artists</string>
     <string id="203">Playlists</string>
-    <string id="204">Clear</string>
+    <string id="204">Clear queue</string>
+    <string id="205">Save As</string>
 	</strings>
 

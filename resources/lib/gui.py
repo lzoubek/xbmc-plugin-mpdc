@@ -49,6 +49,7 @@ CURRENT_PLAYLIST = 120
 FILE_BROWSER = 130
 PROFILE=101
 CLEAR_QUEUE=1201
+SAVE_QUEUE_AS=1202
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 #String IDs
@@ -64,6 +65,7 @@ STR_GETTING_QUEUE=Addon.getLocalizedString(30016)
 STR_GETTING_PLAYLISTS=Addon.getLocalizedString(30019)
 STR_GETTING_ARTISTS=Addon.getLocalizedString(30020)
 STR_WAS_QUEUED=Addon.getLocalizedString(30018)      
+STR_PLAYLIST_SAVED=Addon.getLocalizedString(30021)      
 
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -103,7 +105,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		p.update(25,STR_GETTING_QUEUE)
 		self._handle_changes(['playlist','player','options'])
 		p.update(50,STR_GETTING_PLAYLISTS)
-		self._update_file_browser()
+		self._update_file_browser('')
 		p.update(75,STR_GETTING_ARTISTS)
 		p.close()			
 
@@ -116,6 +118,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			dirs = self.client.lsinfo(uri)
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory',os.path.dirname(uri))
+			listitem.setIconImage('DefaultFolderBack.png')
 			self.getControl(FILE_BROWSER).addItem(listitem)
 		print dirs
 		for item in dirs:
@@ -123,12 +126,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['directory']))
 				listitem.setProperty('type','directory')
 				listitem.setProperty('directory',item['directory'])
+				listitem.setIconImage('DefaultFolder.png')
 				self.getControl(FILE_BROWSER).addItem(listitem)
 			elif 'file' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['file']))			
 				listitem.setProperty('type','file')
 				listitem.setProperty('directory',os.path.dirname(item['file']))
 				listitem.setProperty('file',item['file'])				
+				listitem.setIconImage('DefaultAudio.png')
 				self.getControl(FILE_BROWSER).addItem(listitem)
 			
 	def _handle_changes(self,changes):
@@ -263,7 +268,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self.client.random(0)
 			elif controlId == CLEAR_QUEUE:
 				self.client.stop()
-				self.client.clear()				
+				self.client.clear()
+			elif controlId == SAVE_QUEUE_AS:
+				kb = xbmc.Keyboard('playlist','Enter name',False)
+				kb.doModal()
+				if kb.isConfirmed():					
+					self.client.save(kb.getText())
+					self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
 			elif controlId == CURRENT_PLAYLIST:
 				print self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getLabel()
 				seekid = self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getProperty('id')

@@ -25,9 +25,12 @@
     <string id="30018">byl přidán do fronty</string>
     <string id="30019">Získávám playlisty</string>
     <string id="30020">Získávám seznam autorů</string>
+    <string id="30021">Playlist uložen</string>
     <string id="200">Fronta</string>
     <string id="201">Soubory</string>
     <string id="202">Autoři</string>
     <string id="203">Playlisty</string>
+    <string id="204">Vyprázdnit frontu</string>
+    <string id="205">Uložit jako</string>
 	</strings>
 
