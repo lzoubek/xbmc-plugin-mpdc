@@ -23,9 +23,17 @@ import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 import pmpd,mpd
 
 #get actioncodes from keymap.xml
-ACTION_CLOSE = [6,10,257,275,216,247,61467]
-ACTION_BACK = [61448]
 ACTION_SELECT_ITEM = 7
+ACTIONS = dict({
+	'9':'self.action_back()',
+	'10':'self.exit()',
+	'12':'self.client.pause()',
+	'14':'self.client.next()',
+	'15':'self.client.previous()',
+	'34':'self.queue_item()',
+	'79':'self.client.play()',
+	'117':'self.context_menu()'
+	})
 # control IDs
 STATUS = 100
 PLAY = 668
@@ -51,7 +59,8 @@ STR_PLAYING=Addon.getLocalizedString(30006)
 STR_PROFILE_NAME=Addon.getLocalizedString(30002)
 STR_CONNECTING_TITLE=Addon.getLocalizedString(30015)
 STR_DISCONNECTING_TITLE=Addon.getLocalizedString(30017) 
-STR_GETTING_DATA=Addon.getLocalizedString(30016)      
+STR_GETTING_DATA=Addon.getLocalizedString(30016)
+STR_WAS_QUEUED=Addon.getLocalizedString(30018)      
 
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -191,16 +200,31 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if item.getProperty('id') == itemid:
 				item.setIconImage(state+'-item.png')
 				playlist.selectItem(int(item.getProperty('index')))		
-							
+	
+	def queue_item(self):
+		if self.getFocusId() == FILE_BROWSER:
+				uri = self.getControl(FILE_BROWSER).getSelectedItem().getProperty('directory')
+				self.client.add(uri)
+				self.getControl( STATUS ).setLabel(uri+ ' '+STR_WAS_QUEUED)					
+
+	def context_menu(self):
+		if self.getFocusId() == CURRENT_PLAYLIST:
+			dialog = xbmcgui.Dialog()
+			ret = dialog.select('choose action',['Clear playlist','Play/Pause','Refresh library'])
+			print ret
+	def exit(self):
+		self.disconnect()
+		self.close()
+	def action_back(self):
+		if self.getFocusId() == FILE_BROWSER:
+			self._update_file_browser(self.getControl(FILE_BROWSER).getListItem(0).getProperty('directory'))
+
 	def onAction(self, action):
 #		print 'OnAction '+str(action)
-		if action.getButtonCode() in ACTION_CLOSE:
-			self.disconnect()			
-			self.close()
-			return
-		elif action.getButtonCode() in ACTION_BACK and self.getFocusId() == (FILE_BROWSER):
-			print 'going back'
-			self._update_file_browser(self.getControl(FILE_BROWSER).getListItem(0).getProperty('directory'))
+		if str(action.getId()) in ACTIONS:
+			command = ACTIONS[str(action.getId())]
+			print 'action: '+command
+			exec(command)			
 			
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
