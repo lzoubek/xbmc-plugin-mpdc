@@ -6,15 +6,12 @@
     <posy>0</posy>
   </coordinates>
   <animation effect="fade" time="250">WindowOpen</animation>
-  <animation effect="fade" time="250">WindowClose</animation>
+  <animation effect="fade" time="2501">WindowClose</animation>
   <controls>
     <control type="group">
 		<description>left control group (switches content in right control group)</description>
 		<posx>0</posx>
 		<posy>50</posy>
-
-		
-		
 		<control type="image">
 			<posx>10</posx>
 			<posy>0</posy>
@@ -29,6 +26,7 @@
 			<width>170</width>
 			<height>500</height>
 			<viewtype>list</viewtype>
+			<onright>666</onright>
 			<scrolltime>200</scrolltime>			
 				<content>
 				  <item id="1001">
@@ -141,16 +139,13 @@
         <height>600</height>
         <texture border="40">ContentPanel.png</texture>
       </control>
-      <!-- ** Required ** Do not change <id> or <type> -->
-
         <control type="image" >
             <description>page header tab icon</description>
             <posx>20</posx>
             <posy>12</posy>
             <width>82</width>
             <height>82</height>
-            <texture>mpd-logo.png</texture>
-            
+            <texture>mpd-logo.png</texture>            
         </control>
             
 	<control type="button" id="666">
@@ -561,9 +556,6 @@
 			<width>1040</width>
 			<height>410</height>
 			<onleft>1000</onleft>
-			<onright>120</onright>
-			<onup>667</onup>
-			<ondown>110</ondown>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1202</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -658,9 +650,6 @@
 			<width>1040</width>
 			<height>410</height>
 			<onleft>1000</onleft>
-			<onright>120</onright>
-			<onup>667</onup>
-			<ondown>110</ondown>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1302</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -757,9 +746,6 @@
 			<width>1040</width>
 			<height>410</height>
 			<onleft>1000</onleft>
-			<onright>120</onright>
-			<onup>667</onup>
-			<ondown>110</ondown>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1402</pagecontrol>
 			<scrolltime>200</scrolltime>
