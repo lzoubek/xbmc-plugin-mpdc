@@ -1,5 +1,5 @@
 #/bin/sh
-DESTDIR=~/.xbmc/addons/plugin.program.mpdc
+DESTDIR=~/.xbmc/addons/script.mpdc
 
 mkdir -p ${DESTDIR}
 cp -a * ${DESTDIR}
