@@ -132,6 +132,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem = xbmcgui.ListItem(label=item)
 					listitem.setProperty('artist',item)
 					listitem.setProperty('type','artist')
+					listitem.setIconImage('DefaultMusicArtists.png')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
 		else:
 			typ = artist_item.getProperty('type')
@@ -150,6 +151,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem.setProperty('artist',artist_item.getProperty('artist'))
 					listitem.setProperty('type','album')
 					listitem.setProperty('album',item)
+					listitem.setIconImage('DefaultMusicAlbums.png')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
 			elif typ == 'album':
 				self.getControl(ARTIST_BROWSER).reset()
@@ -165,6 +167,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem.setProperty('file',item['file'])
 					listitem.setProperty('album',artist_item.getProperty('album'))
 					listitem.setProperty( 'time', time.strftime("%M:%S",time.gmtime(float(item['time']))) )
+					listitem.setIconImage('DefaultAudio.png')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
 
 	def _update_playlist_browser(self):
