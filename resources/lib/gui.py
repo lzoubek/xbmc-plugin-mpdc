@@ -18,7 +18,7 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import sys,os,time,re
+import sys,os,time,re,traceback
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 import pmpd,mpd,dialog
 
@@ -51,6 +51,7 @@ PROFILE=101
 CLEAR_QUEUE=1103
 SAVE_QUEUE_AS=1102
 PLAYLIST_BROWSER=1401
+ARTIST_BROWSER=1301
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 
 #String IDs
@@ -114,12 +115,61 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self._update_file_browser('')
 		self._update_playlist_browser()
 		p.update(75,STR_GETTING_ARTISTS)
-		p.close()			
+		self._update_artist_browser()
+		p.close()
+
+	def _update_artist_browser(self,artist_item=None):		
+		if artist_item==None:
+			self.getControl(ARTIST_BROWSER).reset()
+			artists = self.client.list('artist')
+			artists.sort()
+			listitem = xbmcgui.ListItem(label='..')
+			listitem.setIconImage('DefaultFolderBack.png')
+			listitem.setProperty('type','')
+			self.getControl(ARTIST_BROWSER).addItem(listitem)			
+			for item in artists:
+				if not item=='':
+					listitem = xbmcgui.ListItem(label=item)
+					listitem.setProperty('artist',item)
+					listitem.setProperty('type','artist')
+					self.getControl(ARTIST_BROWSER).addItem(listitem)
+		else:
+			typ = artist_item.getProperty('type')
+			if typ =='file':
+				return
+			if typ == '':
+				return self._update_artist_browser()
+			elif typ == 'artist':
+				self.getControl(ARTIST_BROWSER).reset()
+				listitem = xbmcgui.ListItem(label='..')
+				listitem.setIconImage('DefaultFolderBack.png')
+				listitem.setProperty('type','')
+				self.getControl(ARTIST_BROWSER).addItem(listitem)
+				for item in self.client.list('album',artist_item.getProperty('artist')):
+					listitem = xbmcgui.ListItem(label=item)
+					listitem.setProperty('artist',artist_item.getProperty('artist'))
+					listitem.setProperty('type','album')
+					listitem.setProperty('album',item)
+					self.getControl(ARTIST_BROWSER).addItem(listitem)
+			elif typ == 'album':
+				self.getControl(ARTIST_BROWSER).reset()
+				listitem = xbmcgui.ListItem(label='..')
+				listitem.setProperty('type','artist')
+				listitem.setIconImage('DefaultFolderBack.png')
+				listitem.setProperty('artist',artist_item.getProperty('artist'))
+				self.getControl(ARTIST_BROWSER).addItem(listitem)
+				for item in self.client.search('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
+					listitem = xbmcgui.ListItem(label=item['title'])
+					listitem.setProperty('artist',artist_item.getProperty('artist'))
+					listitem.setProperty('type','file')
+					listitem.setProperty('file',item['file'])
+					listitem.setProperty('album',artist_item.getProperty('album'))
+					listitem.setProperty( 'time', time.strftime("%M:%S",time.gmtime(float(item['time']))) )
+					self.getControl(ARTIST_BROWSER).addItem(listitem)
 
 	def _update_playlist_browser(self):
 		self.getControl(PLAYLIST_BROWSER).reset()
 		for item in self.client.listplaylists():
-#			print self.client.listplaylistinfo(item['playlist'])
 			listitem = xbmcgui.ListItem(label=item['playlist'])
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
@@ -235,7 +285,26 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
 				self.client.add(uri)
-				self.getControl( STATUS ).setLabel(uri+ ' '+STR_WAS_QUEUED)					
+				self.getControl( STATUS ).setLabel(uri+ ' '+STR_WAS_QUEUED)
+		if self.getFocusId() == ARTIST_BROWSER:
+			item = self.getControl(ARTIST_BROWSER).getSelectedItem()
+			typ = item.getProperty('type')
+			if typ == 'file':
+				self.client.add(item.getProperty(typ))
+				self.getControl( STATUS ).setLabel(item.getProperty(typ)+ ' '+STR_WAS_QUEUED)
+			else:
+				if typ == 'artist':
+					found = self.client.find('artist',item.getProperty('artist'))
+					status = item.getProperty('artist')+' '+STR_WAS_QUEUED
+				elif typ == 'album':
+					found = self.client.find('artist',item.getProperty('artist'),'album',item.getProperty('album'))
+					status = item.getProperty('artist')+' - '+item.getProperty('album')+ ' '+STR_WAS_QUEUED
+				if not found == []:
+					self.client.command_list_ok_begin()
+					for f_item in found:
+						self.client.add(f_item['file'])
+					self.client.command_list_end()
+					self.getControl( STATUS ).setLabel(status)					
 
 	def context_menu(self):
 		if self.getFocusId() == CURRENT_PLAYLIST:
@@ -248,12 +317,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def action_back(self):
 		if self.getFocusId() == FILE_BROWSER:
 			self._update_file_browser(self.getControl(FILE_BROWSER).getListItem(0).getProperty('directory'))
+		if self.getFocusId() == ARTIST_BROWSER:
+			self._update_artist_browser(self.getControl(ARTIST_BROWSER).getListItem(0))
 
 	def onAction(self, action):
-#		print 'OnAction '+str(action)
 		if str(action.getId()) in ACTIONS:
 			command = ACTIONS[str(action.getId())]
-			print 'action: '+command
+#			print 'action: '+command
 			exec(command)			
 			
 	def disconnect(self):
@@ -270,7 +340,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.load(playlist)
 		elif ret == 1:
 			self.client.command_list_ok_begin()
-			self.client.clear()
+			self.client.clear()		
 			self.client.load(playlist)
 			self.client.command_list_end()
 		elif ret == 2:
@@ -330,11 +400,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				else:	
 					self.client.seekid(seekid,0)
 			elif controlId == FILE_BROWSER:
-				self._update_file_browser(self.getControl(FILE_BROWSER).getSelectedItem().getProperty('directory')) 
+				self._update_file_browser(self.getControl(FILE_BROWSER).getSelectedItem().getProperty('directory'))
+			elif controlId == ARTIST_BROWSER:
+				self._update_artist_browser(self.getControl(ARTIST_BROWSER).getSelectedItem()) 
 		except mpd.ProtocolError:
+			traceback.print_exc()
 			self.disconnect()
 			self.getControl( STATUS ).setLabel(STR_NOT_CONNECTED)
 		except mpd.ConnectionError:
+			traceback.print_exc()
 			self.disconnect()
 			self.getControl( STATUS ).setLabel(STR_NOT_CONNECTED)
 

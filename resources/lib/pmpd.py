@@ -13,6 +13,11 @@ class PMPDClient(object):
 	def register_callback(self,callback):
 		self.callback = callback
 		
+	def command_list_ok_begin(self):
+		self.client.command_list_ok_begin()
+	
+	def command_list_end(self):
+		return self.client.command_list_end()
 		
 	def __getattr__(self,attr):
 		return self.client.__getattr__(attr)
@@ -59,12 +64,12 @@ class PMPDClient(object):
 				select.select([self.poller],[],[],1)
 				changes = self.poller.fetch_idle()
 			except:
-#				print "poller error"
+				print "poller error"
 				return
 			try:
 				if not self.callback == None:
 					self.callback(changes)
 			except:
-#				print "callback error"
+				print "callback error"
 				return
 				

@@ -679,6 +679,19 @@
 				<selectedcolor>green</selectedcolor>
 				<align>left</align>
 				<info>ListItem.Label</info>
+			  </control>
+			  <control type="label">
+				<posx>1030</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<align>right</align>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(time)</info>
 			  </control>			  
 			</itemlayout>
 			<focusedlayout height="38">
@@ -708,6 +721,19 @@
 				<selectedcolor>green</selectedcolor>
 				<align>left</align>
 				<info>ListItem.Label</info>
+			  </control>
+			  <control type="label">
+				<posx>1030</posx>
+				<posy>0</posy>
+				<width>80</width>
+				<height>38</height>
+				<font>font18</font>
+				<aligny>center</aligny>
+				<align>right</align>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(time)</info>
 			  </control>       			  
 			</focusedlayout>
 		  </control>		  
