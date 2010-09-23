@@ -6,7 +6,9 @@
   <requires>
     <import addon="xbmc.python" version="1.0"/>
   </requires>
-  <extension point="xbmc.python.script" library="default.py" />
+  <extension point="xbmc.python.script" library="default.py">
+	<provides>audio</provides>
+  </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <summary lang="en">An MPD client</summary>
