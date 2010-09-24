@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="script.mpdc"
-       name="MPDClient"
+       name="MPD Client"
        version="0.9.3"
        provider-name="lzoubek">
   <requires>

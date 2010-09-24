@@ -1,5 +1,6 @@
 [B]0.9.3[/B]
 - added artist browser
+- improoved Confluence skin to better fit 
 [B]0.9.2[/B]
 - added browsing in MPD server's filesystem
 - added 'Save as' and 'Clean' buttons on current queue

@@ -89,12 +89,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def onInit (self ):
 		self.getControl( PAUSE ).setVisible( False )
-		self.getControl( PROFILE ).setLabel(STR_PROFILE_NAME+' : '+self.profile_name)					
+		self.getControl( PROFILE ).setLabel(self.profile_name)					
 		self._connect()
-		#print self.client.lsinfo('jezz')
-		#print self.client.list('album','Soulfly')
-		#print self.client.list('artist')
-		#print self.client.lsinfo('jezz/_new')
 	def _connect(self):
 		p = xbmcgui.DialogProgress()
 		p.create(STR_CONNECTING_TITLE,STR_CONNECTING_TITLE+' '+self.mpd_host+':'+self.mpd_port)
