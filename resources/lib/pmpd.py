@@ -1,4 +1,4 @@
-import rmpd,select,threading
+import rmpd,select,threading,traceback
 
 # polling MPD Client
 class PMPDClient(object):
@@ -64,12 +64,14 @@ class PMPDClient(object):
 				select.select([self.poller],[],[],1)
 				changes = self.poller.fetch_idle()
 			except:
-				print "poller error"
+#				print "poller error"
+#				traceback.print_exc()
 				return
 			try:
 				if not self.callback == None:
-					self.callback(changes)
+					self.callback(self.poller,changes)
 			except:
-				print "callback error"
+#				print "callback error"
+#				traceback.print_exc()
 				return
 				
