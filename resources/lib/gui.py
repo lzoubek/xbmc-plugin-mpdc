@@ -90,6 +90,8 @@ STR_LOAD_ADD=Addon.getLocalizedString(30023)
 STR_DELETE=Addon.getLocalizedString(30024)      
 STR_LOAD_REPLACE=Addon.getLocalizedString(30025)
 STR_RENAME=Addon.getLocalizedString(30026)
+STR_Q__PLAYLIST_EXISTS=Addon.getLocalizedString(30027)
+STR_Q_OVERWRITE=Addon.getLocalizedString(30028)
 STR_SAVE_AS=Addon.getLocalizedString(205)  
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -120,7 +122,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			print 'Cannot connect'
 			p.close()
 			return
-		print 'Connected to  MPD v' + self.client.mpd_version
+		print 'Connected'
 		self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
 		p.update(25,STR_GETTING_QUEUE)
 		self._handle_changes(['playlist','player','options'])
@@ -378,7 +380,20 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _save_queue_as(self):
 		kb = xbmc.Keyboard('playlist',STR_SAVE_AS,False)
 		kb.doModal()
-		if kb.isConfirmed():					
+		if kb.isConfirmed():
+			playlists = self.getControl(PLAYLIST_BROWSER)
+			for i in range(0,playlists.size()):
+				item = playlists.getListItem(i)
+				if item.getLabel() == kb.getText():
+					dialog = xbmcgui.Dialog()
+					ret = dialog.yesno(STR_Q__PLAYLIST_EXISTS, STR_Q_OVERWRITE)
+					if ret:
+						self.client.command_list_ok_begin()
+						self.client.rm(kb.getText())
+						self.client.save(kb.getText())
+						self.client.command_list_end()
+						self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
+					return	
 			self.client.save(kb.getText())
 			self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
 	def _playlist_on_click(self):	
@@ -389,7 +404,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		elif status['state'] == 'pause' and status['songid'] == seekid:
 			self.client.play()
 		else:	
-			self.client.seekid(seekid,0)						
+			self.client.seekid(seekid,0)					
 	def onClick( self, controlId ):
 		#print controlId
 		try:
