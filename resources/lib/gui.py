@@ -187,7 +187,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem.setProperty('type','file')
 					listitem.setProperty('file',item['file'])
 					listitem.setProperty('album',artist_item.getProperty('album'))
-					listitem.setProperty( 'time', time.strftime("%M:%S",time.gmtime(float(item['time']))) )
+					listitem.setProperty( 'time', self._format_time(item['time']) )
 					listitem.setIconImage('DefaultAudio.png')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
 
@@ -277,7 +277,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						listitem.setProperty( 'artist', item['artist'] )
 						listitem.setProperty( 'album', item['album'] )
 						if not item['time'] == '':
-							listitem.setProperty( 'time', time.strftime("%M:%S",time.gmtime(float(item['time']))) )
+							listitem.setProperty( 'time', self._format_time(item['time']) )
 						if item['title'] == '' and item['artist'] == '' and item['album'] == '':
 							listitem.setProperty( 'file' , item['file'] )
 						if item['id'] == current_id:
@@ -285,6 +285,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
 						index  = index + 1
 #		print 'Changes handled'
+
+	def _format_time(self,time):
+		return '%d:%02d' % ((int(time) / 60 ),(int(time) % 60))
+		
 
 	def toggleVisible(self,cFrom,cTo):
 		self.getControl( cFrom ).setVisible(False)
