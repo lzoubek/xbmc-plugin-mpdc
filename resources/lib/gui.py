@@ -204,6 +204,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl(FILE_BROWSER).reset()
 		if browser_item == None:
 			dirs = client.lsinfo()
+			listitem = xbmcgui.ListItem( label='..')
+			listitem.setProperty('directory','')
+			listitem.setIconImage('DefaultFolderBack.png')
+			self.getControl(FILE_BROWSER).addItem(listitem)
 		else:
 			uri = browser_item.getProperty('directory')
 			dirs = client.lsinfo(uri)
@@ -460,11 +464,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		else:	
 			self.client.seekid(seekid,0)					
 	def onClick( self, controlId ):
-		#print controlId
 		try:
 			if str(controlId) in CLICK_ACTIONS:
 				command = CLICK_ACTIONS[str(controlId)]
-				print 'click action: '+command
+#				print 'click action: '+command
 				exec(command)
 		except mpd.ProtocolError:
 			traceback.print_exc()
