@@ -25,14 +25,14 @@ import pmpd,mpd,dialog
 #get actioncodes from keymap.xml
 ACTION_SELECT_ITEM = 7
 ACTIONS = dict({
-	'9':'self.action_back()',
+	'9':'self._action_back()',
 	'10':'self.exit()',
 	'12':'self.client.pause()',
 	'14':'self.client.next()',
 	'15':'self.client.previous()',
-	'34':'self.queue_item()',
+	'34':'self._queue_item()',
 	'79':'self.client.play()',
-	'117':'self.context_menu()'
+	'117':'self._context_menu()'
 	})
 CLICK_ACTIONS = dict({
 	'668':'self.client.play()',
@@ -48,8 +48,8 @@ CLICK_ACTIONS = dict({
 	'1102':'self._save_queue_as()',
 	'1401':'self._playlist_contextmenu()',
 	'1101':'self._playlist_on_click()',
-	'1301':'self._update_artist_browser(self.getControl(1301).getSelectedItem())',
-	'1201':'self._update_file_browser(self.getControl(1201).getSelectedItem())'
+	'1301':'self._update_artist_browser(artist_item=self.getControl(1301).getSelectedItem())',
+	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())'
 	})
 # control IDs
 STATUS = 100
@@ -92,6 +92,10 @@ STR_LOAD_REPLACE=Addon.getLocalizedString(30025)
 STR_RENAME=Addon.getLocalizedString(30026)
 STR_Q__PLAYLIST_EXISTS=Addon.getLocalizedString(30027)
 STR_Q_OVERWRITE=Addon.getLocalizedString(30028)
+STR_UPDATE_LIBRARY=Addon.getLocalizedString(30029)
+STR_QUEUE_ADD=Addon.getLocalizedString(30030)
+STR_QUEUE_REPLACE=Addon.getLocalizedString(30031)
+STR_UPDATING_LIBRARY=Addon.getLocalizedString(30032)
 STR_SAVE_AS=Addon.getLocalizedString(205)  
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -133,7 +137,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self._update_artist_browser()
 		p.close()
 
-	def _update_artist_browser(self,artist_item=None):		
+	def _update_artist_browser(self,artist_item=None,client=None):		
+		if client == None:
+			client = self.client
 		if artist_item==None:
 			self.getControl(ARTIST_BROWSER).reset()
 			artists = self.client.list('artist')
@@ -192,14 +198,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
 			
-	def _update_file_browser(self,browser_item=None):
-		
+	def _update_file_browser(self,browser_item=None,client=None):
+		if client==None:
+			client = self.client
 		self.getControl(FILE_BROWSER).reset()
 		if browser_item == None:
-			dirs = self.client.lsinfo()
+			dirs = client.lsinfo()
 		else:
 			uri = browser_item.getProperty('directory')
-			dirs = self.client.lsinfo(uri)
+			dirs = client.lsinfo(uri)
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory',os.path.dirname(uri))
 			listitem.setIconImage('DefaultFolderBack.png')
@@ -248,6 +255,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.toggleVisible( SHUFFLE_OFF, SHUFFLE_ON )					
 			if change == 'stored_playlist':
 				self._update_playlist_browser(poller_client.listplaylists())
+			if change == 'database':
+				self._update_file_browser(client=poller_client)
+				self._update_artist_browser(client=poller_client)
 			if change == 'playlist':
 					playlist = poller_client.playlistinfo()
 					current = poller_client.currentsong()					
@@ -298,7 +308,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				item.setIconImage(state+'-item.png')
 				playlist.selectItem(int(item.getProperty('index')))		
 	
-	def queue_item(self):
+	def _queue_item(self):
 		if self.getFocusId() == FILE_BROWSER:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
@@ -324,18 +334,38 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.client.command_list_end()
 					self.getControl( STATUS ).setLabel(status)					
 
-	def context_menu(self):
+	def _context_menu(self):
 		if self.getFocusId() == CURRENT_PLAYLIST:
 			dialog = xbmcgui.Dialog()
-			ret = dialog.select('choose action',['Clear playlist','Play/Pause','Refresh library'])			
+			ret = dialog.select('choose action',['Clear playlist','Play/Pause','Refresh library'])
+		if self.getFocusId() == FILE_BROWSER:
+			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_UPDATE_LIBRARY])
+			if ret ==0:
+				self._queue_item()
+			if ret == 1:
+				self.client.command_list_ok_begin()
+				self.client.stop()
+				self.client.clear()		
+				self._queue_item()
+				self.client.command_list_end()				
+			if ret == 2:
+				item = self.getControl(FILE_BROWSER).getSelectedItem()
+				uri = item.getProperty(item.getProperty('type'))
+				print 'URI '+uri
+				if uri =='':
+					self.client.update()
+				else:
+					self.client.update(uri)
+				self.getControl( STATUS ).setLabel(STR_UPDATING_LIBRARY+ ' ('+uri+')')
+						
 	def exit(self):
 		self.disconnect()
 		self.close()
-	def action_back(self):
+	def _action_back(self):
 		if self.getFocusId() == FILE_BROWSER:
-			self._update_file_browser(self.getControl(FILE_BROWSER).getListItem(0).getProperty('directory'))
+			self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0))
 		if self.getFocusId() == ARTIST_BROWSER:
-			self._update_artist_browser(self.getControl(ARTIST_BROWSER).getListItem(0))
+			self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0))
 
 	def onAction(self, action):
 		if str(action.getId()) in ACTIONS:
