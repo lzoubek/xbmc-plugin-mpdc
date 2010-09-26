@@ -144,8 +144,8 @@
 
             
 	<control type="button" id="666">
-		<posx>120</posx>
-		<posy>15</posy>
+		<posx>20</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -157,8 +157,8 @@
 	</control>
 
 	<control type="button" id="667">
-		<posx>170</posx>
-		<posy>15</posy>
+		<posx>70</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -170,8 +170,8 @@
 	</control>
 	
 	<control type="button" id="668">
-		<posx>220</posx>
-		<posy>15</posy>
+		<posx>120</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -182,8 +182,8 @@
 		<ondown>120</ondown>
 	</control>
 	<control type="button" id="670">
-		<posx>220</posx>
-		<posy>15</posy>
+		<posx>120</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -195,8 +195,8 @@
 	</control>
 
 	<control type="button" id="669">
-		<posx>270</posx>
-		<posy>15</posy>
+		<posx>170</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -207,8 +207,8 @@
 	</control>
 
 	<control type="button" id="700">
-		<posx>400</posx>
-		<posy>15</posy>
+		<posx>300</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -218,8 +218,8 @@
 	</control>
 
 	<control type="button" id="701">
-		<posx>400</posx>
-		<posy>15</posy>
+		<posx>300</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -229,8 +229,8 @@
 	</control>
 
 <control type="button" id="702">
-		<posx>450</posx>
-		<posy>15</posy>
+		<posx>350</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
@@ -240,8 +240,8 @@
 	</control>
 
 	<control type="button" id="703">
-		<posx>450</posx>
-		<posy>15</posy>
+		<posx>250</posx>
+		<posy>20</posy>
 		<width>48</width>
 		<height>48</height>
 		<visible>true</visible>
