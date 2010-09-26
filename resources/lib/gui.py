@@ -234,11 +234,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				current = poller_client.currentsong()
 				if state['state'] =='play':					
 					self.toggleVisible( PLAY, PAUSE )
-					self.getControl( STATUS ).setLabel(STR_PLAYING + ' : ' + self.currentSong(current))
+					self.getControl( STATUS ).setLabel(STR_PLAYING + ' : ' + self._current_song(current))
 					self.update_playlist('play',current)
 				elif state['state'] == 'pause':
 					self.toggleVisible( PAUSE, PLAY )
-					self.getControl( STATUS ).setLabel(STR_PAUSED + ' : ' + self.currentSong(current))
+					self.getControl( STATUS ).setLabel(STR_PAUSED + ' : ' + self._current_song(current))
 					self.update_playlist('pause',current)
 				elif state['state'] == 'stop':
 					self.getControl( STATUS ).setLabel(STR_STOPPED)
@@ -291,11 +291,16 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if not field in obj:
 				obj[field]=''
 
-	def currentSong(self,current) :
+	def _current_song(self,current) :
 		self.update_fields(current,['artist','album','title'])
-		if current['title'] == '' and current['artist'] == '' and current['album'] == '':
-			return current['file']
-		return current['artist'] + ' - ' + current['album'] + ' - ' + current['title'] 
+		try:
+			if current['title'] == '' and current['artist'] == '' and current['album'] == '':
+				ret = current['file']
+			else:
+				ret = current['artist'] + ' - ' + current['album'] + ' - ' + current['title']
+			return ret.decode('utf-8') 
+		except:
+			return 'Error encoding current song'
 
 	def update_playlist(self,state,current) :
 		self.update_fields(current,['id'])		
