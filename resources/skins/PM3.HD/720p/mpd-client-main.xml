@@ -295,7 +295,7 @@
 			<ondown>1101</ondown>
 			<onright>1102</onright>
 			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>		
+			<texturefocus>button-focus2.png</texturefocus>		
 		</control>
         <control type="button" id="1102">
 			<posx>670</posx>
@@ -308,7 +308,7 @@
 			<ondown>1101</ondown>
 			<onleft>1103</onleft>
 			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>		
+			<texturefocus>button-focus2.png</texturefocus>		
 		</control>
       
 		  <control type="list" id="1101">

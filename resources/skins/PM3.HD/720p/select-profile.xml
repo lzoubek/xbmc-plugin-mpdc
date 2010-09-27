@@ -142,7 +142,7 @@
 			<label>SCRIPT112</label>
 			<onup>120</onup>
 			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>		
+			<texturefocus>button-focus2.png</texturefocus>		
 		</control>
 	
       <control type="group">
