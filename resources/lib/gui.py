@@ -103,6 +103,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.client = pmpd.PMPDClient()
 		self.client.register_callback(self._handle_changes)
 		self.profile_id=args[3]
+		self.skin=args[2]
 		self.profile_name=Addon.getSetting(self.profile_id+'_name')
 		self.mpd_host = Addon.getSetting(self.profile_id+'_mpd_host')
 		self.mpd_port = Addon.getSetting(self.profile_id+'_mpd_port')		
@@ -348,9 +349,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.getControl( STATUS ).setLabel(status)					
 
 	def _context_menu(self):
-		if self.getFocusId() == CURRENT_PLAYLIST:
-			dialog = xbmcgui.Dialog()
-			ret = dialog.select('choose action',['Clear playlist','Play/Pause','Refresh library'])
 		if self.getFocusId() == FILE_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_UPDATE_LIBRARY])
 			if ret ==0:
@@ -424,7 +422,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.rm(playlist)
 			
 	def dialog(self,title,list):
-		d = dialog.Dialog('menu-dialog.xml',os.getcwd(),'Confluence','0')
+		d = dialog.Dialog('menu-dialog.xml',os.getcwd(),self.skin,'0')
 		d.list=list
 		d.title = title
 		d.doModal()
