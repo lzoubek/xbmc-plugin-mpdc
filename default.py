@@ -47,6 +47,7 @@ class MpdProfile:
 		self.name = Addon.getSetting(self.id+'_name')
 		self.host = Addon.getSetting(self.id+'_mpd_host')	
 		self.port = Addon.getSetting(self.id+'_mpd_port')
+		self.stream_url = Addon.getSetting(self.id+'_stream_url')
 		self.status = STR_HOST_OFFLINE
 		self.stat=STATUS_OFF
 
@@ -54,6 +55,7 @@ class MpdProfile:
 		self.name = Addon.getSetting(self.id+'_name')
 		self.host = Addon.getSetting(self.id+'_mpd_host')	
 		self.port = Addon.getSetting(self.id+'_mpd_port')
+		self.stream_url = Addon.getSetting(self.id+'_stream_url')
 		self.status = STR_HOST_OFFLINE
 		self.stat=STATUS_OFF
 		try:

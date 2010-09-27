@@ -106,7 +106,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.skin=args[2]
 		self.profile_name=Addon.getSetting(self.profile_id+'_name')
 		self.mpd_host = Addon.getSetting(self.profile_id+'_mpd_host')
-		self.mpd_port = Addon.getSetting(self.profile_id+'_mpd_port')		
+		self.mpd_port = Addon.getSetting(self.profile_id+'_mpd_port')
+		self.stream_url = Addon.getSetting(self.profile_id+'_stream_url')
+		self.is_play_stream = False
+		if Addon.getSetting('play-stream') == 'true':
+			self.is_play_stream = True
 		
 	def onFocus (self,controlId ):
 		self.controlId=controlId
@@ -320,7 +324,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			item.setIconImage('')
 			if item.getProperty('id') == itemid:
 				item.setIconImage(state+'-item.png')
-				playlist.selectItem(int(item.getProperty('index')))		
+				playlist.selectItem(int(item.getProperty('index')))
+		if state == 'play':
+			self._play_stream()	
 	
 	def _queue_item(self):
 		if self.getFocusId() == FILE_BROWSER:
@@ -384,6 +390,18 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 #			print 'action: '+command
 			exec(command)			
 			
+	def _play_stream(self):
+		if self.is_play_stream and not self.stream_url=='':
+			player = xbmc.Player(xbmc.PLAYER_CORE_MPLAYER)
+			if player.isPlayingVideo():
+				return
+			if player.isPlayingAudio():
+				if not player.getPlayingFile() == self.stream_url:
+					player.play(self.stream_url)
+			else:
+				player.play(self.stream_url)
+				
+	
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
 		p.create(STR_DISCONNECTING_TITLE)
