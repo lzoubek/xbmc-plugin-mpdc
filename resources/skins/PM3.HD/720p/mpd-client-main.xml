@@ -146,7 +146,7 @@
 			<texturefocus>PlayerControls-PrevFO.png</texturefocus>
 			<onright>667</onright>
 			<onleft>1000</onleft>
-			<ondown>120</ondown>
+			<ondown>1000</ondown>
 		</control>
 
 		<control type="button" id="667">
@@ -159,7 +159,7 @@
 			<texturefocus>PlayerControls-StopFO.png</texturefocus>
 			<onleft>666</onleft>
 			<onright>668</onright>
-			<ondown>120</ondown>
+			<ondown>1000</ondown>
 		</control>
 		
 		<control type="button" id="668">
@@ -172,7 +172,7 @@
 			<texturefocus>PlayerControls-PlayFO.png</texturefocus>
 			<onleft>667</onleft>
 			<onright>669</onright>
-			<ondown>120</ondown>
+			<ondown>1000</ondown>
 		</control>
 		<control type="button" id="670">
 			<posx>120</posx>
@@ -184,7 +184,7 @@
 			<texturefocus>PlayerControls-PauseFO.png</texturefocus>
 			<onleft>667</onleft>
 			<onright>669</onright>
-			<ondown>120</ondown>
+			<ondown>1000</ondown>
 		</control>
 
 		<control type="button" id="669">
@@ -196,29 +196,8 @@
 			<texturenofocus>PlayerControls-NextNF.png</texturenofocus>
 			<texturefocus>PlayerControls-NextFO.png</texturefocus>
 			<onleft>668</onleft>
-			<ondown>120</ondown>
-		</control>
-
-		<control type="button" id="700">
-			<posx>300</posx>
-			<posy>20</posy>
-			<width>48</width>
-			<height>48</height>
-			<visible>true</visible>
-			<texturenofocus>PlayerControls-RepeatNF.png</texturenofocus>
-			<texturefocus>PlayerControls-RepeatFO.png</texturefocus>
-			<ondown>120</ondown>
-		</control>
-
-		<control type="button" id="701">
-			<posx>300</posx>
-			<posy>20</posy>
-			<width>48</width>
-			<height>48</height>
-			<visible>true</visible>
-			<texturenofocus>PlayerControls-RepeatAllNF.png</texturenofocus>
-			<texturefocus>PlayerControls-RepeatAllFO.png</texturefocus>
-			<ondown>120</ondown>
+			<onright>702</onright>
+			<ondown>1000</ondown>
 		</control>
 
 	<control type="button" id="702">
@@ -229,7 +208,8 @@
 			<visible>true</visible>
 			<texturenofocus>PlayerControls-RandomNF.png</texturenofocus>
 			<texturefocus>PlayerControls-RandomFO.png</texturefocus>
-			<ondown>120</ondown>
+			<onright>700</onright>
+			<ondown>1000</ondown>
 		</control>
 
 		<control type="button" id="703">
@@ -240,8 +220,35 @@
 			<visible>true</visible>
 			<texturenofocus>PlayerControls-RandomOnNF.png</texturenofocus>
 			<texturefocus>PlayerControls-RandomOnFO.png</texturefocus>
-			<ondown>120</ondown>
+			<onright>700</onright>
+			<ondown>1000</ondown>
 		</control>
+
+		<control type="button" id="700">
+			<posx>300</posx>
+			<posy>20</posy>
+			<width>48</width>
+			<height>48</height>
+			<visible>true</visible>
+			<texturenofocus>PlayerControls-RepeatNF.png</texturenofocus>
+			<texturefocus>PlayerControls-RepeatFO.png</texturefocus>
+			<onleft>702</onleft>
+			<ondown>1000</ondown>
+		</control>
+
+		<control type="button" id="701">
+			<posx>300</posx>
+			<posy>20</posy>
+			<width>48</width>
+			<height>48</height>
+			<visible>true</visible>
+			<texturenofocus>PlayerControls-RepeatAllNF.png</texturenofocus>
+			<texturefocus>PlayerControls-RepeatAllFO.png</texturefocus>
+			<onleft>702</onleft>
+			<ondown>1000</ondown>
+		</control>
+
+
     </control>
     <control type="group">
       <posx>260</posx>
