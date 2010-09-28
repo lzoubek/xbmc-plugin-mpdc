@@ -65,6 +65,7 @@
 			<height>500</height>
 			<viewtype>list</viewtype>
 			<onright>666</onright>
+			<onup>666</onup>
 			<scrolltime>200</scrolltime>			
 				<content>
 				  <item id="1001">
@@ -210,6 +211,7 @@
 			<texturefocus>PlayerControls-RandomFO.png</texturefocus>
 			<onright>700</onright>
 			<ondown>1000</ondown>
+			<onleft>669</onleft>
 		</control>
 
 		<control type="button" id="703">
@@ -222,6 +224,7 @@
 			<texturefocus>PlayerControls-RandomOnFO.png</texturefocus>
 			<onright>700</onright>
 			<ondown>1000</ondown>
+			<onleft>669</onleft>
 		</control>
 
 		<control type="button" id="700">
