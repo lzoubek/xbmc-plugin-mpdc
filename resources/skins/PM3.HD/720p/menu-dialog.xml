@@ -39,7 +39,6 @@
         <posy>10</posy>
         <width>380</width>
         <height>80</height>
-        <font>font18</font>
         <textcolor>white</textcolor>
         <aligny>center</aligny>
         <align>center</align>
@@ -72,7 +71,6 @@
             <posy>0</posy>
             <width>300</width>
             <height>38</height>
-            <font>font18</font>
             <aligny>center</aligny>
             <align>center</align>
             <textcolor>white</textcolor>
@@ -95,7 +93,6 @@
             <posy>0</posy>
             <width>300</width>
             <height>38</height>
-            <font>font18</font>
             <aligny>center</aligny>
             <align>center</align>
             <textcolor>white</textcolor>

@@ -39,7 +39,6 @@
         <posy>10</posy>
         <width>380</width>
         <height>80</height>
-        <font>font18</font>
         <textcolor>white</textcolor>
         <aligny>center</aligny>
         <align>center</align>
@@ -72,7 +71,6 @@
             <posy>0</posy>
             <width>340</width>
             <height>38</height>
-            <font>font18</font>
             <aligny>center</aligny>
             <textcolor>white</textcolor>
             <selectedcolor>green</selectedcolor>
@@ -84,7 +82,6 @@
             <posy>0</posy>
             <width>130</width>
             <height>38</height>
-            <font>font18</font>
             <aligny>center</aligny>
             <textcolor>white</textcolor>
             <selectedcolor>green</selectedcolor>
@@ -110,7 +107,6 @@
             <posy>0</posy>
             <width>340</width>
             <height>38</height>
-            <font>font18</font>
             <aligny>center</aligny>
             <textcolor>white</textcolor>
             <selectedcolor>green</selectedcolor>
@@ -122,7 +118,6 @@
             <posy>0</posy>
             <width>130</width>
             <height>38</height>
-            <font>font18</font>
             <aligny>center</aligny>
             <textcolor>white</textcolor>
             <selectedcolor>green</selectedcolor>
