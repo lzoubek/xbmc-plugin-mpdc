@@ -40,7 +40,6 @@
 			<posy>110</posy>
 			<width>240</width>
 			<height>30</height>
-			<font>font18</font>
 			<align>right</align>
 			<textcolor>white</textcolor>       
 			<label></label>
@@ -258,7 +257,6 @@
         <posy>60</posy>
         <width>690</width>
         <height>40</height>
-        <font>font18</font>
         <textcolor>white</textcolor>
         <aligny>center</aligny>
         <align>center</align>
@@ -271,7 +269,6 @@
         <posy>660</posy>
         <width>970</width>
         <height>40</height>
-        <font>font18</font>
         <textcolor>white</textcolor>
         <aligny>center</aligny>
       </control>
@@ -362,7 +359,6 @@
 				<posy>0</posy>
 				<width>1000</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -375,7 +371,6 @@
 				<posy>0</posy>
 				<width>150</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -389,7 +384,6 @@
 				<posy>0</posy>
 				<width>180</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -402,7 +396,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -415,7 +408,6 @@
 				<posy>0</posy>
 				<width>80</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<align>right</align>
 				<textcolor>white</textcolor>
@@ -445,7 +437,6 @@
 				<posy>0</posy>
 				<width>1000</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -457,7 +448,6 @@
 				<posy>0</posy>
 				<width>150</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -470,7 +460,6 @@
 				<posy>0</posy>
 				<width>180</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -483,7 +472,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -495,7 +483,6 @@
 				<posy>0</posy>
 				<width>80</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<align>right</align>
 				<textcolor>white</textcolor>
@@ -566,7 +553,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -595,7 +581,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -662,7 +647,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -674,7 +658,6 @@
 				<posy>0</posy>
 				<width>80</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<align>right</align>
 				<textcolor>white</textcolor>
@@ -704,7 +687,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -716,7 +698,6 @@
 				<posy>0</posy>
 				<width>80</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<align>right</align>
 				<textcolor>white</textcolor>
@@ -786,7 +767,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
@@ -815,7 +795,6 @@
 				<posy>0</posy>
 				<width>600</width>
 				<height>38</height>
-				<font>font18</font>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
