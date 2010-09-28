@@ -27,7 +27,7 @@ __settings__ = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 __language__ = __settings__.getLocalizedString
 
 SERVER_LIST = 120
-ACTION_CLOSE = [6,10,216,247,257,275,61448,61467]
+ACTION_CLOSE = [10]
 STATUS = 100
 SETTINGS = 101
 sys.path.append( os.path.join ( os.getcwd(), 'resources','lib') )
@@ -103,7 +103,7 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		p.close()
 	    	
 	def onAction(self, action):
-		if action.getButtonCode() in ACTION_CLOSE:						
+		if action.getId() in ACTION_CLOSE:						
 			self.close()		
 	
 	def onClick( self, controlId ):
