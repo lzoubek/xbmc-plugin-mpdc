@@ -499,7 +499,7 @@
 				<posy>0</posy>
 					<control type="scrollbar" id="1104">
 					  <description>scroll bar indicator for lists</description>
-					  <posx>0</posx>
+					  <posx>6</posx>
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
@@ -588,7 +588,7 @@
 				<posy>0</posy>
 					<control type="scrollbar" id="1202">
 					  <description>scroll bar indicator for lists</description>
-					  <posx>0</posx>
+					  <posx>6</posx>
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
@@ -699,7 +699,7 @@
 				<posy>0</posy>
 					<control type="scrollbar" id="1302">
 					  <description>scroll bar indicator for lists</description>
-					  <posx>0</posx>
+					  <posx>6</posx>
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
@@ -788,7 +788,7 @@
 				<posy>0</posy>
 					<control type="scrollbar" id="1402">
 					  <description>scroll bar indicator for lists</description>
-					  <posx>0</posx>
+					  <posx>6</posx>
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
