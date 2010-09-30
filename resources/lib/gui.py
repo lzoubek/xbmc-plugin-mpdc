@@ -134,15 +134,22 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			p.close()
 			return
 		print 'Connected'
-		self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
-		p.update(25,STR_GETTING_QUEUE)
-		self._handle_changes(self.client,['playlist','player','options'])
-		p.update(50,STR_GETTING_PLAYLISTS)
-		self._update_file_browser()
-		self._update_playlist_browser(self.client.listplaylists())
-		p.update(75,STR_GETTING_ARTISTS)
-		self._update_artist_browser()
-		p.close()		
+		print self.client.commands()
+		try:
+			self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
+			p.update(25,STR_GETTING_QUEUE)
+			self._handle_changes(self.client,['playlist','player','options'])
+			p.update(50,STR_GETTING_PLAYLISTS)
+			self._update_file_browser()
+			self._update_playlist_browser(self.client.listplaylists())
+			p.update(75,STR_GETTING_ARTISTS)
+			self._update_artist_browser()
+			p.close()
+		except:
+			p.close()
+			traceback.print_exc()
+			xbmcgui.Dialog().ok('MPD','An error occured, see log')
+			self.exit()		
 
 	def _update_artist_browser(self,artist_item=None,client=None):		
 		if client == None:
@@ -366,11 +373,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret ==0:
 				self._queue_item()
 			if ret == 1:
-				self.client.command_list_ok_begin()
 				self.client.stop()
 				self.client.clear()		
-				self._queue_item()
-				self.client.command_list_end()				
+				self._queue_item()			
 			if ret == 2:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
@@ -390,11 +395,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if self.getFocusId() == ARTIST_BROWSER:
 			self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0))
 
-	def onAction(self, action):
-		if str(action.getId()) in ACTIONS:
-			command = ACTIONS[str(action.getId())]
-#			print 'action: '+command
-			exec(command)			
+		
 			
 	def _play_stream(self):
 		if self.is_play_stream and not self.stream_url=='':
@@ -421,11 +422,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if ret == 0:
 			self.client.load(playlist)
 		elif ret == 1:
-			self.client.command_list_ok_begin()
 			self.client.stop()
 			self.client.clear()		
 			self.client.load(playlist)
-			self.client.command_list_end()
+
 		elif ret == 2:
 				kb = xbmc.Keyboard(playlist,STR_RENAME,False)
 				kb.doModal()
@@ -436,10 +436,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						dialog = xbmcgui.Dialog()
 						ret = dialog.yesno(STR_Q__PLAYLIST_EXISTS, STR_Q_OVERWRITE)
 						if ret:
-							self.client.command_list_ok_begin()
 							self.client.rm(kb.getText())
 							self.client.rename(playlist,kb.getText())
-							self.client.command_list_end()
 							self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)					
 						
 		elif ret == 3:
@@ -472,10 +470,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				dialog = xbmcgui.Dialog()
 				ret = dialog.yesno(STR_Q__PLAYLIST_EXISTS, STR_Q_OVERWRITE)
 				if ret:
-					self.client.command_list_ok_begin()
 					self.client.rm(kb.getText())
 					self.client.save(kb.getText())
-					self.client.command_list_end()
 					self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
 			else:	
 				self.client.save(kb.getText())
@@ -494,12 +490,27 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.play()
 		else:	
 			self.client.seekid(seekid,0)					
+			
+	def onAction(self, action):
+		if str(action.getId()) in ACTIONS:
+			command = ACTIONS[str(action.getId())]
+#			print 'action: '+command
+			self._exec_command(command)
+	
+
 	def onClick( self, controlId ):
+		if str(controlId) in CLICK_ACTIONS:
+			command = CLICK_ACTIONS[str(controlId)]
+#			print 'click action: '+command
+			self._exec_command(command)
+
+	def _exec_command(self,command):
 		try:
-			if str(controlId) in CLICK_ACTIONS:
-				command = CLICK_ACTIONS[str(controlId)]
-#				print 'click action: '+command
-				exec(command)
+			exec(command)
+		except mpd.CommandError:
+			traceback.print_exc()
+			formatted_lines = traceback.format_exc().splitlines()
+			xbmcgui.Dialog().ok('MPD','Error : '+formatted_lines[-1])
 		except mpd.ProtocolError:
 			traceback.print_exc()
 			self.disconnect()
@@ -508,4 +519,3 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			traceback.print_exc()
 			self.disconnect()
 			self.getControl( STATUS ).setLabel(STR_NOT_CONNECTED)
-
