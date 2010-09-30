@@ -106,10 +106,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.client.register_callback(self._handle_changes)
 		self.profile_id=args[3]
 		self.skin=args[2]
-		self.profile_name=Addon.getSetting(self.profile_id+'_name')
-		self.mpd_host = Addon.getSetting(self.profile_id+'_mpd_host')
-		self.mpd_port = Addon.getSetting(self.profile_id+'_mpd_port')
-		self.stream_url = Addon.getSetting(self.profile_id+'_stream_url')
+		self.addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
+		self.profile_name= self.addon.getSetting(self.profile_id+'_name')
+		self.mpd_host = self.addon.getSetting(self.profile_id+'_mpd_host')
+		self.mpd_port = self.addon.getSetting(self.profile_id+'_mpd_port')
+		self.stream_url = self.addon.getSetting(self.profile_id+'_stream_url')
+		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
+		if self.mpd_pass == '':
+			self.mpd_pass = None
 		self.is_play_stream = False
 		if Addon.getSetting('play-stream') == 'true':
 			self.is_play_stream = True
@@ -127,14 +131,20 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		p.update(0)
 		try:				
 			print 'Connecting  to  MPD ' + self.mpd_host + ':'+self.mpd_port 
-			self.client.connect(self.mpd_host,int(self.mpd_port))
+			self.client.connect(self.mpd_host,int(self.mpd_port),self.mpd_pass)
+		except mpd.CommandError:
+			traceback.print_exc()
+			formatted_lines = traceback.format_exc().splitlines()
+			xbmcgui.Dialog().ok(STR_NOT_CONNECTED,formatted_lines[-1])
+			self.exit()
+			return
 		except:
 			self.getControl ( STATUS ).setLabel(STR_NOT_CONNECTED)
+			traceback.print_exc()
 			print 'Cannot connect'
 			p.close()
 			return
 		print 'Connected'
-		print self.client.commands()
 		try:
 			self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
 			p.update(25,STR_GETTING_QUEUE)
@@ -438,7 +448,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						if ret:
 							self.client.rm(kb.getText())
 							self.client.rename(playlist,kb.getText())
-							self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)					
+							self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
+					else:
+						self.client.rename(playlist,kb.getText())
+						self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)					
 						
 		elif ret == 3:
 			self.client.rm(playlist)
@@ -510,7 +523,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		except mpd.CommandError:
 			traceback.print_exc()
 			formatted_lines = traceback.format_exc().splitlines()
-			xbmcgui.Dialog().ok('MPD','Error : '+formatted_lines[-1])
+			xbmcgui.Dialog().ok('MPD',formatted_lines[-1])
 		except mpd.ProtocolError:
 			traceback.print_exc()
 			self.disconnect()

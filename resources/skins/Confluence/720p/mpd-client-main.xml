@@ -65,6 +65,7 @@
 			<viewtype>list</viewtype>
 			<onright>666</onright>
 			<onup>666</onup>
+			<ondown>1000</ondown>
 			<scrolltime>200</scrolltime>			
 				<content>
 				  <item id="1001">
