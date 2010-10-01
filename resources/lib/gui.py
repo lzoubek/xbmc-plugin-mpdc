@@ -115,7 +115,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
-		if Addon.getSetting('play-stream') == 'true':
+		if Addon.getSetting(self.profile_id+'_play_stream') == 'true':
 			self.is_play_stream = True
 		
 	def onFocus (self,controlId ):
