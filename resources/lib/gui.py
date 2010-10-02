@@ -112,6 +112,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.mpd_port = self.addon.getSetting(self.profile_id+'_mpd_port')
 		self.stream_url = self.addon.getSetting(self.profile_id+'_stream_url')
 		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
+		self.fb_indexes = []
+		self.ab_indexes = []
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
@@ -161,7 +163,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			xbmcgui.Dialog().ok('MPD','An error occured, see log')
 			self.exit()		
 
-	def _update_artist_browser(self,artist_item=None,client=None):		
+	def _update_artist_browser(self,artist_item=None,client=None,back=False):		
+		select_index=0
+		index = self.getControl(ARTIST_BROWSER).getSelectedPosition()
 		if client == None:
 			client = self.client
 		if artist_item==None:
@@ -179,41 +183,51 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem.setProperty('type','artist')
 					listitem.setIconImage('DefaultMusicArtists.png')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
+			if back:
+					if not self.ab_indexes == []:
+						select_index = self.ab_indexes.pop()
+			self.getControl(ARTIST_BROWSER).selectItem(select_index)
 		else:
 			typ = artist_item.getProperty('type')
 			if typ =='file':
 				return
 			if typ == '':
-				return self._update_artist_browser()
-			elif typ == 'artist':
+				return self._update_artist_browser(back=True)
+			else:
+				if index == 0 or back:
+					if not self.ab_indexes == []:
+						select_index = self.ab_indexes.pop()
+				else:
+					self.ab_indexes.append(index)
 				self.getControl(ARTIST_BROWSER).reset()
-				listitem = xbmcgui.ListItem(label='..')
-				listitem.setIconImage('DefaultFolderBack.png')
-				listitem.setProperty('type','')
-				self.getControl(ARTIST_BROWSER).addItem(listitem)
-				for item in self.client.list('album',artist_item.getProperty('artist')):
-					listitem = xbmcgui.ListItem(label=item)
-					listitem.setProperty('artist',artist_item.getProperty('artist'))
-					listitem.setProperty('type','album')
-					listitem.setProperty('album',item)
-					listitem.setIconImage('DefaultMusicAlbums.png')
+				if typ == 'artist':					
+					listitem = xbmcgui.ListItem(label='..')
+					listitem.setIconImage('DefaultFolderBack.png')
+					listitem.setProperty('type','')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
-			elif typ == 'album':
-				self.getControl(ARTIST_BROWSER).reset()
-				listitem = xbmcgui.ListItem(label='..')
-				listitem.setProperty('type','artist')
-				listitem.setIconImage('DefaultFolderBack.png')
-				listitem.setProperty('artist',artist_item.getProperty('artist'))
-				self.getControl(ARTIST_BROWSER).addItem(listitem)
-				for item in self.client.search('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
-					listitem = xbmcgui.ListItem(label=item['title'])
+					for item in self.client.list('album',artist_item.getProperty('artist')):
+						listitem = xbmcgui.ListItem(label=item)
+						listitem.setProperty('artist',artist_item.getProperty('artist'))
+						listitem.setProperty('type','album')
+						listitem.setProperty('album',item)
+						listitem.setIconImage('DefaultMusicAlbums.png')
+						self.getControl(ARTIST_BROWSER).addItem(listitem)
+				elif typ == 'album':
+					listitem = xbmcgui.ListItem(label='..')
+					listitem.setProperty('type','artist')
+					listitem.setIconImage('DefaultFolderBack.png')
 					listitem.setProperty('artist',artist_item.getProperty('artist'))
-					listitem.setProperty('type','file')
-					listitem.setProperty('file',item['file'])
-					listitem.setProperty('album',artist_item.getProperty('album'))
-					listitem.setProperty( 'time', self._format_time(item['time']) )
-					listitem.setIconImage('DefaultAudio.png')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
+					for item in self.client.search('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
+						listitem = xbmcgui.ListItem(label=item['title'])
+						listitem.setProperty('artist',artist_item.getProperty('artist'))
+						listitem.setProperty('type','file')
+						listitem.setProperty('file',item['file'])
+						listitem.setProperty('album',artist_item.getProperty('album'))
+						listitem.setProperty( 'time', self._format_time(item['time']) )
+						listitem.setIconImage('DefaultAudio.png')
+						self.getControl(ARTIST_BROWSER).addItem(listitem)
+			self.getControl(ARTIST_BROWSER).selectItem(select_index)
 
 	def _update_playlist_browser(self,playlists):
 		self.getControl(PLAYLIST_BROWSER).reset()
@@ -222,17 +236,27 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
 			
-	def _update_file_browser(self,browser_item=None,client=None):
+	def _update_file_browser(self,browser_item=None,client=None,back=False):
+		select_index = 0		
+		index = self.getControl(FILE_BROWSER).getSelectedPosition()
 		if client==None:
-			client = self.client
-		self.getControl(FILE_BROWSER).reset()
+			client = self.client				
 		if browser_item == None:
+			self.getControl(FILE_BROWSER).reset()
 			dirs = client.lsinfo()
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory','')
 			listitem.setIconImage('DefaultFolderBack.png')
 			self.getControl(FILE_BROWSER).addItem(listitem)
+		elif browser_item.getProperty('type') == 'file':
+			return
 		else:
+			if index == 0 or back:
+				if not self.fb_indexes == []:
+					select_index = self.fb_indexes.pop()			
+			else:
+				self.fb_indexes.append(index)
+			self.getControl(FILE_BROWSER).reset()
 			uri = browser_item.getProperty('directory')
 			dirs = client.lsinfo(uri)
 			listitem = xbmcgui.ListItem( label='..')
@@ -253,6 +277,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				listitem.setProperty('file',item['file'])				
 				listitem.setIconImage('DefaultAudio.png')
 				self.getControl(FILE_BROWSER).addItem(listitem)
+		self.getControl(FILE_BROWSER).selectItem(select_index)
 			
 	def _handle_changes(self,poller_client,changes):
 		state = poller_client.status()
@@ -401,9 +426,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.close()
 	def _action_back(self):
 		if self.getFocusId() == FILE_BROWSER:
-			self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0))
+			self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0),back=True)
 		if self.getFocusId() == ARTIST_BROWSER:
-			self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0))
+			self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0),back=True)
 
 		
 			
