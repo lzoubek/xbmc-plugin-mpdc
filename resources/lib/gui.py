@@ -338,6 +338,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 							listitem.setIconImage(state['state']+'-item.png')						
 						self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
 						index  = index + 1
+					if current_id == '' and self.getControl(CURRENT_PLAYLIST).size() > 0:
+						item = self.getControl(CURRENT_PLAYLIST).getListItem(0)
+						item.setIconImage(state['state']+'-item.png')
 #		print 'Changes handled'
 
 	def _format_time(self,time):
@@ -374,6 +377,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if item.getProperty('id') == itemid:
 				item.setIconImage(state+'-item.png')
 				playlist.selectItem(int(item.getProperty('index')))
+		if itemid == '' and self.getControl(CURRENT_PLAYLIST).size() > 0:
+			item = self.getControl(CURRENT_PLAYLIST).getListItem(0)
+			item.setIconImage(state+'-item.png')
 		if state == 'play':
 			self._play_stream()	
 	
@@ -499,6 +505,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		return d.result
 	
 	def _clear_queue(self):
+		self.client.try_command('clear')
 		self.client.stop()
 		self.client.clear()
 
