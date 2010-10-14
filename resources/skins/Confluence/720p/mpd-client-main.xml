@@ -356,7 +356,7 @@
 			<width>970</width>
 			<height>530</height>
 			<onleft>1000</onleft>
-			<onright>120</onright>
+			<onright>1104</onright>
 			<onup>1103</onup>
 			<ondown>110</ondown>
 			<viewtype label="535">list</viewtype>
@@ -527,6 +527,7 @@
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
+					  <onleft>1101</onleft>
 					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
 					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
 					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -555,6 +556,7 @@
 			<width>970</width>
 			<height>530</height>
 			<onleft>1000</onleft>
+			<onright>1202</onright>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1202</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -623,6 +625,7 @@
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
+					  <onleft>1201</onleft>
 					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
 					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
 					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -649,6 +652,7 @@
 			<width>970</width>
 			<height>530</height>
 			<onleft>1000</onleft>
+			<onright>1302</onright>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1302</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -741,6 +745,7 @@
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
+					  <onleft>1301</onleft>
 					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
 					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
 					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
@@ -769,6 +774,7 @@
 			<width>970</width>
 			<height>530</height>
 			<onleft>1000</onleft>
+			<onright>1402</onright>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1402</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -837,6 +843,7 @@
 					  <posy>0</posy>
 					  <width>24</width>
 					  <height>530</height>
+					  <onleft>1401</onleft>
 					  <texturesliderbackground border="10,14,10,14">ScrollBarV.png</texturesliderbackground>
 					  <texturesliderbar  border="10,14,10,14">ScrollBarV_bar.png</texturesliderbar>
 					  <texturesliderbarfocus  border="10,14,10,14">ScrollBarV_bar_focus.png</texturesliderbarfocus>
