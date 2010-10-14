@@ -397,6 +397,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					found = self.client.find('artist',item.getProperty('artist'),'album',item.getProperty('album'))
 					status = item.getProperty('artist')+' - '+item.getProperty('album')+ ' '+STR_WAS_QUEUED
 				if not found == []:
+					self.client.try_command('add')
 					self.client.command_list_ok_begin()
 					for f_item in found:
 						self.client.add(f_item['file'])
@@ -404,9 +405,17 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.getControl( STATUS ).setLabel(status)					
 
 	def _context_menu(self):
+		if self.getFocusId() == ARTIST_BROWSER:
+			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE])
+			if ret == 0:
+				self._queue_item()
+			if ret == 1:
+				self.client.stop()
+				self.client.clear()
+				self._queue_item()
 		if self.getFocusId() == FILE_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_UPDATE_LIBRARY])
-			if ret ==0:
+			if ret == 0:
 				self._queue_item()
 			if ret == 1:
 				self.client.stop()
