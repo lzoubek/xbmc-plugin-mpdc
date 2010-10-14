@@ -28,6 +28,7 @@ ACTIONS = dict({
 	'9':'self._action_back()',
 	'10':'self.exit()',
 	'12':'self.client.pause()',
+	'13':'self.client.stop()',
 	'14':'self.client.next()',
 	'15':'self.client.previous()',
 	'34':'self._queue_item()',
