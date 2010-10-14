@@ -112,6 +112,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.mpd_host = self.addon.getSetting(self.profile_id+'_mpd_host')
 		self.mpd_port = self.addon.getSetting(self.profile_id+'_mpd_port')
 		self.stream_url = self.addon.getSetting(self.profile_id+'_stream_url')
+		if not self.stream_url == '' and not self.stream_url.startswith('http://'):
+			self.stream_url = 'http://'+self.stream_url
 		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
 		self.fb_indexes = []
 		self.ab_indexes = []
@@ -450,6 +452,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			
 	def _play_stream(self):
 		if self.is_play_stream and not self.stream_url=='':
+			print 'Playing '+self.stream_url
 			player = xbmc.Player(xbmc.PLAYER_CORE_MPLAYER)
 			if player.isPlayingVideo():
 				return
