@@ -12,25 +12,25 @@
       <posx>440</posx>
       <posy>200</posy>
       <control type="image">
-        <posx>-100</posx>
+        <posx>-48</posx>
         <posy>0</posy>
-        <width>100</width>
+        <width>48</width>
         <height>300</height>
-        <texture>DialogLeft.png</texture>
+        <texture>dialog-left.png</texture>
       </control>
       <control type="image">
         <posx>400</posx>
         <posy>0</posy>
-        <width>100</width>
+        <width>48</width>
         <height>300</height>
-        <texture>DialogRight.png</texture>
+        <texture>dialog-right.png</texture>
       </control>
       <control type="image">
         <posx>0</posx>
         <posy>0</posy>
         <width>400</width>
         <height>300</height>
-        <texture>DialogMiddle.png</texture>
+        <texture>dialog-middle.png</texture>
       </control>
 
       <control type="label" id="100">
