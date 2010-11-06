@@ -99,6 +99,9 @@ STR_UPDATE_LIBRARY=Addon.getLocalizedString(30029)
 STR_QUEUE_ADD=Addon.getLocalizedString(30030)
 STR_QUEUE_REPLACE=Addon.getLocalizedString(30031)
 STR_UPDATING_LIBRARY=Addon.getLocalizedString(30032)
+STR_REMOVE_FROM_QUEUE=Addon.getLocalizedString(30036)
+STR_SAVE_QUEUE_AS=Addon.getLocalizedString(30037)
+STR_CLEAR_QUEUE=Addon.getLocalizedString(30038)
 STR_SAVE_AS=Addon.getLocalizedString(205)  
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -165,6 +168,37 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			traceback.print_exc()
 			xbmcgui.Dialog().ok('MPD','An error occured, see log')
 			self.exit()		
+
+	def _update_current_queue(self,client=None):
+		state = client.status()
+		playlist = client.playlistinfo()
+		current = client.currentsong()
+		self.update_fields(current,['id'])
+		current_id = current['id']
+		index = self.getControl(CURRENT_PLAYLIST).getSelectedPosition()
+		if index < 0:
+			index = 0
+		self.getControl( CURRENT_PLAYLIST ).reset()
+		for item in playlist:
+			self.update_fields(item,['title','artist','album','time'])
+			listitem = xbmcgui.ListItem( label=item['title'])
+			listitem.setProperty( 'index', str(index))
+			listitem.setProperty( 'id', item['id'] )
+			listitem.setProperty( 'artist', item['artist'] )
+			listitem.setProperty( 'album', item['album'] )
+			if not item['time'] == '':
+				listitem.setProperty( 'time', self._format_time(item['time']) )
+			if item['title'] == '' and item['artist'] == '' and item['album'] == '':
+				listitem.setProperty( 'file' , item['file'] )
+			if item['id'] == current_id:
+				listitem.setIconImage(state['state']+'-item.png')
+			self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
+			if current_id == '' and self.getControl(CURRENT_PLAYLIST).size() > 0:
+				item = self.getControl(CURRENT_PLAYLIST).getListItem(0)
+				item.setIconImage(state['state']+'-item.png')
+		if self.getControl( CURRENT_PLAYLIST ).size() <= index:
+			index = self.getControl( CURRENT_PLAYLIST ).size()-1
+		self.getControl(CURRENT_PLAYLIST).selectItem(index)
 
 	def _update_artist_browser(self,artist_item=None,client=None,back=False):		
 		select_index=0
@@ -319,36 +353,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self._update_file_browser(client=poller_client)
 				self._update_artist_browser(client=poller_client)
 			if change == 'playlist':
-					playlist = poller_client.playlistinfo()
-					current = poller_client.currentsong()					
-					self.update_fields(current,['id'])
-					current_id = current['id']
-					self.getControl( CURRENT_PLAYLIST ).reset()					
-					index = 0
-					for item in playlist:
-						self.update_fields(item,['title','artist','album','time'])
-						listitem = xbmcgui.ListItem( label=item['title'])
-						listitem.setProperty( 'index', str(index))						
-						listitem.setProperty( 'id', item['id'] )						
-						listitem.setProperty( 'artist', item['artist'] )
-						listitem.setProperty( 'album', item['album'] )
-						if not item['time'] == '':
-							listitem.setProperty( 'time', self._format_time(item['time']) )
-						if item['title'] == '' and item['artist'] == '' and item['album'] == '':
-							listitem.setProperty( 'file' , item['file'] )
-						if item['id'] == current_id:
-							listitem.setIconImage(state['state']+'-item.png')						
-						self.getControl( CURRENT_PLAYLIST ).addItem( listitem )
-						index  = index + 1
-					if current_id == '' and self.getControl(CURRENT_PLAYLIST).size() > 0:
-						item = self.getControl(CURRENT_PLAYLIST).getListItem(0)
-						item.setIconImage(state['state']+'-item.png')
+				self._update_current_queue(client=poller_client)
 #		print 'Changes handled'
 
 	def _format_time(self,time):
 		return '%d:%02d' % ((int(time) / 60 ),(int(time) % 60))
 		
-
 	def toggleVisible(self,cFrom,cTo):
 		self.getControl( cFrom ).setVisible(False)
 		self.getControl( cTo ).setVisible(True)
@@ -413,6 +423,16 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.getControl( STATUS ).setLabel(status)					
 
 	def _context_menu(self):
+		if self.getFocusId() == CURRENT_PLAYLIST:
+			if self.getControl(CURRENT_PLAYLIST).size() < 1:
+				return
+			ret = self.dialog(STR_SELECT_ACTION,[STR_REMOVE_FROM_QUEUE,STR_SAVE_QUEUE_AS,STR_CLEAR_QUEUE])
+			if ret==0:
+				self.client.deleteid(self.getControl(CURRENT_PLAYLIST).getSelectedItem().getProperty('id'))
+			if ret==1:
+				self._save_queue_as()
+			if ret==2:
+				self._clear_queue()
 		if self.getFocusId() == ARTIST_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE])
 			if ret == 0:
