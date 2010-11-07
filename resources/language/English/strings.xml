@@ -46,6 +46,7 @@
     <!-- Do not translate - block start -->
     <string id="30039">Playing stream</string>
     <!-- Do not translate - block end -->
+    <string id="30040">Show song progress when playing</string>
     <string id="200">Queue</string>
     <string id="201">Files</string>
     <string id="202">Artists</string>
