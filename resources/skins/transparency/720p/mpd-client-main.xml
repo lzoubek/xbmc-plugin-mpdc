@@ -17,7 +17,7 @@
 			<posy>0</posy>
 			<width>1280</width>
 			<height>720</height>
-			<texture>background-music.jpg</texture>
+			<texture>fanart.jpg</texture>
 		</control>
 		<control type="image">
 			<posx>250</posx>
