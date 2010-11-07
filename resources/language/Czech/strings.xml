@@ -43,6 +43,9 @@
     <string id="30036">Odebrat z fronty</string>
     <string id="30037">Uložit frontu jako</string>
     <string id="30038">Vyprázdnit frontu</string>
+    <!-- Do not translate - block start -->
+    <string id="30039">Playing stream</string>
+    <!-- Do not translate - block end -->
     <string id="200">Fronta</string>
     <string id="201">Soubory</string>
     <string id="202">Autoři</string>

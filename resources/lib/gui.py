@@ -73,6 +73,7 @@ PLAYLIST_BROWSER=1401
 ARTIST_BROWSER=1301
 RB_CONSUME_MODE=704
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
+__scriptname__ = Addon.getAddonInfo('name')
 
 #String IDs
 STR_STOPPED=Addon.getLocalizedString(30003)
@@ -102,6 +103,7 @@ STR_UPDATING_LIBRARY=Addon.getLocalizedString(30032)
 STR_REMOVE_FROM_QUEUE=Addon.getLocalizedString(30036)
 STR_SAVE_QUEUE_AS=Addon.getLocalizedString(30037)
 STR_CLEAR_QUEUE=Addon.getLocalizedString(30038)
+STR_PLAYING_STREAM=Addon.getLocalizedString(30039)
 STR_SAVE_AS=Addon.getLocalizedString(205)  
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -478,10 +480,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				return
 			if player.isPlayingAudio():
 				if not player.getPlayingFile() == self.stream_url:
-					player.play(self.stream_url)
+					self._start_media_player()
 			else:
-				player.play(self.stream_url)
-				
+				self._start_media_player()
+
+	def _start_media_player(self):
+		icon =  os.path.join(os.getcwd(),'icon.png')
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,'icon.png'))
+		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
 	
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
