@@ -68,9 +68,11 @@ PROFILE=101
 PLAYLIST_BROWSER=1401
 ARTIST_BROWSER=1301
 RB_CONSUME_MODE=704
-SONG_PROGRESS=991
-SONG_PROGESS_GROUP=99
-SONG_PRORESS_TEXT=992
+SONG_INFO_PROGRESS=991
+SONG_INFO_GROUP=99
+SONG_INFO_TIME=992
+SONG_INFO_ATRIST=993
+SONG_INFO_ALBUM=994
 Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 __scriptname__ = Addon.getAddonInfo('name')
 
@@ -141,7 +143,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl( PROFILE ).setLabel(self.profile_name)					
 		self._connect()
 	def _connect(self):
-		self.getControl(SONG_PROGESS_GROUP).setVisible(False)
+		self.getControl(SONG_INFO_GROUP).setVisible(False)
 		p = xbmcgui.DialogProgress()
 		p.create(STR_CONNECTING_TITLE,STR_CONNECTING_TITLE+' '+self.mpd_host+':'+self.mpd_port)
 		p.update(0)
@@ -211,6 +213,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			index = self.getControl( CURRENT_PLAYLIST ).size()-1
 		self.getControl(CURRENT_PLAYLIST).selectItem(index)
 
+	def _update_song_info(self,current, status):
+		self.getControl(SONG_INFO_GROUP).setVisible(self.time_polling)	
+		self.update_fields(current,['artist','album','title','date'])
+		self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
+		self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date']+')')
+		
 	def _update_artist_browser(self,artist_item=None,client=None,back=False):		
 		select_index=0
 		index = self.getControl(ARTIST_BROWSER).getSelectedPosition()
@@ -331,30 +339,30 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if not status['state'] == 'stop' and self.time_polling:
 			time = status['time'].split(':')
 			percent = float(time[0]) / (float(time[1])/100 )
-			self.getControl(SONG_PROGRESS).setPercent(percent)
-			self.getControl(SONG_PRORESS_TEXT).setLabel(self._format_time(time[0])+' - '+self._format_time(time[1]))
+			self.getControl(SONG_INFO_PROGRESS).setPercent(percent)
+			self.getControl(SONG_INFO_TIME).setLabel(self._format_time(time[0])+' - '+self._format_time(time[1]))
 
 	def _handle_changes(self,poller_client,changes):
 		state = poller_client.status()
+#		print state
+#		print poller_client.playlistid(state['songid'])
 		print 'Handling changes - ' + str(changes)
 		for change in changes:
 			if change == 'player':
 				current = poller_client.currentsong()
+				self._update_song_info(current,state)
 				if state['state'] =='play':					
 					self.toggleVisible( PLAY, PAUSE )
 					self.getControl( STATUS ).setLabel(STR_PLAYING + ' : ' + self._current_song(current))
 					self.update_playlist('play',current)
-					self.getControl(SONG_PROGESS_GROUP).setVisible(self.time_polling)
 				elif state['state'] == 'pause':
 					self.toggleVisible( PAUSE, PLAY )
 					self.getControl( STATUS ).setLabel(STR_PAUSED + ' : ' + self._current_song(current))
 					self.update_playlist('pause',current)
-					self.getControl(SONG_PROGESS_GROUP).setVisible(self.time_polling)
 				elif state['state'] == 'stop':
 					self.getControl( STATUS ).setLabel(STR_STOPPED)
 					self.toggleVisible( PAUSE, PLAY )
 					self.update_playlist('stop',current)
-					self.getControl(SONG_PROGESS_GROUP).setVisible(False)
 			if change == 'options':
 				if state['repeat'] == '0':
 					self.toggleVisible( REPEAT_ON, REPEAT_OFF )
