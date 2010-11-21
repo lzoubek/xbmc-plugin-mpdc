@@ -148,7 +148,7 @@
 
     <control type="group">
       <posx>750</posx>
-      <posy>20</posy>
+      <posy>25</posy>
       <description>player control group</description>           
 		<control type="button" id="666">
 			<posx>0</posx>
@@ -210,6 +210,12 @@
 			<ondown>1000</ondown>
 			<onright>702</onright>
 		</control>
+		<control type="progress" id="671">
+			<posx>0</posx>
+			<posy>55</posy>
+			<height>16</height>
+			<width>200</width>
+		</control>		
     </control>
 	<control type="group">
       <posx>645</posx>

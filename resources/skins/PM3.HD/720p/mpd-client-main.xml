@@ -177,10 +177,10 @@
     </control>
     <control type="group">
 	  <posx>1000</posx>
-      <posy>10</posy>
+      <posy>25</posy>
       <description>player control group</description>
 		<control type="button" id="666">
-			<posx>20</posx>
+			<posx>0</posx>
 			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
@@ -193,7 +193,7 @@
 		</control>
 
 		<control type="button" id="667">
-			<posx>70</posx>
+			<posx>50</posx>
 			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
@@ -206,7 +206,7 @@
 		</control>
 		
 		<control type="button" id="668">
-			<posx>120</posx>
+			<posx>100</posx>
 			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
@@ -218,7 +218,7 @@
 			<ondown>1000</ondown>
 		</control>
 		<control type="button" id="670">
-			<posx>120</posx>
+			<posx>100</posx>
 			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
@@ -231,7 +231,7 @@
 		</control>
 
 		<control type="button" id="669">
-			<posx>170</posx>
+			<posx>150</posx>
 			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
@@ -242,6 +242,12 @@
 			<onright>702</onright>
 			<ondown>1000</ondown>
 		</control>
+		<control type="progress" id="671">
+			<posx>0</posx>
+			<posy>55</posy>
+			<height>10</height>
+			<width>200</width>
+		</control>			
 </control>		
 <control type="group">
       <posx>930</posx>
