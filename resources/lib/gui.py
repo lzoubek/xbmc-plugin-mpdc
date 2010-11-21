@@ -216,7 +216,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _update_song_info(self,current, status):
 		self.getControl(SONG_INFO_GROUP).setVisible(self.time_polling)	
 		self.update_fields(current,['artist','album','title','date'])
-		self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
+		if current['artist']=='' or current['title']=='':
+			self.getControl(SONG_INFO_ATRIST).setLabel(current['file'])
+		else:
+			self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
 		self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date']+')')
 		
 	def _update_artist_browser(self,artist_item=None,client=None,back=False):		
