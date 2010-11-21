@@ -52,8 +52,12 @@ class MpdProfile:
 		self.password = self.addon.getSetting(self.id+'_mpd_pass')
 		self.status = STR_HOST_OFFLINE
 		self.stat = STATUS_OFF
+		self.enabled=False
+		if self.addon.getSetting(self.id+'_enabled') == 'true':
+			self.enabled=True
 
 	def update(self):
+		self.addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
 		self.name = self.addon.getSetting(self.id+'_name')
 		self.host = self.addon.getSetting(self.id+'_mpd_host')	
 		self.port = self.addon.getSetting(self.id+'_mpd_port')
@@ -61,6 +65,11 @@ class MpdProfile:
 		self.password = self.addon.getSetting(self.id+'_mpd_pass')
 		self.status = STR_HOST_OFFLINE
 		self.stat=STATUS_OFF
+		self.enabled=False
+		if self.addon.getSetting(self.id+'_enabled') == 'true':
+			self.enabled=True
+		if not self.enabled:
+			return
 		try:
 			client = mpd.MPDClient()
 			client.connect(self.host,int(self.port))
@@ -97,11 +106,12 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 				break
 			percent = percent+33
 			p.update(percent)
-			listitem = xbmcgui.ListItem( label=item.name)						
-			listitem.setProperty( 'id', item.id )												
-			listitem.setProperty( 'status', item.status )
-			listitem.setProperty( 'stat', item.stat )						
-			self.getControl( SERVER_LIST ).addItem( listitem )
+			if item.enabled:
+				listitem = xbmcgui.ListItem( label=item.name)
+				listitem.setProperty( 'id', item.id )
+				listitem.setProperty( 'status', item.status )
+				listitem.setProperty( 'stat', item.stat )
+				self.getControl( SERVER_LIST ).addItem( listitem )
 		self.getControl( STATUS ).setLabel( STR_SELECT_PROFILE )
 		p.close()
 	    	

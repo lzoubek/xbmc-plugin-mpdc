@@ -43,6 +43,7 @@
     <string id="30036">Remove from queue</string>
     <string id="30037">Save queue as</string>
     <string id="30038">Clear queue</string>
+    <string id="30039">Enabled (show this profile in selection dialog)</string>
     <!-- Do not translate - block start -->
     <string id="30039">Playing stream</string>
     <!-- Do not translate - block end -->
