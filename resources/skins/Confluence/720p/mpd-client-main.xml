@@ -325,33 +325,6 @@
       <description>playlist group</description>
       <visible>Container(1000).HasFocus(1001)</visible>
       
-          <control type="button" id="1103">
-			<posx>600</posx>
-			<posy>-60</posy>
-			<width>160</width>
-			<height>48</height>
-			<align>center</align>
-			<visible>true</visible>
-			<label>SCRIPT204</label>
-			<ondown>1101</ondown>
-			<onright>1102</onright>
-			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>		
-		</control>
-        <control type="button" id="1102">
-			<posx>770</posx>
-			<posy>-60</posy>
-			<width>160</width>
-			<height>48</height>
-			<align>center</align>
-			<visible>true</visible>
-			<label>SCRIPT205</label>
-			<ondown>1101</ondown>
-			<onleft>1103</onleft>
-			<texturenofocus>button-nofocus.png</texturenofocus>
-			<texturefocus>button-focus.png</texturefocus>		
-		</control>
-      
 		  <control type="list" id="1101">
 			<posx>0</posx>
 			<posy>0</posy>

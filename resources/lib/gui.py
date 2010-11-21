@@ -46,8 +46,6 @@ CLICK_ACTIONS = dict({
 	'702':'self.client.random(1)',
 	'703':'self.client.random(0)',
 	'704':'self._consume_mode_toggle()',
-	'1103':'self._clear_queue()',
-	'1102':'self._save_queue_as()',
 	'1401':'self._playlist_contextmenu()',
 	'1101':'self._playlist_on_click()',
 	'1301':'self._update_artist_browser(artist_item=self.getControl(1301).getSelectedItem())',
@@ -67,8 +65,6 @@ SHUFFLE_ON = 703
 CURRENT_PLAYLIST = 1101
 FILE_BROWSER = 1201
 PROFILE=101
-CLEAR_QUEUE=1103
-SAVE_QUEUE_AS=1102
 PLAYLIST_BROWSER=1401
 ARTIST_BROWSER=1301
 RB_CONSUME_MODE=704
