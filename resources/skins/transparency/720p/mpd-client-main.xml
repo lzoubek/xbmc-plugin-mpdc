@@ -56,11 +56,31 @@
 	<control type="group" id="99">
 	<description>song progress info group</description>
 		<posx>260</posx>
-		<posy>60</posy>
+		<posy>15</posy>
+		<control type="label" id="993">
+			<description>song artist</description>
+			<posx>0</posx>
+			<posy>0</posy>
+			<width>600</width>
+			<height>30</height>
+			<align>left</align>
+			<textcolor>white</textcolor>
+			<label></label>
+		</control>
+		<control type="label" id="994">
+			<description>song album</description>
+			<posx>0</posx>
+			<posy>30</posy>
+			<width>620</width>
+			<height>30</height>
+			<align>left</align>
+			<textcolor>white</textcolor>
+			<label></label>
+		</control>			
 		<control type="label" id="992">
 			<description>textarea</description>
 			<posx>610</posx>
-			<posy>0</posy>
+			<posy>30</posy>
 			<width>220</width>
 			<height>30</height>
 			<align>right</align>
@@ -69,7 +89,7 @@
 		</control>
 		<control type="progress" id="991">
 			<posx>0</posx>
-			<posy>20</posy>
+			<posy>60</posy>
 			<width>620</width>
 		</control>
 	</control>
@@ -154,7 +174,7 @@
         </control>
     </control>
     <control type="group">
-	  <posx>120</posx>
+	  <posx>1000</posx>
       <posy>0</posy>
       <description>player control group</description>
 
@@ -221,10 +241,13 @@
 			<onright>702</onright>
 			<ondown>1000</ondown>
 		</control>
-
+</control>
+<control type="group">
+	  <posx>920</posx>
+      <posy>670</posy>
 	<control type="button" id="702">
-			<posx>250</posx>
-			<posy>20</posy>
+			<posx>0</posx>
+			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
 			<visible>true</visible>
@@ -236,8 +259,8 @@
 		</control>
 
 		<control type="button" id="703">
-			<posx>250</posx>
-			<posy>20</posy>
+			<posx>0</posx>
+			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
 			<visible>true</visible>
@@ -249,8 +272,8 @@
 		</control>
 
 		<control type="button" id="700">
-			<posx>300</posx>
-			<posy>20</posy>
+			<posx>50</posx>
+			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
 			<visible>true</visible>
@@ -262,8 +285,8 @@
 		</control>
 
 		<control type="button" id="701">
-			<posx>300</posx>
-			<posy>20</posy>
+			<posx>50</posx>
+			<posy>0</posy>
 			<width>48</width>
 			<height>48</height>
 			<visible>true</visible>
@@ -275,8 +298,8 @@
 		</control>
 
 		<control type="radiobutton" id="704">
-			<posx>360</posx>
-			<posy>20</posy>
+			<posx>100</posx>
+			<posy>0</posy>
 			<width>248</width>
 			<height>48</height>
 			<visible>true</visible>
@@ -286,10 +309,8 @@
 			<onleft>700</onleft>
 			<ondown>1000</ondown>
 		</control>
-
-
-
     </control>
+
     <control type="group">
       <posx>260</posx>
       <posy>0</posy>
@@ -320,8 +341,8 @@
       <control type="label" id="100">
         <description>textarea</description>
         <posx>35</posx>
-        <posy>665</posy>
-        <width>970</width>
+        <posy>670</posy>
+        <width>620</width>
         <height>40</height>
         <textcolor>white</textcolor>
         <aligny>center</aligny>
