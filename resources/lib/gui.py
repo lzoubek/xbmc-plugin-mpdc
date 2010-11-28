@@ -33,7 +33,9 @@ ACTIONS = dict({
 	'15':'self.client.previous()',
 	'34':'self._queue_item()',
 	'79':'self.client.play()',
-	'117':'self._context_menu()'
+	'117':'self._context_menu()',
+	'88':'self._volume(88)',
+	'89':'self._volume(89)'
 	})
 CLICK_ACTIONS = dict({
 	'668':'self.client.play()',
@@ -52,6 +54,8 @@ CLICK_ACTIONS = dict({
 	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())',
 	'671':'self._set_volume()'
 	})
+ACTION_VOLUME_UP=88
+ACTION_VOLUME_DOWN=89
 # control IDs
 STATUS = 100
 PLAY = 668
@@ -168,7 +172,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		try:
 			self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
 			p.update(25,STR_GETTING_QUEUE)
-			self._handle_changes(self.client,['playlist','player','options'])
+			self._handle_changes(self.client,['mixer','playlist','player','options'])
 			self._handle_time_changes(self.client,self.client.status())
 			p.update(50,STR_GETTING_PLAYLISTS)
 			self._update_file_browser()
@@ -290,6 +294,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self.getControl(ARTIST_BROWSER).addItem(listitem)
 			self.getControl(ARTIST_BROWSER).selectItem(select_index)
 
+	def _volume(self,action):
+		if self._can_volume:
+			volume = int(self.client.status()['volume'])
+			if action == ACTION_VOLUME_DOWN:
+				self.client.setvol(volume - 5)
+			elif action == ACTION_VOLUME_UP:
+				self.client.setvol(volume + 5)
+
 	def _update_playlist_browser(self,playlists):
 		self.getControl(PLAYLIST_BROWSER).reset()
 		for item in playlists:
@@ -347,6 +359,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.getControl(SONG_INFO_PROGRESS).setPercent(percent)
 			self.getControl(SONG_INFO_TIME).setLabel(self._format_time(time[0])+' - '+self._format_time(time[1]))
 
+	def _update_volume(self,state):
+		if state['volume']=='-1':
+			self.getControl(VOLUME).setVisible(False)
+			self._can_volume=False
+		else:
+			self._can_volume=True
+			self.getControl(VOLUME).setVisible(True)
+			self.getControl(VOLUME).setPercent(int(state['volume']))
+
 	def _update_player_controls(self,current,state):
 		if state['state'] =='play':
 			self.toggleVisible( PLAY, PAUSE )
@@ -360,17 +381,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.getControl( STATUS ).setLabel(STR_STOPPED)
 			self.toggleVisible( PAUSE, PLAY )
 			self.update_playlist('stop',current)
-		if state['volume']=='-1':
-			self.getControl(VOLUME).setVisible(False)
-		else:
-			self.getControl(VOLUME).setVisible(True)
-			self.getControl(VOLUME).setPercent(int(state['volume']))
+
 	def _handle_changes(self,poller_client,changes):
 		state = poller_client.status()
 #		print state
 #		print poller_client.playlistid(state['songid'])
 		print 'Handling changes - ' + str(changes)
 		for change in changes:
+			if change =='mixer':
+				self._update_volume(state)
 			if change == 'player':
 				current = poller_client.currentsong()
 				self._update_song_info(current,state)
