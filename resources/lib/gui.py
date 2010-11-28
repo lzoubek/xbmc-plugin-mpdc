@@ -58,6 +58,7 @@ ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
 # control IDs
 STATUS = 100
+SERVER_STATS=1009
 PLAY = 668
 PAUSE = 670
 PREV = 666
@@ -111,6 +112,7 @@ STR_REMOVE_FROM_QUEUE=Addon.getLocalizedString(30036)
 STR_SAVE_QUEUE_AS=Addon.getLocalizedString(30037)
 STR_CLEAR_QUEUE=Addon.getLocalizedString(30038)
 STR_PLAYING_STREAM=Addon.getLocalizedString(30039)
+STR_SERVER_STATS=Addon.getLocalizedString(30042)
 STR_SAVE_AS=Addon.getLocalizedString(205)  
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
@@ -170,6 +172,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return
 		print 'Connected'
 		try:
+			stats = self.client.stats()
+			self.getControl(SERVER_STATS).setLabel(STR_SERVER_STATS % (stats['artists']+'\n',stats['albums']+'\n',stats['songs']+'\n',self._format_time2(stats['db_playtime'])))
 			self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
 			p.update(25,STR_GETTING_QUEUE)
 			self._handle_changes(self.client,['mixer','playlist','player','options'])
@@ -418,6 +422,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def _format_time(self,time):
 		return '%d:%02d' % ((int(time) / 60 ),(int(time) % 60))
+	def _format_time2(self,time):
+		minutes = (int(time) - ((int(time) / 3600) * 3600))/60
+		return '%d:%d:%02d' % ((int(time) / 3600 ),minutes,(int(time) % 60))
 		
 	def toggleVisible(self,cFrom,cTo):
 		self.getControl( cFrom ).setVisible(False)

@@ -130,6 +130,15 @@
 						</control> 
 				  </focusedlayout>
         </control>
+		<control type="label" id="1009">
+			<description>textarea</description>
+			<posx>20</posx>
+			<posy>400</posy>
+			<width>240</width>
+			<height>220</height>
+			<textcolor>white</textcolor>
+			<aligny>center</aligny>
+		</control>
     </control>
 
 
@@ -310,7 +319,6 @@
         <textcolor>white</textcolor>
         <aligny>center</aligny>
       </control>
-
       
       <control type="image">
         <posx>20</posx>
