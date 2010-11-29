@@ -21,7 +21,9 @@
 import sys,os,time,re,traceback
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 import pmpd,mpd,dialog
-
+__scriptid__ = 'script.mpdc'
+__addon__ = xbmcaddon.Addon(id=__scriptid__)
+__scriptname__ = __addon__.getAddonInfo('name')
 #get actioncodes from keymap.xml
 ACTION_SELECT_ITEM = 7
 ACTIONS = dict({
@@ -80,44 +82,41 @@ SONG_INFO_GROUP=99
 SONG_INFO_TIME=992
 SONG_INFO_ATRIST=993
 SONG_INFO_ALBUM=994
-Addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
-__scriptname__ = Addon.getAddonInfo('name')
-
 #String IDs
-STR_STOPPED=Addon.getLocalizedString(30003)
-STR_PAUSED=Addon.getLocalizedString(30004)
-STR_NOT_CONNECTED=Addon.getLocalizedString(30005)
-STR_CONNECTED_TO=Addon.getLocalizedString(30011) 
-STR_PLAYING=Addon.getLocalizedString(30006) 
-STR_PROFILE_NAME=Addon.getLocalizedString(30002)
-STR_CONNECTING_TITLE=Addon.getLocalizedString(30015)
-STR_DISCONNECTING_TITLE=Addon.getLocalizedString(30017) 
-STR_GETTING_QUEUE=Addon.getLocalizedString(30016)
-STR_GETTING_PLAYLISTS=Addon.getLocalizedString(30019)
-STR_GETTING_ARTISTS=Addon.getLocalizedString(30020)
-STR_WAS_QUEUED=Addon.getLocalizedString(30018)      
-STR_PLAYLIST_SAVED=Addon.getLocalizedString(30021)
-STR_SELECT_ACTION=Addon.getLocalizedString(30022)
-STR_LOAD_ADD=Addon.getLocalizedString(30023)
-STR_DELETE=Addon.getLocalizedString(30024)      
-STR_LOAD_REPLACE=Addon.getLocalizedString(30025)
-STR_RENAME=Addon.getLocalizedString(30026)
-STR_Q__PLAYLIST_EXISTS=Addon.getLocalizedString(30027)
-STR_Q_OVERWRITE=Addon.getLocalizedString(30028)
-STR_UPDATE_LIBRARY=Addon.getLocalizedString(30029)
-STR_QUEUE_ADD=Addon.getLocalizedString(30030)
-STR_QUEUE_REPLACE=Addon.getLocalizedString(30031)
-STR_UPDATING_LIBRARY=Addon.getLocalizedString(30032)
-STR_REMOVE_FROM_QUEUE=Addon.getLocalizedString(30036)
-STR_SAVE_QUEUE_AS=Addon.getLocalizedString(30037)
-STR_CLEAR_QUEUE=Addon.getLocalizedString(30038)
-STR_PLAYING_STREAM=Addon.getLocalizedString(30039)
-STR_SERVER_STATS=Addon.getLocalizedString(30042)
-STR_SAVE_AS=Addon.getLocalizedString(205)  
+STR_STOPPED=__addon__.getLocalizedString(30003)
+STR_PAUSED=__addon__.getLocalizedString(30004)
+STR_NOT_CONNECTED=__addon__.getLocalizedString(30005)
+STR_CONNECTED_TO=__addon__.getLocalizedString(30011)
+STR_PLAYING=__addon__.getLocalizedString(30006)
+STR_PROFILE_NAME=__addon__.getLocalizedString(30002)
+STR_CONNECTING_TITLE=__addon__.getLocalizedString(30015)
+STR_DISCONNECTING_TITLE=__addon__.getLocalizedString(30017)
+STR_GETTING_QUEUE=__addon__.getLocalizedString(30016)
+STR_GETTING_PLAYLISTS=__addon__.getLocalizedString(30019)
+STR_GETTING_ARTISTS=__addon__.getLocalizedString(30020)
+STR_WAS_QUEUED=__addon__.getLocalizedString(30018)
+STR_PLAYLIST_SAVED=__addon__.getLocalizedString(30021)
+STR_SELECT_ACTION=__addon__.getLocalizedString(30022)
+STR_LOAD_ADD=__addon__.getLocalizedString(30023)
+STR_DELETE=__addon__.getLocalizedString(30024)
+STR_LOAD_REPLACE=__addon__.getLocalizedString(30025)
+STR_RENAME=__addon__.getLocalizedString(30026)
+STR_Q__PLAYLIST_EXISTS=__addon__.getLocalizedString(30027)
+STR_Q_OVERWRITE=__addon__.getLocalizedString(30028)
+STR_UPDATE_LIBRARY=__addon__.getLocalizedString(30029)
+STR_QUEUE_ADD=__addon__.getLocalizedString(30030)
+STR_QUEUE_REPLACE=__addon__.getLocalizedString(30031)
+STR_UPDATING_LIBRARY=__addon__.getLocalizedString(30032)
+STR_REMOVE_FROM_QUEUE=__addon__.getLocalizedString(30036)
+STR_SAVE_QUEUE_AS=__addon__.getLocalizedString(30037)
+STR_CLEAR_QUEUE=__addon__.getLocalizedString(30038)
+STR_PLAYING_STREAM=__addon__.getLocalizedString(30039)
+STR_SERVER_STATS=__addon__.getLocalizedString(30042)
+STR_SAVE_AS=__addon__.getLocalizedString(205)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 	
 	def __init__( self, *args, **kwargs ):
-		self.addon = xbmcaddon.Addon(id=os.path.basename(os.getcwd()))
+		self.addon = xbmcaddon.Addon(id=__scriptid__)
 		self.time_polling=False
 		if 'true' == self.addon.getSetting('time-polling'):
 			self.client = pmpd.PMPDClient(poll_time=True)
@@ -140,7 +139,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
-		if Addon.getSetting(self.profile_id+'_play_stream') == 'true':
+		if self.addon.getSetting(self.profile_id+'_play_stream') == 'true':
 			self.is_play_stream = True
 		
 	def onFocus (self,controlId ):
@@ -550,7 +549,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self._start_media_player()
 
 	def _start_media_player(self):
-		icon =  os.path.join(os.getcwd(),'icon.png')
+		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,'icon.png'))
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
 	
@@ -592,7 +591,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.rm(playlist)
 			
 	def dialog(self,title,list):
-		d = dialog.Dialog('menu-dialog.xml',os.getcwd(),self.skin,'0')
+		d = dialog.Dialog('menu-dialog.xml',__addon__.getAddonInfo('path'),self.skin,'0')
 		d.list=list
 		d.title = title
 		d.doModal()
