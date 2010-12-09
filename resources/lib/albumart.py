@@ -49,9 +49,9 @@ class AlbumArtFetcher(object):
 		link = None
 		for matches in re.finditer(album_pattern, content, re.IGNORECASE | re.DOTALL):
 #			print 'Match: '+ matches.group('artist')+ ' '+matches.group('album')
-			print matches.group(0)
-			print matches.group('artist')
-			print matches.group('link')
+#			print matches.group(0)
+#			print matches.group('artist')
+#			print matches.group('link')
 			if string.lower(artist) == string.lower(matches.group('artist')):
 #				print matches.group('link')
 				link = matches.group('link')
