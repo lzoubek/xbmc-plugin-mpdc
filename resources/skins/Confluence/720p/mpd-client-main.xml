@@ -886,6 +886,18 @@
 			<width>690</width>
 			<height>16</height>
 		</control>
+		<control type="image" id="995">
+		  <description>album art image</description>
+		  <posx>-270</posx>
+		  <posy>300</posy>
+		  <width>220</width>
+		  <height>220</height>
+		  <visible>true</visible>
+		  <colordiffuse>FFFFFFFF</colordiffuse>
+		  <fadetime>200</fadetime>
+		  <texture border="5">album_not_found.jpg</texture>
+		  <aspectratio>keep</aspectratio>
+		</control>
 	</control>
   </controls>
 </window>

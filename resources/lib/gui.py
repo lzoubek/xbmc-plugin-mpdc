@@ -18,9 +18,9 @@
 # *  http://www.gnu.org/copyleft/gpl.html
 # *
 # */
-import sys,os,time,re,traceback
+import sys,os,time,re,traceback,threading
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd,mpd,dialog
+import pmpd,mpd,dialog,albumart
 __scriptid__ = 'script.mpdc'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
 __scriptname__ = __addon__.getAddonInfo('name')
@@ -82,6 +82,7 @@ SONG_INFO_GROUP=99
 SONG_INFO_TIME=992
 SONG_INFO_ATRIST=993
 SONG_INFO_ALBUM=994
+SONG_INFO_ALBUM_IMAGE=995
 #String IDs
 STR_STOPPED=__addon__.getLocalizedString(30003)
 STR_PAUSED=__addon__.getLocalizedString(30004)
@@ -141,11 +142,20 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.is_play_stream = False
 		if self.addon.getSetting(self.profile_id+'_play_stream') == 'true':
 			self.is_play_stream = True
+		art_dir = os.path.join( xbmc.translatePath( "special://profile/" ), "addon_data", __scriptid__,"albums" )
+		if not os.path.exists(art_dir):
+			os.makedirs(art_dir)
+		self.art_fetcher = albumart.AlbumArtFetcher(art_dir,self.addon.getSetting('fetch-cache') == 'true')
+		self.album_not_found = os.path.join(self.addon.getAddonInfo('path'),'resources','lib','ImageNotFound.jpg')
+		self.album_fetch_enabled = self.addon.getSetting('fetch-albums') == 'true'
+		self.last_album=''
+
 		
 	def onFocus (self,controlId ):
 		self.controlId=controlId
 
 	def onInit (self ):
+		self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(self.album_fetch_enabled)
 		self.getControl( PAUSE ).setVisible( False )
 		self.getControl( PROFILE ).setLabel(self.profile_name)					
 		self._connect()
@@ -230,7 +240,19 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		else:
 			self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
 		self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date']+')')
-		
+		if not self.album_fetch_enabled:
+			return
+		album_image = self.art_fetcher.get_image_file_name(current['artist'],current['album'])
+		if album_image == self.last_album:
+			#do not update image, album is same
+			return
+		self.last_album = album_image
+		image = self.art_fetcher.get_album_art(current['artist'],current['album'])
+		if not image == None:
+			self.getControl(SONG_INFO_ALBUM_IMAGE).setImage(image)
+		else:
+			self.getControl(SONG_INFO_ALBUM_IMAGE).setImage(self.album_not_found)
+
 	def _update_artist_browser(self,artist_item=None,client=None,back=False):		
 		select_index=0
 		index = self.getControl(ARTIST_BROWSER).getSelectedPosition()
@@ -395,8 +417,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self._update_volume(state)
 			if change == 'player':
 				current = poller_client.currentsong()
-				self._update_song_info(current,state)
 				self._update_player_controls(current,state)
+				self._update_song_info(current,state)
 			if change == 'options':
 				if state['repeat'] == '0':
 					self.toggleVisible( REPEAT_ON, REPEAT_OFF )

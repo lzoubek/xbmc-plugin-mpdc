@@ -55,7 +55,7 @@
 	</control>
 	<control type="group" id="99">
 	<description>song progress info group</description>
-		<posx>260</posx>
+		<posx>263</posx>
 		<posy>15</posy>
 		<control type="label" id="993">
 			<description>song artist</description>
@@ -91,6 +91,18 @@
 			<posx>0</posx>
 			<posy>60</posy>
 			<width>620</width>
+		</control>
+		<control type="image" id="995">
+		  <description>album art image</description>
+		  <posx>-230</posx>
+		  <posy>300</posy>
+		  <width>190</width>
+		  <height>190</height>
+		  <visible>true</visible>
+		  <colordiffuse>FFFFFFFF</colordiffuse>
+		  <fadetime>200</fadetime>
+		  <texture border="5">album_not_found.jpg</texture>
+		  <aspectratio>keep</aspectratio>
 		</control>
 	</control>
     <control type="group">

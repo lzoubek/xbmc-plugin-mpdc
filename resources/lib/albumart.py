@@ -2,10 +2,10 @@ import sys
 import os
 
 
-import time,calendar
+import time,calendar,traceback
 import urllib2,urllib,re,cookielib, string
 
-album_pattern='<td class=\"text-center\">\s*(<a[\"\w\d\!\=< >\/\.]+<\/a>)?\s*<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d]+)<\/a><\/td>\s+<td>(?P<artist>[\w\d ]+)<\/td>'
+album_pattern='<td class=\"text-center\">\s+(<a[\"\w\d\!\=< >\/\.]+<\/a>\s+)?<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d\\]\[\.\-]+)<\/a><\/td>\s+<td>(?P<artist>[\w\d ]+)<\/td>'
 image_pattern='<div class=\"image\">\s*<img src=\"(?P<link>[\/\:\w\-\d\.]+)\"'
 class AlbumArtFetcher(object):
 	
@@ -31,6 +31,7 @@ class AlbumArtFetcher(object):
 			print 'Searching for album art'
 			return self._get_album_art(artist,album)
 		except:
+			traceback.print_exc()
 			return None
 
 	def _get_album_art(self,artist, album):
@@ -48,6 +49,9 @@ class AlbumArtFetcher(object):
 		link = None
 		for matches in re.finditer(album_pattern, content, re.IGNORECASE | re.DOTALL):
 #			print 'Match: '+ matches.group('artist')+ ' '+matches.group('album')
+			print matches.group(0)
+			print matches.group('artist')
+			print matches.group('link')
 			if string.lower(artist) == string.lower(matches.group('artist')):
 #				print matches.group('link')
 				link = matches.group('link')

@@ -3,6 +3,8 @@
 	<category label="30014">
 		<setting label="30013" type="bool" id="skip-selector" default="false" />
 		<setting label="30040" type="bool" id="time-polling" default="true" />
+		<setting label="30043" type="bool" id="fetch-albums" default="false" />
+		<setting label="30044" type="bool" id="fetch-cache" default="false" />
 	</category>
     <category label="30110">
 		<setting label="30041" type="bool" id="0_enabled" default="true" />
