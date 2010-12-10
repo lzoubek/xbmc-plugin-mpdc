@@ -5,7 +5,7 @@ import os
 import time,calendar,traceback
 import urllib2,urllib,re,cookielib, string
 
-album_pattern='<td class=\"text-center\">\s+(<a[\"\w\d\!\=< >\/\.]+<\/a>\s+)?<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d\\]\[\.\-]+)<\/a><\/td>\s+<td>(?P<artist>[\w\d ]+)<\/td>'
+album_pattern='<td class=\"text-center\">\s+(<a[\"\w\d\!\=< >\/\.]+<\/a>\s+)?<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d\]\[\.\-\?\!\(\)]+)<\/a><\/td>\s+<td>(?P<artist>[\w\d \!\?]+)<\/td>'
 image_pattern='<div class=\"image\">\s*<img src=\"(?P<link>[\/\:\w\-\d\.]+)\"'
 class AlbumArtFetcher(object):
 	
@@ -22,15 +22,16 @@ class AlbumArtFetcher(object):
 		if self.cache:
 			imagefile = self.get_image_file_name(artist,album)
 			if os.path.exists(imagefile):
-				print 'Image already downloaded'
+				print 'Image already downloaded, returning '+imagefile
 				return imagefile
 		return None
 
 	def get_album_art(self,artist,album):
 		try:
-			print 'Searching for album art'
+			print 'Searching for album art '+str(artist)+' - '+str(album)
 			return self._get_album_art(artist,album)
 		except:
+			print 'Error searching/downloading'
 			traceback.print_exc()
 			return None
 
