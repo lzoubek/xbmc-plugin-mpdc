@@ -238,12 +238,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.getControl(SONG_INFO_ATRIST).setLabel(current['file'])
 		else:
 			self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
-		self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date']+')')
+		if current['album']=='':
+			self.getControl(SONG_INFO_ALBUM).setLabel('')
+		else:
+			self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date']+')')
 		if not self.album_fetch_enabled:
 			return
 		album_image = self.art_fetcher.get_image_file_name(current['artist'],current['album'])
 		if album_image == self.last_album:
-			#do not update image, album is same
+			#do not update image, album is same as before
 			return
 		self.last_album = album_image
 		image = self.art_fetcher.get_album_art(current['artist'],current['album'])
