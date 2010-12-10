@@ -95,7 +95,7 @@
 		<control type="image" id="995">
 		  <description>album art image</description>
 		  <posx>-230</posx>
-		  <posy>300</posy>
+		  <posy>320</posy>
 		  <width>190</width>
 		  <height>190</height>
 		  <visible>true</visible>
