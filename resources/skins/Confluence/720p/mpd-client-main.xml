@@ -343,7 +343,6 @@
 	  <height>530</height>
       <description>playlist group</description>
       <visible>Container(1000).HasFocus(1001)</visible>
-      
 		  <control type="list" id="1101">
 			<posx>0</posx>
 			<posy>0</posy>
@@ -351,8 +350,8 @@
 			<height>530</height>
 			<onleft>1000</onleft>
 			<onright>1104</onright>
-			<onup>1103</onup>
-			<ondown>110</ondown>
+			<onup>1101</onup>
+			<ondown>1101</ondown>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1104</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -543,6 +542,8 @@
 			<height>530</height>
 			<onleft>1000</onleft>
 			<onright>1202</onright>
+			<onup>1201</onup>
+			<ondown>1201</ondown>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1202</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -639,6 +640,8 @@
 			<height>530</height>
 			<onleft>1000</onleft>
 			<onright>1302</onright>
+			<onup>1301</onup>
+			<ondown>1301</ondown>
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1302</pagecontrol>
 			<scrolltime>200</scrolltime>
@@ -761,6 +764,8 @@
 			<height>530</height>
 			<onleft>1000</onleft>
 			<onright>1402</onright>
+			<onup>1401</onup>
+			<ondown>1401</ondown>			
 			<viewtype label="535">list</viewtype>
 			<pagecontrol>1402</pagecontrol>
 			<scrolltime>200</scrolltime>
