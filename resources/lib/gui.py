@@ -146,7 +146,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if not os.path.exists(art_dir):
 			os.makedirs(art_dir)
 		self.art_fetcher = albumart.AlbumArtFetcher(art_dir,self.addon.getSetting('fetch-cache') == 'true')
-		self.album_not_found = os.path.join(self.addon.getAddonInfo('path'),'resources','lib','ImageNotFound.jpg')
 		self.album_fetch_enabled = self.addon.getSetting('fetch-albums') == 'true'
 		self.last_album=''
 
@@ -249,9 +248,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.last_album = album_image
 		image = self.art_fetcher.get_album_art(current['artist'],current['album'])
 		if not image == None:
+			self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(True)
 			self.getControl(SONG_INFO_ALBUM_IMAGE).setImage(image)
 		else:
-			self.getControl(SONG_INFO_ALBUM_IMAGE).setImage(self.album_not_found)
+			self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(False)
 
 	def _update_artist_browser(self,artist_item=None,client=None,back=False):		
 		select_index=0
