@@ -91,13 +91,15 @@ class PMPDClient(object):
 				self.time_poller.disconnect()
 			except:
 				pass
-			print 'waiting for time poller thread'
-			if not self.time_event and self.time_thread.isAlive():
-				return
-			self.time_event.set()
-			self.time_thread.join()
-			self.time_event=None
-			print 'done'
+			try:
+				print 'waiting for time poller thread'
+				if self.time_thread.isAlive():
+					self.time_event.set()
+					self.time_thread.join(3)
+					self.time_event=None
+				print 'done'
+			except:
+				traceback.print_exc()
 		print 'client disconnected'
 		
 	def _poll_time(self):
@@ -119,7 +121,7 @@ class PMPDClient(object):
 			except:
 #				print "time poller error"
 #				traceback.print_exc()
-				self.time_event = None
+				self.time_event.set()
 				return
 
 	def _poll(self):
