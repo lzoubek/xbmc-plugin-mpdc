@@ -294,7 +294,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.ab_indexes.append(index)
 				self.getControl(ARTIST_BROWSER).reset()
 				if typ == 'artist':					
-					listitem = xbmcgui.ListItem(label='..')
+					listitem = xbmcgui.ListItem(label='.. %s' % artist_item.getProperty('artist'))
 					listitem.setIconImage('DefaultFolderBack.png')
 					listitem.setProperty('type','')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
@@ -317,7 +317,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						listitem.setProperty( 'time', item )
 						self.getControl(ARTIST_BROWSER).addItem(listitem)
 				elif typ == 'album':
-					listitem = xbmcgui.ListItem(label='..')
+					listitem = xbmcgui.ListItem(label='..  %s - %s'%(artist_item.getProperty('artist'),artist_item.getProperty('album')))
 					listitem.setProperty('type','artist')
 					listitem.setIconImage('DefaultFolderBack.png')
 					listitem.setProperty('artist',artist_item.getProperty('artist'))
