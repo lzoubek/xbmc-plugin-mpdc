@@ -241,7 +241,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if current['album']=='':
 			self.getControl(SONG_INFO_ALBUM).setLabel('')
 		else:
-			self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date']+')')
+			self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date'][:4]+')')
 		if not self.album_fetch_enabled:
 			return
 		album_image = self.art_fetcher.get_image_file_name(current['artist'],current['album'])
@@ -298,12 +298,24 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem.setIconImage('DefaultFolderBack.png')
 					listitem.setProperty('type','')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
-					for item in self.client.list('album',artist_item.getProperty('artist')):
-						listitem = xbmcgui.ListItem(label=item)
+					albums = self.client.list('album','artist',artist_item.getProperty('artist'))
+					sorted_albums = {}
+					spaces=''
+					for item in albums:
+						date = self.client.list('date','album',item,'artist',artist_item.getProperty('artist'))
+						date = date[0]
+						if date =='':
+							date = spaces
+							spaces = spaces+' '
+						sorted_albums[date[:4]] = item
+					for item in sorted(sorted_albums,reverse=True):
+						print item
+						listitem = xbmcgui.ListItem(label=sorted_albums[item])
 						listitem.setProperty('artist',artist_item.getProperty('artist'))
 						listitem.setProperty('type','album')
-						listitem.setProperty('album',item)
+						listitem.setProperty('album',sorted_albums[item])
 						listitem.setIconImage('DefaultMusicAlbums.png')
+						listitem.setProperty( 'time', item )
 						self.getControl(ARTIST_BROWSER).addItem(listitem)
 				elif typ == 'album':
 					listitem = xbmcgui.ListItem(label='..')
