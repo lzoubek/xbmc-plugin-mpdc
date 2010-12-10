@@ -309,7 +309,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 							spaces = spaces+' '
 						sorted_albums[date[:4]] = item
 					for item in sorted(sorted_albums,reverse=True):
-						print item
 						listitem = xbmcgui.ListItem(label=sorted_albums[item])
 						listitem.setProperty('artist',artist_item.getProperty('artist'))
 						listitem.setProperty('type','album')
