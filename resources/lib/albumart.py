@@ -5,7 +5,7 @@ import os
 import time,calendar,traceback
 import urllib2,urllib,re,cookielib, string
 
-album_pattern='<td class=\"text-center\">\s+(<a[\"\w\d\!\=< >\/\.]+<\/a>\s+)?<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d\]\[\.\-\?\!\(\)]+)<\/a><\/td>\s+<td>(?P<artist>[\w\d \!\?]+)<\/td>'
+album_pattern='<td class=\"text-center\">\s+(<a[\"\w\d\!\=< >\/\.]+<\/a>\s+)?<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d\]\[\.\-\?\!\(\)\']+)<\/a><\/td>\s+<td>(?P<artist>[\w\d \!\?\']+)<\/td>'
 image_pattern='<div class=\"image\">\s*<img src=\"(?P<link>[\/\:\w\-\d\.]+)\"'
 class AlbumArtFetcher(object):
 	
