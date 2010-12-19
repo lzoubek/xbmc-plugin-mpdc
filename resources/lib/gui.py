@@ -394,9 +394,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _handle_time_changes(self,poller_client,status):
 		if not status['state'] == 'stop' and self.time_polling:
 			time = status['time'].split(':')
-			percent = float(time[0]) / (float(time[1])/100 )
-			self.getControl(SONG_INFO_PROGRESS).setPercent(percent)
-			self.getControl(SONG_INFO_TIME).setLabel(self._format_time(time[0])+' - '+self._format_time(time[1]))
+			if float(time[1])>0:
+				percent = float(time[0]) / (float(time[1])/100 )
+				self.getControl(SONG_INFO_PROGRESS).setPercent(percent)
+				self.getControl(SONG_INFO_TIME).setLabel(self._format_time(time[0])+' - '+self._format_time(time[1]))
 
 	def _update_volume(self,state):
 		if state['volume']=='-1':
