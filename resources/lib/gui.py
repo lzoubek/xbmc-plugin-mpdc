@@ -526,6 +526,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.getControl( STATUS ).setLabel(status)					
 
 	def _context_menu(self):
+		if self.getFocusId() == PLAYLIST_BROWSER:
+			return self._playlist_contextmenu()
 		if self.getFocusId() == CURRENT_PLAYLIST:
 			if self.getControl(CURRENT_PLAYLIST).size() < 1:
 				return
@@ -541,17 +543,23 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret == 0:
 				self._queue_item()
 			if ret == 1:
+				stopped = self._stop_if_playing()
 				self.client.stop()
 				self.client.clear()
 				self._queue_item()
+				if stopped:
+					self.client.play()
 		if self.getFocusId() == FILE_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_UPDATE_LIBRARY])
 			if ret == 0:
 				self._queue_item()
 			if ret == 1:
+				stopped = self._stop_if_playing()
 				self.client.stop()
-				self.client.clear()		
-				self._queue_item()			
+				self.client.clear()
+				self._queue_item()
+				if stopped:
+					self.client.play()
 			if ret == 2:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
@@ -575,7 +583,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			
 	def _play_stream(self):
 		if self.is_play_stream and not self.stream_url=='':
-			print 'Playing '+self.stream_url
 			player = xbmc.Player(xbmc.PLAYER_CORE_MPLAYER)
 			if player.isPlayingVideo():
 				return
@@ -586,6 +593,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self._start_media_player()
 
 	def _start_media_player(self):
+		print 'Playing '+self.stream_url
 		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,'icon.png'))
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
@@ -603,10 +611,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if ret == 0:
 			self.client.load(playlist)
 		elif ret == 1:
+			stopped = self._stop_if_playing()
 			self.client.stop()
 			self.client.clear()		
 			self.client.load(playlist)
-
+			if stopped:
+				self.client.play()
 		elif ret == 2:
 				kb = xbmc.Keyboard(playlist,STR_RENAME,False)
 				kb.doModal()
@@ -622,8 +632,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 							self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
 					else:
 						self.client.rename(playlist,kb.getText())
-						self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)					
-						
+						self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)	
 		elif ret == 3:
 			self.client.rm(playlist)
 			
@@ -666,6 +675,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.consume(1)
 		else:
 			self.client.consume(0)
+	def _stop_if_playing(self):
+		status = self.client.status()
+		if status['state'] == 'play':
+			self.client.stop()
+			return True
+		return False
 	def _playlist_on_click(self):	
 		seekid = self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getProperty('id')
 		status = self.client.status()
