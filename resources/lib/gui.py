@@ -145,8 +145,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		art_dir = os.path.join( self.addon.getAddonInfo('profile'),'albums' )
 		if not os.path.exists(art_dir):
 			os.makedirs(art_dir)
-		self.art_fetcher = albumart.AlbumArtFetcher(art_dir,self.addon.getSetting('fetch-cache') == 'true')
-		self.album_fetch_enabled = self.addon.getSetting('fetch-albums') == 'true'
+		fetcher_setting = self.addon.getSetting('fetch-albums')
+		if fetcher_setting == '1':
+			self.art_fetcher = albumart.AllMusicFetcher(art_dir,self.addon.getSetting('fetch-cache') == 'true')
+		elif fetcher_setting == '2':
+			self.art_fetcher = albumart.LocalFetcher(self.addon.getSetting('fetch-local-media'),self.addon.getSetting('fetch-search-image'))
+		self.album_fetch_enabled = int(fetcher_setting) > 0
 		self.last_album=''
 
 		
@@ -244,12 +248,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date'][:4]+')')
 		if not self.album_fetch_enabled:
 			return
-		album_image = self.art_fetcher.get_image_file_name(current['artist'],current['album'])
+		album_image = self.art_fetcher.get_image_file_name(current['artist'],current['album'],current['file'])
 		if album_image == self.last_album:
 			#do not update image, album is same as before
 			return
 		self.last_album = album_image
-		image = self.art_fetcher.get_album_art(current['artist'],current['album'])
+		image = self.art_fetcher.get_album_art(current['artist'],current['album'],current['file'])
 		if not image == None:
 			self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(True)
 			self.getControl(SONG_INFO_ALBUM_IMAGE).setImage(image)

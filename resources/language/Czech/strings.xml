@@ -49,8 +49,14 @@
     <string id="30040">Zobrazovat čas přehrávané skladby</string>
     <string id="30041">Povolen (Profil bude zobrazen při výběru)</string>
 	<string id="30042">Autorů : %sAlb : %sSkladeb : %sČas : %s</string>
-	<string id="30043">Stahovat obaly alb službou Allmusic.com</string>
 	<string id="30044">Ukládat obaly alb na disk</string>
+	<string id="30043">Stahovat obaly alb</string>
+	<string id="30044">Ukládat stažené obaly na disk</string>
+	<string id="30045">Vypnuto</string>
+	<string id="30046">Allmusic.com</string>
+	<string id="30047">lokálně</string>
+	<string id="30048">Cesta ke kořeni hudby pro MPD</string>
+	<string id="30049">Maska souboru s obalem</string>
     <string id="200">Fronta</string>
     <string id="201">Soubory</string>
     <string id="202">Autoři</string>

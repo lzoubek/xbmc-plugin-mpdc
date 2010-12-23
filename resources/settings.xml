@@ -3,8 +3,10 @@
 	<category label="30014">
 		<setting label="30013" type="bool" id="skip-selector" default="false" />
 		<setting label="30040" type="bool" id="time-polling" default="true" />
-		<setting label="30043" type="bool" id="fetch-albums" default="false" />
-		<setting label="30044" type="bool" id="fetch-cache" default="false" />
+		<setting label="30043" type="enum" id="fetch-albums" lvalues="30045|30046|30047" default="0" />
+		<setting label="30044" type="bool" id="fetch-cache" visible="eq(-1,1)" default="false" />
+		<setting label="30048" type="folder" id="fetch-local-media" visible="eq(-2,2)" source="\"  default="" />
+		<setting label="30049" type="text" id="fetch-search-image" visible="eq(-3,2)" default="*.jpg" />
 	</category>
     <category label="30110">
 		<setting label="30041" type="bool" id="0_enabled" default="true" />

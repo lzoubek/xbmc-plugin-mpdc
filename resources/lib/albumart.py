@@ -1,5 +1,5 @@
 import sys
-import os
+import os,fnmatch
 
 
 import time,calendar,traceback
@@ -7,7 +7,30 @@ import urllib2,urllib,re,cookielib, string
 
 album_pattern='<td class=\"text-center\">\s+(<a[\"\w\d\!\=< >\/\.]+<\/a>\s+)?<\/td>\s+<td><a href=\"(?P<link>[\/\:\-\w\d\.]+)\">(?P<album>[\w \d\]\[\.\-\?\!\(\)\']+)<\/a><\/td>\s+<td>(?P<artist>[\w\d \!\?\']+)<\/td>'
 image_pattern='<div class=\"image\">\s*<img src=\"(?P<link>[\/\:\w\-\d\.]+)\"'
-class AlbumArtFetcher(object):
+class LocalFetcher(object):
+	def __init__(self,media_dir,search_mask):
+		self.media_dir = media_dir
+		self.search_mask = search_mask
+	def get_album_art(self,artist,album,file=None):
+		print 'Searching locally for album art in'+os.path.join(self.media_dir,os.path.dirname(file))
+		return self._search_for_image(artist,album,file)
+
+	def get_image_file_name(self,artist,album,file=None):
+		image_file = self._search_for_image(artist,album,file)
+		if image_file == None:
+			return os.path.join(self.media_dir,os.path.dirname(file),'folder.jpg')
+
+	def _search_for_image(self,artist,album,file):
+		image_dir = os.path.join(self.media_dir,os.path.dirname(file))
+		try:
+			for f in os.listdir(image_dir):
+				if fnmatch.fnmatch(f,self.search_mask):
+					return os.path.abspath(f)
+		except:
+			print 'Error searching'
+			traceback.print_exc()
+
+class AllMusicFetcher(object):
 	
 	def __init__(self,work_dir,cache):
 		self.server_url = 'http://www.allmusic.com'
@@ -26,7 +49,7 @@ class AlbumArtFetcher(object):
 				return imagefile
 		return None
 
-	def get_album_art(self,artist,album):
+	def get_album_art(self,artist,album,file=None):
 		try:
 			print 'Searching for album art '+str(artist)+' - '+str(album)
 			return self._get_album_art(artist,album)
@@ -75,7 +98,7 @@ class AlbumArtFetcher(object):
 			return filename
 		return None
 
-	def get_image_file_name(self,artist,album):
+	def get_image_file_name(self,artist,album,file=None):
 		return os.path.join(self.work_dir,artist+'-'+album+'.jpg')
 					
 	def _get_file(self,url):
