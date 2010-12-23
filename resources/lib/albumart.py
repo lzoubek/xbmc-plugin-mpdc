@@ -11,8 +11,9 @@ class LocalFetcher(object):
 	def __init__(self,media_dir,search_mask):
 		self.media_dir = media_dir
 		self.search_mask = search_mask
+		print 'LocalFetcher, MPD root %s, filemask %s' % (media_dir,search_mask)
 	def get_album_art(self,artist,album,file=None):
-		print 'Searching locally for album art in'+os.path.join(self.media_dir,os.path.dirname(file))
+		print 'Searching locally for album art in '+os.path.join(self.media_dir,os.path.dirname(file))
 		image_file = self._search_for_image(artist,album,file)
 		if image_file==None:
 			print 'No images found'
@@ -30,9 +31,12 @@ class LocalFetcher(object):
 				for f in os.listdir(image_dir):
 					if fnmatch.fnmatch(f,self.search_mask):
 						return os.path.abspath(f)
+					print 'File %s did not match' % f
 			except:
 				print 'Error searching'
 				traceback.print_exc()
+		else:
+			print 'Folder %s does not exist' % image_dir
 
 class AllMusicFetcher(object):
 	
