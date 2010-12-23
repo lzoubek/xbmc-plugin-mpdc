@@ -47,7 +47,7 @@
 	</control>
  <control type="group" id="99">
 	<description>song progress info group</description>
-		<posx>0</posx>
+		<posx>5</posx>
 		<posy>5</posy>
 		<control type="label" id="993">
 			<description>song artist</description>

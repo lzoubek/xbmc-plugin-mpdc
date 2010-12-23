@@ -13,7 +13,10 @@ class LocalFetcher(object):
 		self.search_mask = search_mask
 	def get_album_art(self,artist,album,file=None):
 		print 'Searching locally for album art in'+os.path.join(self.media_dir,os.path.dirname(file))
-		return self._search_for_image(artist,album,file)
+		image_file = self._search_for_image(artist,album,file)
+		if image_file==None:
+			print 'No images found'
+		return image_file
 
 	def get_image_file_name(self,artist,album,file=None):
 		image_file = self._search_for_image(artist,album,file)
@@ -22,13 +25,14 @@ class LocalFetcher(object):
 
 	def _search_for_image(self,artist,album,file):
 		image_dir = os.path.join(self.media_dir,os.path.dirname(file))
-		try:
-			for f in os.listdir(image_dir):
-				if fnmatch.fnmatch(f,self.search_mask):
-					return os.path.abspath(f)
-		except:
-			print 'Error searching'
-			traceback.print_exc()
+		if os.path.exists(image_dir):
+			try:
+				for f in os.listdir(image_dir):
+					if fnmatch.fnmatch(f,self.search_mask):
+						return os.path.abspath(f)
+			except:
+				print 'Error searching'
+				traceback.print_exc()
 
 class AllMusicFetcher(object):
 	
