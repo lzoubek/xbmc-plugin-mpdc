@@ -22,6 +22,9 @@ class MopidyMPDClient(object):
 			self.time_thread = threading.Thread(target=self._poll_time)
 			self.time_thread.setDaemon(True)
 			self.time_event = threading.Event()
+		feeder = threading.Thread(target=self._feed_idle)
+		feeder.setDaemon(True)
+		feeder.start()
 		
 	def register_callback(self,callback):
 		self.callback = callback
@@ -101,7 +104,6 @@ class MopidyMPDClient(object):
 				self.event.set()
 				self.idle_queue.put('exit')
 				self.thread.join(3)
-				self.event=None
 			print 'done'
 		except:
 			traceback.print_exc()				
@@ -145,6 +147,25 @@ class MopidyMPDClient(object):
 #				traceback.print_exc()
 				self.time_event.set()
 				return
+	def _feed_idle(self):
+		self.event.wait(5)
+		if self.event.isSet():
+			return
+		state = ''
+		songid = ''
+		while 1:
+			status = self.poller.status()
+			if not state == status['state']:
+				self._add_for_callback('play')
+				state = status['state']
+				continue
+			if not songid == status['songid']:
+				self._add_for_callback('play')
+				songid = status['songid']
+				continue
+			self.event.wait(5)
+			if self.event.isSet():
+				break
 	def _poll(self):
 		print 'Starting poller thread'
 		while 1:
