@@ -149,7 +149,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if fetcher_setting == '1':
 			self.art_fetcher = albumart.AllMusicFetcher(art_dir,self.addon.getSetting('fetch-cache') == 'true')
 		elif fetcher_setting == '2':
-			self.art_fetcher = albumart.LocalFetcher(self.addon.getSetting('fetch-local-media'),self.addon.getSetting('fetch-search-image'))
+			self.art_fetcher = albumart.LocalFetcher(xbmc.translatePath(self.addon.getSetting(self.profile_id+'_media_root')),self.addon.getSetting('fetch-search-image'))
 		self.album_fetch_enabled = int(fetcher_setting) > 0
 		self.last_album=''
 

@@ -5,7 +5,6 @@
 		<setting label="30040" type="bool" id="time-polling" default="true" />
 		<setting label="30043" type="enum" id="fetch-albums" lvalues="30045|30046|30047" default="0" />
 		<setting label="30044" type="bool" id="fetch-cache" visible="eq(-1,1)" default="false" />
-		<setting label="30048" type="folder" id="fetch-local-media" visible="eq(-2,2)" source="\"  default="" />
 		<setting label="30049" type="text" id="fetch-search-image" visible="eq(-3,2)" default="*.jpg" />
 	</category>
     <category label="30110">
@@ -14,6 +13,7 @@
 		<setting label="30000" type="text" id="0_mpd_host" default="localhost"/>
 		<setting label="30001" type="text" id="0_mpd_port" default="6600"/>
 		<setting label="30035" type="text" id="0_mpd_pass" option="hidden" default="" />
+		<setting label="30048" type="folder" id="0_media_root"  source="\"  default="" />
 		<setting label="30034" type="bool" id="0_play_stream" default="false" />
 		<setting label="30033" type="text" id="0_stream_url" default="" />
     </category>
@@ -22,7 +22,8 @@
 		<setting label="30002" type="text" id="1_name" default="Profile 2"/>
 		<setting label="30000" type="text" id="1_mpd_host" default="localhost"/>
 		<setting label="30001" type="text" id="1_mpd_port" default="6600"/>
-		<setting label="30035" type="text" id="1_mpd_pass" option="hidden" default="" />		
+		<setting label="30035" type="text" id="1_mpd_pass" option="hidden" default="" />
+		<setting label="30048" type="folder" id="1_media_root"  source="\"  default="" />
 		<setting label="30034" type="bool" id="1_play_stream" default="false" />
 		<setting label="30033" type="text" id="1_stream_url" default="" />
     </category>
@@ -31,7 +32,8 @@
         <setting label="30002" type="text" id="2_name" default="Profile 3"/>
 		<setting label="30000" type="text" id="2_mpd_host" default="localhost"/>
 		<setting label="30001" type="text" id="2_mpd_port" default="6600"/>
-		<setting label="30035" type="text" id="2_mpd_pass" option="hidden" default="" />		
+		<setting label="30035" type="text" id="2_mpd_pass" option="hidden" default="" />
+		<setting label="30048" type="folder" id="2_media_root"  source="\"  default="" />
 		<setting label="30034" type="bool" id="2_play_stream" default="false" />
 		<setting label="30033" type="text" id="2_stream_url" default="" />
     </category>
