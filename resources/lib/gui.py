@@ -603,7 +603,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _start_media_player(self):
 		print 'Playing '+self.stream_url
 		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
-		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,'icon.png'))
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,icon))
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
 	
 	def disconnect(self):
