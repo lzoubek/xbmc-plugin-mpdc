@@ -26,11 +26,12 @@ class LocalFetcher(object):
 		image_dir = os.path.join(self.media_dir,os.path.dirname(file))
 		if os.path.exists(image_dir):
 			try:
-				for f in os.listdir(image_dir):
-					if fnmatch.fnmatch(f,self.search_mask):
-						print 'Matched image file %s' % os.path.abspath(f)
-						return os.path.abspath(f)
-					print 'File %s did not match' % f
+				for root,dirs,files in os.walk(image_dir):
+					for f in files:
+						if fnmatch.fnmatch(f,self.search_mask):
+							print 'Matched image file %s' % os.path.join(root,f)
+							return os.path.join(root,f)
+						print 'File %s did not match' % os.path.join(root,f)
 			except:
 				print 'Error searching'
 				traceback.print_exc()
@@ -116,4 +117,4 @@ class AllMusicFetcher(object):
 		content = response.read()
 		response.close()
 		return content
-				
+
