@@ -214,12 +214,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		gen_index=0 # generate index value to each item
 		self.getControl( CURRENT_PLAYLIST ).reset()
 		for item in playlist:
-			self.update_fields(item,['title','artist','album','time'])
+			self.update_fields(item,['title','artist','album','time','track'])
 			listitem = xbmcgui.ListItem( label=item['title'])
 			listitem.setProperty( 'index', str(gen_index))
 			listitem.setProperty( 'id', item['id'] )
 			listitem.setProperty( 'artist', item['artist'] )
 			listitem.setProperty( 'album', item['album'] )
+			if not item['track'] == '' and item['track'].find('/') >= 0:
+				listitem.setProperty('track',item['track'].split('/')[0])
 			gen_index=gen_index+1
 			if not item['time'] == '':
 				listitem.setProperty( 'time', self._format_time(item['time']) )

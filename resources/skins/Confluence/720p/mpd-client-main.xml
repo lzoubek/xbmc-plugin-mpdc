@@ -432,8 +432,19 @@
 				<align>left</align>
 				<info>ListItem.Property(file)</info>
 			  </control>
-			  <control type="label">
+			<control type="label">
 				<posx>40</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>32</height>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(track)</info>
+			  </control>
+			  <control type="label">
+				<posx>80</posx>
 				<posy>0</posy>
 				<width>295</width>
 				<height>32</height>
@@ -444,7 +455,7 @@
 				<info>ListItem.Property(artist)</info>
 			  </control>
 			  <control type="label">
-				<posx>340</posx>
+				<posx>380</posx>
 				<posy>0</posy>
 				<width>295</width>
 				<height>32</height>
@@ -455,9 +466,9 @@
 				<info>ListItem.Property(album)</info>
 			  </control>
 			  <control type="label">
-				<posx>640</posx>
+				<posx>680</posx>
 				<posy>0</posy>
-				<width>510</width>
+				<width>470</width>
 				<height>32</height>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
@@ -474,7 +485,6 @@
 				<align>right</align>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
-				<align>left</align>
 				<info>ListItem.Property(time)</info>
 			  </control>
 			</itemlayout>
@@ -506,8 +516,19 @@
 				<align>left</align>
 				<info>ListItem.Property(file)</info>
 			  </control>
-			  <control type="label">
+			<control type="label">
 				<posx>40</posx>
+				<posy>0</posy>
+				<width>35</width>
+				<height>32</height>
+				<aligny>center</aligny>
+				<textcolor>white</textcolor>
+				<selectedcolor>green</selectedcolor>
+				<align>left</align>
+				<info>ListItem.Property(track)</info>
+			  </control>
+			  <control type="label">
+				<posx>80</posx>
 				<posy>0</posy>
 				<width>295</width>
 				<height>32</height>
@@ -518,7 +539,7 @@
 				<info>ListItem.Property(artist)</info>
 			  </control>
 			  <control type="label">
-				<posx>340</posx>
+				<posx>380</posx>
 				<posy>0</posy>
 				<width>295</width>
 				<height>32</height>
@@ -529,9 +550,9 @@
 				<info>ListItem.Property(album)</info>
 			  </control>
 			  <control type="label">
-				<posx>640</posx>
+				<posx>680</posx>
 				<posy>0</posy>
-				<width>510</width>
+				<width>470</width>
 				<height>32</height>
 				<aligny>center</aligny>
 				<textcolor>white</textcolor>
@@ -548,9 +569,8 @@
 				<align>right</align>
 				<textcolor>white</textcolor>
 				<selectedcolor>green</selectedcolor>
-				<align>left</align>
 				<info>ListItem.Property(time)</info>
-			  </control>         			  
+			  </control>
 			</focusedlayout>
 		  </control>
 		  
