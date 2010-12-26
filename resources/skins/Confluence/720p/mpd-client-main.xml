@@ -1,5 +1,5 @@
 <window>
-  <defaultcontrol>1101</defaultcontrol>
+  <defaultcontrol>1000</defaultcontrol>
   <coordinates>
     <system>1</system>
     <posx>0</posx>
@@ -120,12 +120,6 @@
 					<onclick>Control.SetFocus(1101)</onclick>
 					<visible>true</visible>
 				  </item>
-				  <item id="1002">
-					<label>SCRIPT201</label>
-					<visible>true</visible>
-					<onclick>Control.SetFocus(1201)</onclick>
-					<onright>130</onright>
-				  </item>
 				  <item id="1003">
 					<label>SCRIPT202</label>
 					<visible>true</visible>
@@ -134,8 +128,14 @@
 				  <item id="1004">
 					<label>SCRIPT203</label>
 					<visible>true</visible>
-					<onclick>Control.SetFocus(1401)</onclick>					
-				  </item>				  
+					<onclick>Control.SetFocus(1401)</onclick>
+				  </item>
+				  <item id="1002">
+					<label>SCRIPT201</label>
+					<visible>true</visible>
+					<onclick>Control.SetFocus(1201)</onclick>
+					<onright>130</onright>
+				  </item>
 				</content>						    
 			      <itemlayout width="180" height="50">	
 						<control type="image">
