@@ -178,7 +178,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.exit()
 			return
 		except:
-			self.getControl ( STATUS ).setLabel(STR_NOT_CONNECTED)
+			self._status_notify(STR_NOT_CONNECTED)
 			traceback.print_exc()
 			print 'Cannot connect'
 			p.close()
@@ -187,7 +187,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		try:
 			stats = self.client.stats()
 			self.getControl(SERVER_STATS).setLabel(STR_SERVER_STATS % (stats['artists']+'\n',stats['albums']+'\n',stats['songs']+'\n',self._format_time2(stats['db_playtime'])))
-			self.getControl ( STATUS ).setLabel(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
+			self._status_notify(STR_CONNECTED_TO +' '+self.mpd_host+':'+self.mpd_port )
 			p.update(25,STR_GETTING_QUEUE)
 			self._handle_changes(self.client,['mixer','playlist','player','options'])
 			self._handle_time_changes(self.client,self.client.status())
@@ -419,14 +419,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _update_player_controls(self,current,state):
 		if state['state'] =='play':
 			self.toggleVisible( PLAY, PAUSE )
-			self.getControl( STATUS ).setLabel(STR_PLAYING + ' : ' + self._current_song(current))
+			self._status_notify(STR_PLAYING + ' : ' + self._current_song(current))
 			self.update_playlist('play',current)
 		elif state['state'] == 'pause':
 			self.toggleVisible( PAUSE, PLAY )
-			self.getControl( STATUS ).setLabel(STR_PAUSED + ' : ' + self._current_song(current))
+			self._status_notify(STR_PAUSED + ' : ' + self._current_song(current))
 			self.update_playlist('pause',current)
 		elif state['state'] == 'stop':
-			self.getControl( STATUS ).setLabel(STR_STOPPED)
+			self._status_notify(STR_STOPPED)
 			self.toggleVisible( PAUSE, PLAY )
 			self.update_playlist('stop',current)
 
@@ -511,13 +511,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
 				self.client.add(uri)
-				self.getControl( STATUS ).setLabel(uri+ ' '+STR_WAS_QUEUED)
+				self._status_notify(uri+ ' '+STR_WAS_QUEUED)
 		if self.getFocusId() == ARTIST_BROWSER:
 			item = self.getControl(ARTIST_BROWSER).getSelectedItem()
 			typ = item.getProperty('type')
 			if typ == 'file':
 				self.client.add(item.getProperty(typ))
-				self.getControl( STATUS ).setLabel(item.getProperty(typ)+ ' '+STR_WAS_QUEUED)
+				self._status_notify(item.getProperty(typ)+ ' '+STR_WAS_QUEUED)
 			else:
 				if typ == 'artist':
 					found = self.client.find('artist',item.getProperty('artist'))
@@ -531,7 +531,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					for f_item in found:
 						self.client.add(f_item['file'])
 					self.client.command_list_end()
-					self.getControl( STATUS ).setLabel(status)					
+					self._status_notify(status)					
 
 	def _context_menu(self):
 		if self.getFocusId() == PLAYLIST_BROWSER:
@@ -576,7 +576,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					self.client.update()
 				else:
 					self.client.update(uri)
-				self.getControl( STATUS ).setLabel(STR_UPDATING_LIBRARY+ ' ('+uri+')')
+				self._status_notify(STR_UPDATING_LIBRARY+ ' ('+uri+')')
 						
 	def exit(self):
 		self.disconnect()
@@ -605,6 +605,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,icon))
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
+
+	def _status_notify(self,message):
+		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
+		xbmc.executebuiltin("XBMC.Notification(%s,%s,3000,%s)" % (__scriptname__,message,icon))
+		self.getControl ( 100 ).setLabel(message)
 	
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
@@ -637,10 +642,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						if ret:
 							self.client.rm(kb.getText())
 							self.client.rename(playlist,kb.getText())
-							self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
+							self._status_notify(STR_PLAYLIST_SAVED)
 					else:
 						self.client.rename(playlist,kb.getText())
-						self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)	
+						self._status_notify(STR_PLAYLIST_SAVED)	
 		elif ret == 3:
 			self.client.rm(playlist)
 			
@@ -674,10 +679,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				if ret:
 					self.client.rm(kb.getText())
 					self.client.save(kb.getText())
-					self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
+					self._status_notify(STR_PLAYLIST_SAVED)
 			else:	
 				self.client.save(kb.getText())
-				self.getControl( STATUS ).setLabel(STR_PLAYLIST_SAVED)
+				self._status_notify(STR_PLAYLIST_SAVED)
 	def _consume_mode_toggle(self):
 		if self.getControl(RB_CONSUME_MODE).isSelected():
 			self.client.consume(1)
@@ -722,8 +727,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		except mpd.ProtocolError:
 			traceback.print_exc()
 			self.disconnect()
-			self.getControl( STATUS ).setLabel(STR_NOT_CONNECTED)
+			self._status_notify(STR_NOT_CONNECTED)
 		except mpd.ConnectionError:
 			traceback.print_exc()
 			self.disconnect()
-			self.getControl( STATUS ).setLabel(STR_NOT_CONNECTED)
+			self._status_notify(STR_NOT_CONNECTED)
