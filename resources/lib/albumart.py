@@ -27,6 +27,7 @@ class LocalFetcher(object):
 		if os.path.exists(image_dir):
 			try:
 				for root,dirs,files in os.walk(image_dir):
+					dirs[:] = [] # do NOT search recursive
 					for f in files:
 						if fnmatch.fnmatch(f,self.search_mask):
 							print 'Matched image file %s' % os.path.join(root,f)
@@ -117,4 +118,3 @@ class AllMusicFetcher(object):
 		content = response.read()
 		response.close()
 		return content
-
