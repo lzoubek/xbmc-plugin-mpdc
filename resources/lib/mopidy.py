@@ -155,6 +155,10 @@ class MopidyMPDClient(object):
 		songid = ''
 		while 1:
 			status = self.poller.status()
+			if not 'state' in status:
+				status['state']=''
+			if not 'songid' in status:
+				status['songid'] = ''
 			if not state == status['state']:
 				self._add_for_callback('play')
 				state = status['state']
