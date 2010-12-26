@@ -605,6 +605,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,icon))
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
+
+	def _status_notify(self,message):
+		try:
+			message = message.decode('utf-8')
+			icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
+			xbmc.executebuiltin("XBMC.Notification(%s,%s,3000,%s)" % (__scriptname__,message,icon))
+			self.getControl ( 100 ).setLabel(message)
+		except:
+			pass
 	
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
