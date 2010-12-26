@@ -109,7 +109,8 @@
 			<width>850</width>
 			<height>200</height>
 			<viewtype>wrap</viewtype>
-			<onright>666</onright>
+			<onright>7000</onright>
+			<onup>600</onup>
 			<ondown>1099</ondown>
 			<orientation>horizontal</orientation>
 			<focusposition>0</focusposition>
@@ -201,7 +202,7 @@
 		</control>
     </control>
 
-    <control type="group">
+    <control type="group" id="600">
       <posx>1000</posx>
       <posy>25</posy>
       <description>player control group</description>           
@@ -273,7 +274,7 @@
 		</control>		
     </control>
 
-	<control type="group">
+	<control type="group" id="7000">
       <posx>925</posx>
       <posy>150</posy>
       <description>playing control group</description>  	
