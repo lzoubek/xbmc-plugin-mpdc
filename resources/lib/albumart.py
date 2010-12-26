@@ -20,9 +20,7 @@ class LocalFetcher(object):
 		return image_file
 
 	def get_image_file_name(self,artist,album,file=None):
-		image_file = self._search_for_image(artist,album,file)
-		if image_file == None:
-			return os.path.join(self.media_dir,os.path.dirname(file),'folder.jpg')
+		return os.path.join(self.media_dir,os.path.dirname(file),'folder.jpg')
 
 	def _search_for_image(self,artist,album,file):
 		image_dir = os.path.join(self.media_dir,os.path.dirname(file))
@@ -30,6 +28,7 @@ class LocalFetcher(object):
 			try:
 				for f in os.listdir(image_dir):
 					if fnmatch.fnmatch(f,self.search_mask):
+						print 'Matched image file %s' % os.path.abspath(f)
 						return os.path.abspath(f)
 					print 'File %s did not match' % f
 			except:

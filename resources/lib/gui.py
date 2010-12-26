@@ -257,6 +257,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.last_album = album_image
 		image = self.art_fetcher.get_album_art(current['artist'],current['album'],current['file'])
 		if not image == None:
+			print 'Loading album art image %s' % image
 			self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(True)
 			self.getControl(SONG_INFO_ALBUM_IMAGE).setImage(image)
 		else:
