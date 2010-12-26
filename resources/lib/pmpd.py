@@ -3,6 +3,7 @@ import rmpd,select,threading,traceback,mpd,time
 # polling MPD Client
 class PMPDClient(object):
 	def __init__(self,poll_time=False):
+		print self.__class__.__name__
 		self.client = rmpd.RMPDClient()
 		self.poller = rmpd.RMPDClient()
 		self.time_poller = rmpd.RMPDClient()

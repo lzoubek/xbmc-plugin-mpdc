@@ -3,6 +3,7 @@ import rmpd,select,threading,traceback,mpd,time,Queue
 # polling MPD Client - combatible with mopidy
 class MopidyMPDClient(object):
 	def __init__(self,poll_time=False):
+		print self.__class__.__name__
 		self.client = rmpd.RMPDClient()
 		self.poller = rmpd.RMPDClient()
 		self.time_poller = rmpd.RMPDClient()
@@ -10,8 +11,8 @@ class MopidyMPDClient(object):
 		self.thread = threading.Thread(target=self._poll)
 		self.thread.setDaemon(True)
 		self.event = threading.Event()
-		self.executed_commands= Queue.Queue()
-		self.rec = False
+		self.idle_queue= Queue.Queue()
+		self.recording = False
 		self.recored = []
 		self.time_callback = None
 		self._permitted_commands = []
@@ -28,15 +29,15 @@ class MopidyMPDClient(object):
 		self.time_callback=callback;
 	# need to call try_command before passing any commands to list!	
 	def command_list_ok_begin(self):
-		self.rec = True
-		self.recorded = []
+		self.recording = True
+		self.recorded_command_list = []
 		self.client.command_list_ok_begin()
 	
 	def command_list_end(self):
-		self.rec = False
-		records = list(set(self.recorded))
+		self.recording = False
+		records = list(set(self.recorded_command_list))
 		for record in records:
-			self._simulate_idle(record)
+			self._add_for_callback(record)
 		return self.client.command_list_end()
 
 	def try_command(self,command):
@@ -45,29 +46,30 @@ class MopidyMPDClient(object):
 	def __getattr__(self,attr):
 		if not attr in self._permitted_commands:
 			raise mpd.CommandError('No Permission for :'+attr)
-		if self.rec:
-			self.recorded.append(attr)
+		if self.recording:
+			self.recorded_command_list.append(attr)
 		else:
-			self._simulate_idle(attr)
+			self._add_for_callback(attr)
 		return self.client.__getattr__(attr)
 
-	def _simulate_idle(self,command):
+	def _add_for_callback(self,command):
 		if command in ['play','stop','seekid','next','previous','pause']:
-			self.executed_commands.put('player')
+			self.idle_queue.put('player')
 		elif command in ['consume','repeat','random']:
-			self.executed_commands.put('options')
+			self.idle_queue.put('options')
 		elif command in ['setvol']:
-			self.executed_commands.put('mixer')
+			self.idle_queue.put('mixer')
 		elif command in ['clear','add','load','deleteid']:
-			self.executed_commands.put('playlist')
+			self.idle_queue.put('playlist')
 		elif command in ['rm','save']:
-			self.executed_commands.put('stored_playlist')
+			self.idle_queue.put('stored_playlist')
 		
 	def connect(self,host,port,password=None):
 		self.client.connect(host,port)		
 		self.poller.connect(host,port)
 		if not password==None:
 			self.client.password(password)
+			self.poller.password(password)
 		self._permitted_commands = self.client.commands()
 		self.thread.start()
 		if not self.time_thread == None:
@@ -97,7 +99,7 @@ class MopidyMPDClient(object):
 			print 'waiting for poller thread'
 			if self.thread.isAlive():
 				self.event.set()
-				self.executed_commands.put('exit')
+				self.idle_queue.put('exit')
 				self.thread.join(3)
 				self.event=None
 			print 'done'
@@ -147,13 +149,13 @@ class MopidyMPDClient(object):
 		print 'Starting poller thread'
 		while 1:
 			try:
-				item = 	self.executed_commands.get()
+				item = 	self.idle_queue.get()
 				self.event.wait(0.2)
 				self.callback(self.poller,[item])
 				if self.event.isSet():
 #					print 'poller exited on event'
 					break;
 			except:
-				print "Poller error"
-				traceback.print_exc()
+#				print "Poller error"
+#				traceback.print_exc()
 				return

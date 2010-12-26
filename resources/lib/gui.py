@@ -20,7 +20,7 @@
 # */
 import sys,os,time,re,traceback,threading
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd,mpd,dialog,albumart
+import pmpd,mpd,dialog,albumart,mopidy
 __scriptid__ = 'script.mpdc'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
 __scriptname__ = __addon__.getAddonInfo('name')
@@ -119,12 +119,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def __init__( self, *args, **kwargs ):
 		self.addon = xbmcaddon.Addon(id=__scriptid__)
 		self.time_polling=False
+		if 'false' == self.addon.getSetting('use-idle'):
+			self.client = mopidy.MopidyMPDClient(poll_time = ('true' == self.addon.getSetting('time-polling')))
+		else:
+			self.client = pmpd.PMPDClient(poll_time = ('true' == self.addon.getSetting('time-polling')))
 		if 'true' == self.addon.getSetting('time-polling'):
-			self.client = pmpd.PMPDClient(poll_time=True)
 			self.client.register_time_callback(self._handle_time_changes)
 			self.time_polling = True
-		else:
-			self.client = pmpd.PMPDClient()
 		self.client.register_callback(self._handle_changes)
 		self.profile_id=args[3]
 		self.skin=args[2]
