@@ -611,11 +611,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		try:
 			if self.notification_enabled:
 				self.getControl ( 100 ).setLabel(message)
-				message = message.decode('utf-8')
+				message = message.encode('UTF-8','ignore')
 				icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
 				xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,message,icon))
 		except:
-			print 'Unable to display notify message %s' % message
+			print 'Unable to display notify message'
 			traceback.print_exc()
 	
 	def disconnect(self):
