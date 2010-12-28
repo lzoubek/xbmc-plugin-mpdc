@@ -103,7 +103,7 @@ class AllMusicFetcher(object):
 			f = open(filename,'w')
 			f.write(self._get_file(matches.group('link')))
 			f.close()
-			print 'Image downloaded'
+			print 'Image %s downloaded' %filename
 			return filename
 		return None
 

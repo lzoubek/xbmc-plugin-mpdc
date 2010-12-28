@@ -148,7 +148,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			os.makedirs(art_dir)
 		fetcher_setting = self.addon.getSetting('fetch-albums')
 		if fetcher_setting == '1':
-			self.art_fetcher = albumart.AllMusicFetcher(art_dir,self.addon.getSetting('fetch-cache') == 'true')
+			self.art_fetcher = albumart.AllMusicFetcher(xbmc.translatePath(art_dir),self.addon.getSetting('fetch-cache') == 'true')
 		elif fetcher_setting == '2':
 			self.art_fetcher = albumart.LocalFetcher(xbmc.translatePath(self.addon.getSetting(self.profile_id+'_media_root')),self.addon.getSetting('fetch-search-image'))
 		self.album_fetch_enabled = int(fetcher_setting) > 0
@@ -604,7 +604,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _start_media_player(self):
 		print 'Playing '+self.stream_url
 		icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
-		xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,STR_PLAYING_STREAM,icon))
+		self._status_notify(STR_PLAYING_STREAM)
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
 
 	def _status_notify(self,message):
