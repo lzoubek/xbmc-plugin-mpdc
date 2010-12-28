@@ -30,9 +30,9 @@ class LocalFetcher(object):
 					dirs[:] = [] # do NOT search recursive
 					for f in files:
 						if fnmatch.fnmatch(f,self.search_mask):
-							print 'Matched image file %s' % os.path.join(root,f)
+#							print 'Matched image file %s' % os.path.join(root,f)
 							return os.path.join(root,f)
-						print 'File %s did not match' % os.path.join(root,f)
+#						print 'File %s did not match' % os.path.join(root,f)
 			except:
 				print 'Error searching'
 				traceback.print_exc()
