@@ -222,7 +222,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem.setProperty( 'id', item['id'] )
 			listitem.setProperty( 'artist', item['artist'] )
 			listitem.setProperty( 'album', item['album'] )
-			if not item['track'] == '' and item['track'].find('/') >= 0:
+			listitem.setProperty( 'track',item['track'] )
+			try:
+				listitem.setProperty('track','%02d'%int(item['track']))
+			except:
+				pass
+			if item['track'].find('/') >= 0:
 				listitem.setProperty('track',item['track'].split('/')[0])
 			gen_index=gen_index+1
 			if not item['time'] == '':
