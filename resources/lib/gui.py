@@ -59,7 +59,6 @@ CLICK_ACTIONS = dict({
 ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
 # control IDs
-STATUS = 100
 SERVER_STATS=1009
 PLAY = 668
 PAUSE = 670
@@ -336,7 +335,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					listitem.setIconImage('DefaultFolderBack.png')
 					listitem.setProperty('artist',artist_item.getProperty('artist'))
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
-					for item in self.client.search('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
+					for item in self.client.find('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
 						listitem = xbmcgui.ListItem(label=item['title'])
 						listitem.setProperty('artist',artist_item.getProperty('artist'))
 						listitem.setProperty('type','file')
@@ -612,13 +611,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self._status_notify(STR_PLAYING_STREAM)
 		xbmc.executebuiltin('PlayMedia(%s)' % self.stream_url)
 
-	def _status_notify(self,message):
+	def _status_notify(self,message,title=None):
 		try:
+			if title==None:
+				title = __scriptname__
 			if self.notification_enabled:
-				self.getControl ( 100 ).setLabel(message)
-				message = message.encode('UTF-8','ignore')
 				icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
-				xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (__scriptname__,message,icon))
+				xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (title.encode('UTF-8','ignore'),message.encode('UTF-8','ignore'),icon))
 		except:
 			print 'Unable to display notify message'
 			traceback.print_exc()
