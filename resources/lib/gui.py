@@ -193,7 +193,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self._handle_time_changes(self.client,self.client.status())
 			p.update(50,STR_GETTING_PLAYLISTS)
 			self._update_file_browser()
-			self._update_playlist_browser(self.client.listplaylists())
+			self._update_playlist_browser(self.client)
 			p.update(75,STR_GETTING_ARTISTS)
 			self._update_artist_browser()
 			p.close()
@@ -215,7 +215,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		gen_index=0 # generate index value to each item
 		self.getControl( CURRENT_PLAYLIST ).reset()
 		for item in playlist:
-			self.update_fields(item,['title','artist','album','time','track'])
+			self._update_song_item(item)
 			listitem = xbmcgui.ListItem( label=item['title'])
 			listitem.setProperty( 'index', str(gen_index))
 			listitem.setProperty( 'id', item['id'] )
@@ -243,17 +243,38 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			index = self.getControl( CURRENT_PLAYLIST ).size()-1
 		self.getControl(CURRENT_PLAYLIST).selectItem(index)
 
+	def _update_song_item(self,item):
+		if 'xbmc_updated' in item: # do not update already updated item
+			return
+		self.update_fields(item,['artist','album','title','date','file','name','track','time'])
+		item['xbmc_updated']=True
+		if self._is_stream(item['file']):
+			if not item['name'] == '':
+				item['name'] = '%s (%s)'%(item['name'],item['file'])
+			stream_info = item['title'].split(':')
+			if len(stream_info) == 3:
+				item['artist']=stream_info[0].strip()
+				item['album']=stream_info[2].strip()
+				item['title']=stream_info[1].strip()
+
+	def _is_stream(self,name):
+		return name.startswith('http')
+
 	def _update_song_info(self,current, status):
 		self.getControl(SONG_INFO_GROUP).setVisible(self.time_polling)	
-		self.update_fields(current,['artist','album','title','date','file'])
-		if current['artist']=='' or current['title']=='':
-			self.getControl(SONG_INFO_ATRIST).setLabel(current['file'])
-		else:
+		self._update_song_item(current)
+		if self._is_stream(current['file']):
 			self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
-		if current['album']=='':
-			self.getControl(SONG_INFO_ALBUM).setLabel('')
+			self.getControl(SONG_INFO_ALBUM).setLabel(current['name'])
 		else:
-			self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date'][:4]+')')
+			if current['artist']=='' or current['title']=='':
+				self.getControl(SONG_INFO_ATRIST).setLabel(current['file'])
+			else:
+				self.getControl(SONG_INFO_ATRIST).setLabel(current['artist']+' - '+current['title'])
+			if current['date']=='':
+				self.getControl(SONG_INFO_ALBUM).setLabel(current['album'])
+			else:
+				self.getControl(SONG_INFO_ALBUM).setLabel(current['album']+' ('+current['date'][:4]+')')
 		if not self.album_fetch_enabled:
 			return
 		album_image = self.art_fetcher.get_image_file_name(current['artist'],current['album'],current['file'])
@@ -354,9 +375,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			elif action == ACTION_VOLUME_UP:
 				self.client.setvol(volume + 5)
 
-	def _update_playlist_browser(self,playlists):
+	def _update_playlist_browser(self,client):
 		self.getControl(PLAYLIST_BROWSER).reset()
-		for item in playlists:
+		for item in client.listplaylists():
+#			print client.listplaylistinfo(item['playlist'])
 			listitem = xbmcgui.ListItem(label=item['playlist'])
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
@@ -411,6 +433,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				percent = float(time[0]) / (float(time[1])/100 )
 				self.getControl(SONG_INFO_PROGRESS).setPercent(percent)
 				self.getControl(SONG_INFO_TIME).setLabel(self._format_time(time[0])+' - '+self._format_time(time[1]))
+			else:
+				self.getControl(SONG_INFO_PROGRESS).setPercent(0)
+				self.getControl(SONG_INFO_TIME).setLabel('')
 
 	def _update_volume(self,state):
 		if state['volume']=='-1':
@@ -461,7 +486,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				else:
 					self.getControl(RB_CONSUME_MODE).setSelected(False)					
 			if change == 'stored_playlist':
-				self._update_playlist_browser(poller_client.listplaylists())
+				self._update_playlist_browser(poller_client)
 			if change == 'database':
 				self._update_file_browser(client=poller_client)
 				self._update_artist_browser(client=poller_client)
@@ -485,7 +510,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				obj[field]=''
 
 	def _current_song(self,current) :
-		self.update_fields(current,['artist','album','title'])
+		self._update_song_item(current)
 		try:
 			if current['title'] == '' and current['artist'] == '' and current['album'] == '':
 				ret = current['file']
@@ -576,7 +601,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret == 2:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
-				print 'URI '+uri
 				if uri =='':
 					self.client.update()
 				else:

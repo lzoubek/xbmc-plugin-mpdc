@@ -63,7 +63,7 @@
 			<description>song album</description>
 			<posx>200</posx>
 			<posy>90</posy>
-			<width>400</width>
+			<width>600</width>
 			<height>30</height>
 			<align>left</align>
 			<textcolor>white</textcolor>
