@@ -53,8 +53,7 @@ CLICK_ACTIONS = dict({
 	'1401':'self._playlist_contextmenu()',
 	'1101':'self._playlist_on_click()',
 	'1301':'self._update_artist_browser(artist_item=self.getControl(1301).getSelectedItem())',
-	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())',
-	'671':'self._set_volume()'
+	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())'
 	})
 ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
@@ -371,9 +370,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if self._can_volume:
 			volume = int(self.client.status()['volume'])
 			if action == ACTION_VOLUME_DOWN:
-				self.client.setvol(volume - 5)
+				volume = volume - 5
 			elif action == ACTION_VOLUME_UP:
-				self.client.setvol(volume + 5)
+				volume = volume + 5
+			if volume >=0 or volume <=100:
+				self.client.setvol(volume)
 
 	def _update_playlist_browser(self,client):
 		self.getControl(PLAYLIST_BROWSER).reset()
