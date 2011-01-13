@@ -20,7 +20,7 @@
 # */
 import sys,os,time,re,traceback,threading
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd,mpd,dialog,albumart,mopidy
+import pmpd,mpd,dialog,albumart,mopidy,playercontrols
 __scriptid__ = 'script.mpdc'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
 __scriptname__ = __addon__.getAddonInfo('name')
@@ -40,47 +40,48 @@ ACTIONS = dict({
 	'89':'self._volume(89)'
 	})
 CLICK_ACTIONS = dict({
-	'668':'self.client.play()',
-	'670':'self.client.pause()',
-	'667':'self.client.stop()',
-	'666':'self.client.previous()',
-	'669':'self.client.next()',
-	'700':'self.client.repeat(1)',
-	'701':'self.client.repeat(0)',
-	'702':'self.client.random(1)',
-	'703':'self.client.random(0)',
-	'704':'self._consume_mode_toggle()',
 	'1401':'self._playlist_contextmenu()',
 	'1101':'self._playlist_on_click()',
 	'1301':'self._update_artist_browser(artist_item=self.getControl(1301).getSelectedItem())',
-	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())'
+	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())',
+	'2000':'self._playback_click()',
+	'3000':'self._player_control_click()'
 	})
+PLAYER_CONTROL_ACTIONS = dict({
+	'repeat0':'self.client.repeat(1)',
+	'repeat1':'self.client.repeat(0)',
+	'random0':'self.client.random(1)',
+	'random1':'self.client.random(0)',
+	'consume0':'self.client.consume(1)',
+	'consume1':'self.client.consume(0)',
+	'single0':'self.client.single(1)',
+	'single1':'self.client.single(0)',
+	})
+PLAYBACK_ACTIONS={
+	'pause':'self.client.play()',
+	'play':'self.client.pause()',
+	'stop':'self.client.stop()',
+	'prev':'self.client.previous()',
+	'next':'self.client.next()'
+}
 ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
 # control IDs
 SERVER_STATS=1009
-PLAY = 668
-PAUSE = 670
-PREV = 666
-STOP = 667
-NEXT = 669
-VOLUME = 671 
-REPEAT_OFF = 700
-REPEAT_ON = 701
-SHUFFLE_OFF = 702
-SHUFFLE_ON = 703
+VOLUME = 2001
 CURRENT_PLAYLIST = 1101
 FILE_BROWSER = 1201
 PROFILE=101
 PLAYLIST_BROWSER=1401
 ARTIST_BROWSER=1301
-RB_CONSUME_MODE=704
 SONG_INFO_PROGRESS=991
 SONG_INFO_GROUP=99
 SONG_INFO_TIME=992
 SONG_INFO_ATRIST=993
 SONG_INFO_ALBUM=994
 SONG_INFO_ALBUM_IMAGE=995
+PLAYBACK=2000
+PLAYER_CONTROL=3000
 #String IDs
 STR_STOPPED=__addon__.getLocalizedString(30003)
 STR_PAUSED=__addon__.getLocalizedString(30004)
@@ -113,7 +114,7 @@ STR_PLAYING_STREAM=__addon__.getLocalizedString(30039)
 STR_SERVER_STATS=__addon__.getLocalizedString(30042)
 STR_SAVE_AS=__addon__.getLocalizedString(205)
 class GUI ( xbmcgui.WindowXMLDialog ) :
-	
+
 	def __init__( self, *args, **kwargs ):
 		self.addon = xbmcaddon.Addon(id=__scriptid__)
 		self.time_polling=False
@@ -152,22 +153,24 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.album_fetch_enabled = int(fetcher_setting) > 0
 		self.last_album=''
 		self.notification_enabled = self.addon.getSetting('notify') == 'true'
+		self.controls = playercontrols.Controls(self.skin)
 
-		
 	def onFocus (self,controlId ):
 		self.controlId=controlId
 
 	def onInit (self ):
 		self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(self.album_fetch_enabled)
-		self.getControl( PAUSE ).setVisible( False )
-		self.getControl( PROFILE ).setLabel(self.profile_name)					
+		self.getControl( PROFILE ).setLabel(self.profile_name)
+		self.controls.init_playback_controls(self.getControl(PLAYBACK))
+		self.controls.init_player_controls(self.getControl(PLAYER_CONTROL))
 		self._connect()
+
 	def _connect(self):
 		self.getControl(SONG_INFO_GROUP).setVisible(False)
 		p = xbmcgui.DialogProgress()
 		p.create(STR_CONNECTING_TITLE,STR_CONNECTING_TITLE+' '+self.mpd_host+':'+self.mpd_port)
 		p.update(0)
-		try:				
+		try:
 			print 'Connecting  to  MPD ' + self.mpd_host + ':'+self.mpd_port 
 			self.client.connect(self.mpd_host,int(self.mpd_port),self.mpd_pass)
 		except mpd.CommandError:
@@ -383,7 +386,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem(label=item['playlist'])
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
-			
+
 	def _update_file_browser(self,browser_item=None,client=None,back=False):
 		select_index = 0		
 		index = self.getControl(FILE_BROWSER).getSelectedPosition()
@@ -448,23 +451,20 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.getControl(VOLUME).setPercent(int(state['volume']))
 
 	def _update_player_controls(self,current,state):
+		self.controls.update_playback_controls(self.getControl(PLAYBACK),state)
 		if state['state'] =='play':
-			self.toggleVisible( PLAY, PAUSE )
 			self._status_notify(self._current_song(current),STR_PLAYING)
 			self.update_playlist('play',current)
 		elif state['state'] == 'pause':
-			self.toggleVisible( PAUSE, PLAY )
 			self._status_notify(self._current_song(current),STR_PAUSED)
 			self.update_playlist('pause',current)
 		elif state['state'] == 'stop':
 			self._status_notify(STR_STOPPED)
-			self.toggleVisible( PAUSE, PLAY )
 			self.update_playlist('stop',current)
 
 	def _handle_changes(self,poller_client,changes):
 		state = poller_client.status()
 #		print state
-#		print poller_client.playlistid(state['songid'])
 		print 'Handling changes - ' + str(changes)
 		for change in changes:
 			if change =='mixer':
@@ -474,18 +474,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self._update_player_controls(current,state)
 				self._update_song_info(current,state)
 			if change == 'options':
-				if state['repeat'] == '0':
-					self.toggleVisible( REPEAT_ON, REPEAT_OFF )
-				elif state['repeat'] == '1':
-					self.toggleVisible( REPEAT_OFF, REPEAT_ON )
-				if state['random'] == '0':
-					self.toggleVisible( SHUFFLE_ON, SHUFFLE_OFF )
-				elif state['random'] == '1':
-					self.toggleVisible( SHUFFLE_OFF, SHUFFLE_ON )
-				if state['consume'] == '1':
-					self.getControl(RB_CONSUME_MODE).setSelected(True)
-				else:
-					self.getControl(RB_CONSUME_MODE).setSelected(False)					
+				self.controls.update_player_controls(self.getControl(PLAYER_CONTROL),state)
 			if change == 'stored_playlist':
 				self._update_playlist_browser(poller_client)
 			if change == 'database':
@@ -500,7 +489,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _format_time2(self,time):
 		minutes = (int(time) - ((int(time) / 3600) * 3600))/60
 		return '%d:%d:%02d' % ((int(time) / 3600 ),minutes,(int(time) % 60))
-		
+
 	def toggleVisible(self,cFrom,cTo):
 		self.getControl( cFrom ).setVisible(False)
 		self.getControl( cTo ).setVisible(True)
@@ -522,7 +511,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return 'Error encoding current song'
 
 	def update_playlist(self,state,current) :
-		self.update_fields(current,['id'])		
+		self.update_fields(current,['id'])
 		itemid = current['id']
 		playlist = 	self.getControl(CURRENT_PLAYLIST)
 		for i in range(0,playlist.size()):
@@ -536,7 +525,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			item.setIconImage(state+'-item.png')
 		if state == 'play':
 			self._play_stream()	
-	
+
 	def _queue_item(self):
 		if self.getFocusId() == FILE_BROWSER:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
@@ -607,7 +596,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				else:
 					self.client.update(uri)
 				self._status_notify(uri,STR_UPDATING_LIBRARY)
-						
+
 	def exit(self):
 		self.disconnect()
 		self.close()
@@ -617,8 +606,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if self.getFocusId() == ARTIST_BROWSER:
 			self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0),back=True)
 
-		
-			
 	def _play_stream(self):
 		if self.is_play_stream and not self.stream_url=='':
 			player = xbmc.Player(xbmc.PLAYER_CORE_MPLAYER)
@@ -646,14 +633,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		except:
 			print 'Unable to display notify message'
 			traceback.print_exc()
-	
+
 	def disconnect(self):
 		p = xbmcgui.DialogProgress()
 		p.create(STR_DISCONNECTING_TITLE)
 		p.update(0)
 		self.client.disconnect()
 		p.close()
-	
+
 	def _playlist_contextmenu(self):
 		ret = self.dialog(STR_SELECT_ACTION,[STR_LOAD_ADD,STR_LOAD_REPLACE,STR_RENAME,STR_DELETE])
 		playlist = self.getControl(PLAYLIST_BROWSER).getSelectedItem().getLabel()
@@ -663,7 +650,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		elif ret == 1:
 			stopped = self._stop_if_playing()
 			self.client.stop()
-			self.client.clear()		
+			self.client.clear()
 			self.client.load(playlist)
 			self._status_notify('Playlist %s'%playlist,STR_WAS_QUEUED)
 			if stopped:
@@ -686,14 +673,14 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self._status_notify(kb.getText(),STR_PLAYLIST_SAVED)
 		elif ret == 3:
 			self.client.rm(playlist)
-			
+
 	def dialog(self,title,list):
 		d = dialog.Dialog('menu-dialog.xml',__addon__.getAddonInfo('path'),self.skin,'0')
 		d.list=list
 		d.title = title
 		d.doModal()
 		return d.result
-	
+
 	def _clear_queue(self):
 		self.client.try_command('clear')
 		self.client.stop()
@@ -706,7 +693,19 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if item.getLabel() == playlist:
 				return True
 		return False
-			
+
+	def _playback_click(self):
+		item = self.getControl(PLAYBACK).getSelectedItem()
+		action = item.getProperty('label')
+		if action in PLAYBACK_ACTIONS:
+			self._exec_command(PLAYBACK_ACTIONS[action])
+
+	def _player_control_click(self):
+		item = self.getControl(PLAYER_CONTROL).getSelectedItem()
+		action = item.getProperty('label')+item.getProperty('state')
+		if action in PLAYER_CONTROL_ACTIONS:
+			self._exec_command(PLAYER_CONTROL_ACTIONS[action])
+
 	def _save_queue_as(self):
 		kb = xbmc.Keyboard('playlist',STR_SAVE_AS,False)
 		kb.doModal()
@@ -721,33 +720,29 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			else:	
 				self.client.save(kb.getText())
 				self._status_notify(kb.getText(),STR_PLAYLIST_SAVED)
-	def _consume_mode_toggle(self):
-		if self.getControl(RB_CONSUME_MODE).isSelected():
-			self.client.consume(1)
-		else:
-			self.client.consume(0)
+
 	def _stop_if_playing(self):
 		status = self.client.status()
 		if status['state'] == 'play':
 			self.client.stop()
 			return True
 		return False
-	def _playlist_on_click(self):	
+
+	def _playlist_on_click(self):
 		seekid = self.getControl( CURRENT_PLAYLIST ).getSelectedItem().getProperty('id')
 		status = self.client.status()
 		if status['state'] == 'play' and status['songid'] == seekid:
 			self.client.pause()
 		elif status['state'] == 'pause' and status['songid'] == seekid:
 			self.client.play()
-		else:	
-			self.client.seekid(seekid,0)					
+		else:
+			self.client.seekid(seekid,0)
 			
 	def onAction(self, action):
 		if str(action.getId()) in ACTIONS:
 			command = ACTIONS[str(action.getId())]
 #			print 'action: '+command
 			self._exec_command(command)
-	
 
 	def onClick( self, controlId ):
 		if str(controlId) in CLICK_ACTIONS:
