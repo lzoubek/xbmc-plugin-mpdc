@@ -67,7 +67,6 @@ PLAYBACK_ACTIONS={
 ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
 # control IDs
-SERVER_STATS=1009
 VOLUME = 2001
 CURRENT_PLAYLIST = 1101
 FILE_BROWSER = 1201
@@ -187,8 +186,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return
 		print 'Connected'
 		try:
-			stats = self.client.stats()
-			self.getControl(SERVER_STATS).setLabel(STR_SERVER_STATS % (stats['artists']+'\n',stats['albums']+'\n',stats['songs']+'\n',self._format_time2(stats['db_playtime'])))
 			self._status_notify(self.mpd_host+':'+self.mpd_port,STR_CONNECTED)
 			p.update(25,STR_GETTING_QUEUE)
 			self._handle_changes(self.client,['mixer','playlist','player','options'])
