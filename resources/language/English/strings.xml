@@ -54,9 +54,14 @@
 	<string id="30046">Allmusic.com</string>
 	<string id="30047">local</string>
 	<string id="30048">MPD media root (for local album fetch)</string>
-	<string id="30049">Image mask to search for</string>	
+	<string id="30049">Image mask to search for</string>
 	<string id="30050">Use IDLE command</string>
 	<string id="30051">Enable notification</string>
+	<string id="30052">Force server settings on startup</string>
+	<string id="30053"> - Random</string>
+	<string id="30054"> - Repeat</string>
+	<string id="30055"> - Single</string>
+	<string id="30056"> - Consume</string>
     <string id="200">Queue</string>
     <string id="201">Files</string>
     <string id="202">Artists</string>

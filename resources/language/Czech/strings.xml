@@ -56,6 +56,11 @@
 	<string id="30049">Maska souboru s obalem</string>
 	<string id="30050">Použít příkaz IDLE</string>
 	<string id="30051">Povolit oznamování</string>
+	<string id="30052">Vynutit nastavení servru při startu</string>
+	<string id="30053"> - Random</string>
+	<string id="30054"> - Repeat</string>
+	<string id="30055"> - Single</string>
+	<string id="30056"> - Consume</string>
     <string id="200">Fronta</string>
     <string id="201">Soubory</string>
     <string id="202">Autoři</string>

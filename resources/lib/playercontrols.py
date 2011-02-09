@@ -12,12 +12,12 @@ ctrls = {
 		'random':['OSDRandomOffNF.png','OSDRandomOffFO.png'],
 		'random0':['OSDRandomOffNF.png','OSDRandomOffFO.png'],
 		'random1':['OSDRandomOnNF.png','OSDRandomOnFO.png'],
-		'single':['SingleOnNF.png','SingleOnFO.png'],
-		'single0':['SingleOnNF.png','SingleOnFO.png'],
-		'single1':['SingleOffNF.png','SingleOffFO.png'],
-		'consume':['ConsumeOnNF.png','ConsumeOnFO.png'],
-		'consume0':['ConsumeOnNF.png','ConsumeOnFO.png'],
-		'consume1':['ConsumeOffNF.png','ConsumeOffFO.png']
+		'single':['SingleOffNF.png','SingleOffFO.png'],
+		'single0':['SingleOffNF.png','SingleOffFO.png'],
+		'single1':['SingleOnNF.png','SingleOnFO.png'],
+		'consume':['ConsumeOffNF.png','ConsumeOffFO.png'],
+		'consume0':['ConsumeOffNF.png','ConsumeOffFO.png'],
+		'consume1':['ConsumeOnNF.png','ConsumeOnFO.png']
 	},
 	'PM3.HD': {
 		'prev':['PlayerControls-PrevNF.png','PlayerControls-PrevFO.png'],

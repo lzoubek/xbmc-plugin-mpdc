@@ -188,6 +188,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		try:
 			self._status_notify(self.mpd_host+':'+self.mpd_port,STR_CONNECTED)
 			p.update(25,STR_GETTING_QUEUE)
+			self._force_settings()
 			self._handle_changes(self.client,['mixer','playlist','player','options'])
 			self._handle_time_changes(self.client,self.client.status())
 			p.update(50,STR_GETTING_PLAYLISTS)
@@ -202,6 +203,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			xbmcgui.Dialog().ok('MPD','An error occured, see log')
 			self.exit()		
 
+	def _force_settings(self):
+		if self.addon.getSetting(self.profile_id+'_force_settings') == 'true':
+			for name in ['force_repeat','force_single','force_random','force_consume']:
+				value = self.addon.getSetting(self.profile_id+'_'+name)
+				val = '0'
+				if value == 'true':
+					val = '1'
+				cmd = name[name.rfind('_')+1:]
+				self._exec_command('self.client.%s(%s)' % (cmd,val))
 	def _update_current_queue(self,client=None):
 		state = client.status()
 		playlist = client.playlistinfo()
