@@ -254,7 +254,7 @@
 			<height>50</height>
 			<ondown>1000</ondown>
 			<onup>2000</onup>
-			<onleft>2000</onleft>
+			<onleft>1000</onleft>
 			<viewtype>wrap</viewtype>
 			<orientation>horizontal</orientation>
 			<focusposition>0</focusposition>
