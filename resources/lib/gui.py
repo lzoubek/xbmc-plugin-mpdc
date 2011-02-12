@@ -265,6 +265,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				item['artist']=stream_info[0].strip()
 				item['album']=stream_info[2].strip()
 				item['title']=stream_info[1].strip()
+				return
+			stream_info = item['title'].split('-') # parse stream info reported by MPD
+			if len(stream_info) == 3:
+				item['artist']=stream_info[1].strip()
+				item['album']=stream_info[0].strip()
+				item['title']=stream_info[2].strip()
 
 	def _is_stream(self,name):
 		return name.startswith('http')
