@@ -27,6 +27,8 @@ __scriptname__ = __addon__.getAddonInfo('name')
 #get actioncodes from keymap.xml
 ACTION_SELECT_ITEM = 7
 ACTIONS = dict({
+	'3':'self._action_up()',
+	'4':'self._action_down()',
 	'9':'self._action_back()',
 	'10':'self.exit()',
 	'12':'self.client.pause()',
@@ -35,6 +37,7 @@ ACTIONS = dict({
 	'15':'self.client.previous()',
 	'34':'self._queue_item()',
 	'79':'self.client.play()',
+	'107':'self._action_mousemove()',
 	'117':'self._context_menu()',
 	'88':'self._volume(88)',
 	'89':'self._volume(89)'
@@ -72,6 +75,8 @@ CURRENT_PLAYLIST = 1101
 FILE_BROWSER = 1201
 PROFILE=101
 PLAYLIST_BROWSER=1401
+PLAYLIST_DETAILS=1403
+PLAYLIST_SUM=1405
 ARTIST_BROWSER=1301
 SONG_INFO_PROGRESS=991
 SONG_INFO_GROUP=99
@@ -112,6 +117,7 @@ STR_CLEAR_QUEUE=__addon__.getLocalizedString(30038)
 STR_PLAYING_STREAM=__addon__.getLocalizedString(30039)
 STR_SERVER_STATS=__addon__.getLocalizedString(30042)
 STR_SAVE_AS=__addon__.getLocalizedString(205)
+STR_PLAYLIST_SUM=__addon__.getLocalizedString(30057)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def __init__( self, *args, **kwargs ):
@@ -156,6 +162,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def onFocus (self,controlId ):
 		self.controlId=controlId
+		if controlId == PLAYLIST_BROWSER:
+			self._update_playlist_details()
 
 	def onInit (self ):
 		self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(self.album_fetch_enabled)
@@ -394,17 +402,46 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def _update_playlist_browser(self,client):
 		self.getControl(PLAYLIST_BROWSER).reset()
-		for item in client.listplaylists():
-#			print client.listplaylistinfo(item['playlist'])
+		self.playlists = client.listplaylists()
+		for item in self.playlists:
+			item['data'] = client.listplaylistinfo(item['playlist'])
+			time = 0
+			tracks = 0
+			for song in item['data']:
+				self._update_song_item(song)
+				if not song['time'] == '':
+					time = time + int(song['time'])
+				tracks = tracks + 1
+			item['time'] = self._format_time2(time)
+			item['tracks']=tracks
+			print item
 			listitem = xbmcgui.ListItem(label=item['playlist'])
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
+		self._update_playlist_details()
+
+	def _update_playlist_details(self):
+		if self.getFocusId() == PLAYLIST_BROWSER:
+			item = self.getControl(PLAYLIST_BROWSER).getSelectedItem()
+			for playlist in self.playlists:
+				if playlist['playlist'] == item.getLabel():
+					details = self.getControl(PLAYLIST_DETAILS)
+					if details.size() > 0:
+						if details.getListItem(0).getProperty('playlist') == item.getLabel():
+							return
+					details.reset()
+					self.getControl(PLAYLIST_SUM).setLabel(STR_PLAYLIST_SUM % (playlist['tracks'],playlist['time']))
+					for track in playlist['data']:
+						listitem = xbmcgui.ListItem(label=self._current_song(track))
+						listitem.setProperty('playlist',item.getLabel())
+						listitem.setIconImage('DefaultAudio.png')
+						details.addItem(listitem)
 
 	def _update_file_browser(self,browser_item=None,client=None,back=False):
-		select_index = 0		
+		select_index = 0
 		index = self.getControl(FILE_BROWSER).getSelectedPosition()
 		if client==None:
-			client = self.client				
+			client = self.client
 		if browser_item == None:
 			self.getControl(FILE_BROWSER).reset()
 			dirs = client.lsinfo()
@@ -417,7 +454,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		else:
 			if index == 0 or back:
 				if not self.fb_indexes == []:
-					select_index = self.fb_indexes.pop()			
+					select_index = self.fb_indexes.pop()
 			else:
 				self.fb_indexes.append(index)
 			self.getControl(FILE_BROWSER).reset()
@@ -426,7 +463,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory',os.path.dirname(uri))
 			listitem.setIconImage('DefaultFolderBack.png')
-			self.getControl(FILE_BROWSER).addItem(listitem)		
+			self.getControl(FILE_BROWSER).addItem(listitem)
 		for item in dirs:
 			if 'directory' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['directory']))
@@ -435,10 +472,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				listitem.setIconImage('DefaultFolder.png')
 				self.getControl(FILE_BROWSER).addItem(listitem)
 			elif 'file' in item:
-				listitem = xbmcgui.ListItem( label=os.path.basename(item['file']))			
+				listitem = xbmcgui.ListItem( label=os.path.basename(item['file']))
 				listitem.setProperty('type','file')
 				listitem.setProperty('directory',os.path.dirname(item['file']))
-				listitem.setProperty('file',item['file'])				
+				listitem.setProperty('file',item['file'])
 				listitem.setIconImage('DefaultAudio.png')
 				self.getControl(FILE_BROWSER).addItem(listitem)
 		self.getControl(FILE_BROWSER).selectItem(select_index)
@@ -613,6 +650,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def exit(self):
 		self.disconnect()
 		self.close()
+	def _action_up(self):
+		if self.getFocusId() == PLAYLIST_BROWSER:
+			self._update_playlist_details()
+	def _action_down(self):
+		if self.getFocusId() == PLAYLIST_BROWSER:
+			self._update_playlist_details()
+	def _action_mousemove(self):
+		if self.getFocusId() == PLAYLIST_BROWSER:
+			self._update_playlist_details()
 	def _action_back(self):
 		if self.getFocusId() == FILE_BROWSER:
 			self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0),back=True)

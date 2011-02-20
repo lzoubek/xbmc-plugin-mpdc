@@ -61,6 +61,7 @@
 	<string id="30054"> - Repeat</string>
 	<string id="30055"> - Single</string>
 	<string id="30056"> - Consume</string>
+	<string id="30057">%i skladeb, celkový čas %s</string>
     <string id="200">Fronta</string>
     <string id="201">Soubory</string>
     <string id="202">Autoři</string>
