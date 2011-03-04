@@ -159,6 +159,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.last_album=''
 		self.notification_enabled = self.addon.getSetting('notify') == 'true'
 		self.controls = playercontrols.Controls(self.skin)
+		self.stop_on_exit = self.addon.getSetting(self.profile_id+'_stop_on_exit') == 'true'
 
 	def onFocus (self,controlId ):
 		self.controlId=controlId
@@ -414,7 +415,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				tracks = tracks + 1
 			item['time'] = self._format_time2(time)
 			item['tracks']=tracks
-			print item
 			listitem = xbmcgui.ListItem(label=item['playlist'])
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
@@ -606,6 +606,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _context_menu(self):
 		if self.getFocusId() == PLAYLIST_BROWSER:
 			return self._playlist_contextmenu()
+		if self.getFocusId() == PLAYLIST_DETAILS:
+			return self._playlist_details_contextmenu()
 		if self.getFocusId() == CURRENT_PLAYLIST:
 			if self.getControl(CURRENT_PLAYLIST).size() < 1:
 				return
@@ -694,6 +696,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			traceback.print_exc()
 
 	def disconnect(self):
+		try:
+			if self.stop_on_exit:
+				self.client.stop()
+		except:
+			pass
 		p = xbmcgui.DialogProgress()
 		p.create(STR_DISCONNECTING_TITLE)
 		p.update(0)
@@ -732,7 +739,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self._status_notify(kb.getText(),STR_PLAYLIST_SAVED)
 		elif ret == 3:
 			self.client.rm(playlist)
-
+	def _playlist_details_contextmenu(self):
+		ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE])
 	def dialog(self,title,list):
 		d = dialog.Dialog('menu-dialog.xml',__addon__.getAddonInfo('path'),self.skin,'0')
 		d.list=list
