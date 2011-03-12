@@ -118,6 +118,8 @@ STR_PLAYING_STREAM=__addon__.getLocalizedString(30039)
 STR_SERVER_STATS=__addon__.getLocalizedString(30042)
 STR_SAVE_AS=__addon__.getLocalizedString(205)
 STR_PLAYLIST_SUM=__addon__.getLocalizedString(30057)
+STR_REMOVE_FROM_PLAYLIST=__addon__.getLocalizedString(30059)
+STR_ADD_TO_PLAYLIST=__addon__.getLocalizedString(30060)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def __init__( self, *args, **kwargs ):
@@ -402,6 +404,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				self.client.setvol(volume)
 
 	def _update_playlist_browser(self,client):
+		pos = self.getControl(PLAYLIST_BROWSER).getSelectedPosition()
 		self.getControl(PLAYLIST_BROWSER).reset()
 		self.playlists = client.listplaylists()
 		for item in self.playlists:
@@ -418,24 +421,34 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem(label=item['playlist'])
 			listitem.setIconImage('DefaultPlaylist.png')
 			self.getControl(PLAYLIST_BROWSER).addItem(listitem)
-		self._update_playlist_details()
+		self.getControl(PLAYLIST_BROWSER).selectItem(pos)
+		self._update_playlist_details(force=True,position=pos)
 
-	def _update_playlist_details(self):
-		if self.getFocusId() == PLAYLIST_BROWSER:
+	def _update_playlist_details(self,force=False,position=-1):
+		if position > 0:
+			item = self.getControl(PLAYLIST_BROWSER).getListItem(position)
+		else:
 			item = self.getControl(PLAYLIST_BROWSER).getSelectedItem()
+		if not item == None:
 			for playlist in self.playlists:
 				if playlist['playlist'] == item.getLabel():
 					details = self.getControl(PLAYLIST_DETAILS)
-					if details.size() > 0:
+					if details.size() > 0 and not force:
 						if details.getListItem(0).getProperty('playlist') == item.getLabel():
 							return
+					lastpos = details.getSelectedPosition()
 					details.reset()
 					self.getControl(PLAYLIST_SUM).setLabel(STR_PLAYLIST_SUM % (playlist['tracks'],playlist['time']))
+					index = 0
 					for track in playlist['data']:
 						listitem = xbmcgui.ListItem(label=self._current_song(track))
 						listitem.setProperty('playlist',item.getLabel())
+						listitem.setProperty('file',track['file'])
 						listitem.setIconImage('DefaultAudio.png')
+						listitem.setProperty('pos',str(index))
+						index+=1
 						details.addItem(listitem)
+					details.selectItem(lastpos)
 
 	def _update_file_browser(self,browser_item=None,client=None,back=False):
 		select_index = 0
@@ -577,6 +590,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self._play_stream()	
 
 	def _queue_item(self):
+		if self.getFocusId() == PLAYLIST_DETAILS:
+			item = self.getControl(PLAYLIST_DETAILS).getSelectedItem()
+			self.client.add(item.getProperty('file'))
+			self._status_notify(item.getProperty('file'),STR_WAS_QUEUED)
 		if self.getFocusId() == FILE_BROWSER:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
@@ -740,7 +757,21 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		elif ret == 3:
 			self.client.rm(playlist)
 	def _playlist_details_contextmenu(self):
-		ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE])
+		track = self.getControl(PLAYLIST_DETAILS).getSelectedItem()
+		if not track == None:
+			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_REMOVE_FROM_PLAYLIST])
+			if ret == 0:
+				self._queue_item()
+			elif ret == 1:
+				stopped = self._stop_if_playing()
+				self.client.stop()
+				self.client.clear()
+				self._queue_item()
+				if stopped:
+					self.client.play()
+			elif ret == 2:
+				self.client.playlistdelete(track.getProperty('playlist'),track.getProperty('pos'))
+
 	def dialog(self,title,list):
 		d = dialog.Dialog('menu-dialog.xml',__addon__.getAddonInfo('path'),self.skin,'0')
 		d.list=list

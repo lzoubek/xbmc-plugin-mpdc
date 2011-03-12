@@ -64,6 +64,8 @@
 	<string id="30056"> - Consume</string>
 	<string id="30057">%i tracks, total time %s</string>
 	<string id="30058">Stop playing on exit</string>
+	<string id="30059">Remove from playlist</string>
+	<string id="30060">Add to playlist</string>
     <string id="200">Queue</string>
     <string id="201">Files</string>
     <string id="202">Artists</string>
