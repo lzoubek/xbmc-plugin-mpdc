@@ -120,6 +120,7 @@ STR_SAVE_AS=__addon__.getLocalizedString(205)
 STR_PLAYLIST_SUM=__addon__.getLocalizedString(30057)
 STR_REMOVE_FROM_PLAYLIST=__addon__.getLocalizedString(30059)
 STR_ADD_TO_PLAYLIST=__addon__.getLocalizedString(30060)
+STR_SELECT_PLAYLIST=__addon__.getLocalizedString(30061)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def __init__( self, *args, **kwargs ):
@@ -424,6 +425,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl(PLAYLIST_BROWSER).selectItem(pos)
 		self._update_playlist_details(force=True,position=pos)
 
+	def _playlists_as_array(self):
+		ret = []
+		for item in self.playlists:
+			pl = ('%s ('+STR_PLAYLIST_SUM+')') % (item['playlist'],item['tracks'],item['time'])
+			ret.append(pl)
+		return ret
 	def _update_playlist_details(self,force=False,position=-1):
 		if position > 0:
 			item = self.getControl(PLAYLIST_BROWSER).getListItem(position)
@@ -643,18 +650,48 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret==2:
 				self._clear_queue()
 		if self.getFocusId() == ARTIST_BROWSER:
-			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE])
-			if ret == 0:
-				self._queue_item()
-			if ret == 1:
-				self._queue_item(replace=True)
-		if self.getFocusId() == FILE_BROWSER:
-			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_UPDATE_LIBRARY])
+			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_ADD_TO_PLAYLIST])
 			if ret == 0:
 				self._queue_item()
 			if ret == 1:
 				self._queue_item(replace=True)
 			if ret == 2:
+				ret2 = xbmcgui.Dialog().select(STR_SELECT_PLAYLIST,self._playlists_as_array())
+				if ret2>=0:
+					playlist=self.playlists[ret2]['playlist']
+					item = self.getControl(ARTIST_BROWSER).getSelectedItem()
+					typ = item.getProperty('type')
+					if typ == 'file':
+						print item.getProperty(typ)
+						self.client.playlistadd(playlist,item.getProperty(typ))
+					else:
+						if typ == 'artist':
+							found = self.client.find('artist',item.getProperty('artist'))
+							status = item.getProperty('artist')
+						elif typ == 'album':
+							found = self.client.find('artist',item.getProperty('artist'),'album',item.getProperty('album'))
+							status = item.getProperty('artist')
+						if not found == []:
+							self.client.try_command('add')
+							self.client.command_list_ok_begin()
+							for f_item in found:
+								self.client.playlistadd(playlist,f_item['file'])
+							self.client.command_list_end()
+
+		if self.getFocusId() == FILE_BROWSER:
+			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_ADD_TO_PLAYLIST,STR_UPDATE_LIBRARY])
+			if ret == 0:
+				self._queue_item()
+			if ret == 1:
+				self._queue_item(replace=True)
+			if ret == 2:
+				ret2 = xbmcgui.Dialog().select(STR_SELECT_PLAYLIST,self._playlists_as_array())
+				if ret2>=0:
+					item = self.getControl(FILE_BROWSER).getSelectedItem()
+					playlist=self.playlists[ret2]['playlist']
+					uri = item.getProperty(item.getProperty('type'))
+					self.client.playlistadd(playlist,uri)
+			if ret == 3:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
 				if uri =='':
