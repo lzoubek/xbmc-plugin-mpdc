@@ -589,7 +589,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if state == 'play':
 			self._play_stream()	
 
-	def _queue_item(self):
+	def _queue_item(self,replace=False):
+		if replace:
+			stopped = self._stop_if_playing()
+			self.client.stop()
+			self.client.clear()
+			self._queue_item()
 		if self.getFocusId() == PLAYLIST_DETAILS:
 			item = self.getControl(PLAYLIST_DETAILS).getSelectedItem()
 			self.client.add(item.getProperty('file'))
@@ -619,6 +624,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self.client.add(f_item['file'])
 					self.client.command_list_end()
 					self._status_notify(status,STR_WAS_QUEUED)
+		if stopped and replace:
+			self.client.play()
 
 	def _context_menu(self):
 		if self.getFocusId() == PLAYLIST_BROWSER:
@@ -640,23 +647,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret == 0:
 				self._queue_item()
 			if ret == 1:
-				stopped = self._stop_if_playing()
-				self.client.stop()
-				self.client.clear()
-				self._queue_item()
-				if stopped:
-					self.client.play()
+				self._queue_item(replace=True)
 		if self.getFocusId() == FILE_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_UPDATE_LIBRARY])
 			if ret == 0:
 				self._queue_item()
 			if ret == 1:
-				stopped = self._stop_if_playing()
-				self.client.stop()
-				self.client.clear()
-				self._queue_item()
-				if stopped:
-					self.client.play()
+				self._queue_item(replace=True)
 			if ret == 2:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
@@ -763,12 +760,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret == 0:
 				self._queue_item()
 			elif ret == 1:
-				stopped = self._stop_if_playing()
-				self.client.stop()
-				self.client.clear()
-				self._queue_item()
-				if stopped:
-					self.client.play()
+				self._queue_item(replace=True)
 			elif ret == 2:
 				self.client.playlistdelete(track.getProperty('playlist'),track.getProperty('pos'))
 
