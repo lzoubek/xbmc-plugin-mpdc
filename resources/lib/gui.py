@@ -439,6 +439,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			item = self.getControl(PLAYLIST_BROWSER).getListItem(position)
 		else:
 			item = self.getControl(PLAYLIST_BROWSER).getSelectedItem()
+		if len(self.playlists) == 0:
+			self.getControl(PLAYLIST_DETAILS).reset()
+			self.getControl(PLAYLIST_SUM).setLabel('')
+			return
 		if not item == None:
 			for playlist in self.playlists:
 				if playlist['playlist'] == item.getLabel():
@@ -461,6 +465,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						listitems.append(listitem)
 					details.addItems(listitems)
 					details.selectItem(lastpos)
+		
 
 	def _update_file_browser(self,browser_item=None,client=None,back=False):
 		select_index = 0
