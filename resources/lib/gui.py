@@ -123,7 +123,7 @@ STR_REMOVE_FROM_PLAYLIST=__addon__.getLocalizedString(30059)
 STR_ADD_TO_PLAYLIST=__addon__.getLocalizedString(30060)
 STR_SELECT_PLAYLIST=__addon__.getLocalizedString(30061)
 STR_WAS_ADDED_TO_PLAYLIST=__addon__.getLocalizedString(30062)
-
+STR_NEW_PLAYLIST=__addon__.getLocalizedString(30063)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def __init__( self, *args, **kwargs ):
@@ -429,7 +429,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self._update_playlist_details(force=True,position=pos)
 
 	def _playlists_as_array(self):
-		ret = []
+		ret = [STR_NEW_PLAYLIST]
 		for item in self.playlists:
 			pl = ('%s ('+STR_PLAYLIST_SUM+')') % (item['playlist'],item['tracks'],item['time'])
 			ret.append(pl)
@@ -666,9 +666,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret == 1:
 				self._queue_item(replace=True)
 			if ret == 2:
-				ret2 = xbmcgui.Dialog().select(STR_SELECT_PLAYLIST,self._playlists_as_array())
-				if ret2>=0:
-					playlist=self.playlists[ret2]['playlist']
+				playlist = self._select_playlist_dialog()
+				if not playlist == None:
 					item = self.getControl(ARTIST_BROWSER).getSelectedItem()
 					typ = item.getProperty('type')
 					if typ == 'file':
@@ -696,10 +695,9 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if ret == 1:
 				self._queue_item(replace=True)
 			if ret == 2:
-				ret2 = xbmcgui.Dialog().select(STR_SELECT_PLAYLIST,self._playlists_as_array())
-				if ret2>=0:
+				playlist = self._select_playlist_dialog()
+				if not playlist == None:
 					item = self.getControl(FILE_BROWSER).getSelectedItem()
-					playlist=self.playlists[ret2]['playlist']
 					uri = item.getProperty(item.getProperty('type'))
 					self.client.playlistadd(playlist,uri)
 					self._status_notify(uri,STR_WAS_ADDED_TO_PLAYLIST%playlist)
@@ -711,6 +709,23 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				else:
 					self.client.update(uri)
 				self._status_notify(uri,STR_UPDATING_LIBRARY)
+
+	def _select_playlist_dialog(self):
+		ret = xbmcgui.Dialog().select(STR_SELECT_PLAYLIST,self._playlists_as_array())
+		if ret==0:
+			kb = xbmc.Keyboard('',STR_SELECT_PLAYLIST,False)
+			kb.doModal()
+			if kb.isConfirmed():
+				if self._exists_playlist(kb.getText()):
+					dialog = xbmcgui.Dialog()
+					ret = dialog.yesno(STR_Q__PLAYLIST_EXISTS, STR_Q_OVERWRITE)
+					if ret:
+						self.client.rm(kb.getText())
+						return kb.getText()
+				else:
+					return kb.getText()
+		if ret > 0:
+			return self.playlists[ret-1]['playlist']
 
 	def exit(self):
 		self.disconnect()
