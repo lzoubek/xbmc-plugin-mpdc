@@ -122,6 +122,8 @@ STR_PLAYLIST_SUM=__addon__.getLocalizedString(30057)
 STR_REMOVE_FROM_PLAYLIST=__addon__.getLocalizedString(30059)
 STR_ADD_TO_PLAYLIST=__addon__.getLocalizedString(30060)
 STR_SELECT_PLAYLIST=__addon__.getLocalizedString(30061)
+STR_WAS_ADDED_TO_PLAYLIST=__addon__.getLocalizedString(30062)
+
 class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def __init__( self, *args, **kwargs ):
@@ -665,8 +667,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					item = self.getControl(ARTIST_BROWSER).getSelectedItem()
 					typ = item.getProperty('type')
 					if typ == 'file':
-						print item.getProperty(typ)
 						self.client.playlistadd(playlist,item.getProperty(typ))
+						self._status_notify(item.getProperty(typ),STR_WAS_ADDED_TO_PLAYLIST%playlist)
 					else:
 						if typ == 'artist':
 							found = self.client.find('artist',item.getProperty('artist'))
@@ -680,6 +682,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 							for f_item in found:
 								self.client.playlistadd(playlist,f_item['file'])
 							self.client.command_list_end()
+							self._status_notify(status,STR_WAS_ADDED_TO_PLAYLIST%playlist)
 
 		if self.getFocusId() == FILE_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_ADD_TO_PLAYLIST,STR_UPDATE_LIBRARY])
@@ -694,6 +697,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					playlist=self.playlists[ret2]['playlist']
 					uri = item.getProperty(item.getProperty('type'))
 					self.client.playlistadd(playlist,uri)
+					self._status_notify(uri,STR_WAS_ADDED_TO_PLAYLIST%playlist)
 			if ret == 3:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
