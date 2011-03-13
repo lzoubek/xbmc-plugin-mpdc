@@ -70,6 +70,7 @@ PLAYBACK_ACTIONS={
 ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
 # control IDs
+TAB_CONTROL=1000
 VOLUME = 2001
 CURRENT_PLAYLIST = 1101
 FILE_BROWSER = 1201
@@ -716,9 +717,21 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self._update_playlist_details()
 	def _action_back(self):
 		if self.getFocusId() == FILE_BROWSER:
-			self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0),back=True)
-		if self.getFocusId() == ARTIST_BROWSER:
-			self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0),back=True)
+			if self.getControl(FILE_BROWSER).getSelectedPosition() == 0:
+				self.setFocus(self.getControl(TAB_CONTROL))
+			else:
+				self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0),back=True)
+		elif self.getFocusId() == PLAYLIST_DETAILS:
+			self.setFocus(self.getControl(PLAYLIST_BROWSER))
+		elif self.getFocusId() == ARTIST_BROWSER:
+			if self.getControl(ARTIST_BROWSER).getSelectedPosition() == 0:
+				self.setFocus(self.getControl(TAB_CONTROL))
+			else:
+				self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0),back=True)
+		elif self.getFocusId() == TAB_CONTROL:
+			self.exit()
+		elif self.getFocusId() in [PLAYBACK,PLAYER_CONTROL,PLAYLIST_BROWSER,CURRENT_PLAYLIST]:
+			self.setFocus(self.getControl(TAB_CONTROL))
 
 	def _play_stream(self):
 		if self.is_play_stream and not self.stream_url=='':
