@@ -447,6 +447,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					details.reset()
 					self.getControl(PLAYLIST_SUM).setLabel(STR_PLAYLIST_SUM % (playlist['tracks'],playlist['time']))
 					index = 0
+					listitems = []
 					for track in playlist['data']:
 						listitem = xbmcgui.ListItem(label=self._current_song(track))
 						listitem.setProperty('playlist',item.getLabel())
@@ -454,7 +455,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						listitem.setIconImage('DefaultAudio.png')
 						listitem.setProperty('pos',str(index))
 						index+=1
-						details.addItem(listitem)
+						listitems.append(listitem)
+					details.addItems(listitems)
 					details.selectItem(lastpos)
 
 	def _update_file_browser(self,browser_item=None,client=None,back=False):
