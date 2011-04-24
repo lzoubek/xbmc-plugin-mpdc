@@ -800,13 +800,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if ret == 0:
 			self.client.load(playlist)
 			self._status_notify('Playlist %s'%playlist,STR_WAS_QUEUED)
+			if self.play_on_queued:
+				self.client.play()
 		elif ret == 1:
 			stopped = self._stop_if_playing()
 			self.client.stop()
 			self.client.clear()
 			self.client.load(playlist)
 			self._status_notify('Playlist %s'%playlist,STR_WAS_QUEUED)
-			if stopped:
+			if stopped or self.play_on_queued:
 				self.client.play()
 		elif ret == 2:
 				kb = xbmc.Keyboard(playlist,STR_RENAME,False)
