@@ -18,7 +18,7 @@ class RMPDClient(xbmpc.MPDClient):
     def _wrap(self, func, args):
         try:
             return func(*args)
-        except (socket.error, mpd.MPDError):
+        except (socket.error, xbmpc.MPDError):
             self._reconnect()
             return func(*args)
 

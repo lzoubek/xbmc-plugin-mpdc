@@ -187,7 +187,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		try:
 			print 'Connecting  to  MPD ' + self.mpd_host + ':'+self.mpd_port 
 			self.client.connect(self.mpd_host,int(self.mpd_port),self.mpd_pass)
-		except mpd.CommandError:
+		except xbmpc.CommandError:
 			traceback.print_exc()
 			formatted_lines = traceback.format_exc().splitlines()
 			xbmcgui.Dialog().ok(STR_NOT_CONNECTED,formatted_lines[-1])
@@ -919,15 +919,15 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _exec_command(self,command):
 		try:
 			exec(command)
-		except mpd.CommandError:
+		except xbmpc.CommandError:
 			traceback.print_exc()
 			formatted_lines = traceback.format_exc().splitlines()
 			xbmcgui.Dialog().ok('MPD',formatted_lines[-1])
-		except mpd.ProtocolError:
+		except xbmpc.ProtocolError:
 			traceback.print_exc()
 			self.disconnect()
 			self._status_notify(STR_NOT_CONNECTED)
-		except mpd.ConnectionError:
+		except xbmpc.ConnectionError:
 			traceback.print_exc()
 			self.disconnect()
 			self._status_notify(STR_NOT_CONNECTED)

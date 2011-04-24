@@ -32,10 +32,10 @@ class PMPDClient(object):
 
 	def try_command(self,command):
 		if not command in self._permitted_commands:
-			raise mpd.CommandError('No Permission for :'+command)
+			raise xbmpc.CommandError('No Permission for :'+command)
 	def __getattr__(self,attr):
 		if not attr in self._permitted_commands:
-			raise mpd.CommandError('No Permission for :'+attr)
+			raise xbmpc.CommandError('No Permission for :'+attr)
 		return self.client.__getattr__(attr)
 		
 	def connect(self,host,port,password=None):
