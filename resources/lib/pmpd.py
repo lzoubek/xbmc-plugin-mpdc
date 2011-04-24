@@ -1,4 +1,4 @@
-import rmpd,select,threading,traceback,mpd,time
+import rmpd,select,threading,traceback,xbmpc,time
 
 # polling MPD Client
 class PMPDClient(object):

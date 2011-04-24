@@ -27,7 +27,7 @@ ACTION_CLOSE = [10]
 STATUS = 100
 SETTINGS = 101
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
-import gui,mpd,dialog
+import gui,xbmpc,dialog
 
 STATUS_ON='on'
 STATUS_OFF='off'
@@ -67,7 +67,7 @@ class MpdProfile:
 		if not self.enabled:
 			return
 		try:
-			client = mpd.MPDClient()
+			client = xbmpc.MPDClient()
 			client.connect(self.host,int(self.port))
 			client.close()
 			client.disconnect()
@@ -112,8 +112,8 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 		p.close()
 	    	
 	def onAction(self, action):
-		if action.getId() in ACTION_CLOSE:						
-			self.close()		
+		if action.getId() in ACTION_CLOSE:
+			self.close()
 	
 	def onClick( self, controlId ):
 		if controlId == SETTINGS:

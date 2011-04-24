@@ -1,4 +1,4 @@
-import rmpd,select,threading,traceback,mpd,time,Queue
+import rmpd,select,threading,traceback,xbmpc,time,Queue
 
 # polling MPD Client - combatible with mopidy
 class MopidyMPDClient(object):
