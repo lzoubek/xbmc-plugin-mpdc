@@ -166,6 +166,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.notification_enabled = self.addon.getSetting('notify') == 'true'
 		self.controls = playercontrols.Controls(self.skin)
 		self.stop_on_exit = self.addon.getSetting(self.profile_id+'_stop_on_exit') == 'true'
+		self.play_on_queued= self.addon.getSetting(self.profile_id+'_play_on_queued') == 'true'
 
 	def onFocus (self,controlId ):
 		self.controlId=controlId
@@ -602,12 +603,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if state == 'play':
 			self._play_stream()	
 
-	def _queue_item(self,replace=False):
+	def _queue_item(self,replace=False,play=False):
 		if replace:
 			stopped = self._stop_if_playing()
 			self.client.stop()
 			self.client.clear()
-			self._queue_item()
+			self._queue_item(play=stopped or play)
 		if self.getFocusId() == PLAYLIST_DETAILS:
 			item = self.getControl(PLAYLIST_DETAILS).getSelectedItem()
 			self.client.add(item.getProperty('file'))
@@ -637,7 +638,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self.client.add(f_item['file'])
 					self.client.command_list_end()
 					self._status_notify(status,STR_WAS_QUEUED)
-		if stopped and replace:
+		if play or self.play_on_queued:
 			self.client.play()
 
 	def _context_menu(self):
