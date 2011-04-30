@@ -243,6 +243,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem.setProperty( 'artist', item['artist'] )
 			listitem.setProperty( 'album', item['album'] )
 			listitem.setProperty( 'track',item['track'] )
+			listitem.setProperty( 'url', item['file'] )
 			try:
 				listitem.setProperty('track','%02d'%int(item['track']))
 			except:
@@ -649,13 +650,21 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		if self.getFocusId() == CURRENT_PLAYLIST:
 			if self.getControl(CURRENT_PLAYLIST).size() < 1:
 				return
-			ret = self.dialog(STR_SELECT_ACTION,[STR_REMOVE_FROM_QUEUE,STR_SAVE_QUEUE_AS,STR_CLEAR_QUEUE])
+			ret = self.dialog(STR_SELECT_ACTION,[STR_REMOVE_FROM_QUEUE,STR_SAVE_QUEUE_AS,STR_CLEAR_QUEUE,STR_ADD_TO_PLAYLIST])
 			if ret==0:
 				self.client.deleteid(self.getControl(CURRENT_PLAYLIST).getSelectedItem().getProperty('id'))
 			if ret==1:
 				self._save_queue_as()
 			if ret==2:
 				self._clear_queue()
+			if ret==3:
+				playlist = self._select_playlist_dialog()
+				if not playlist == None:
+					item = self.getControl(CURRENT_PLAYLIST).getSelectedItem()
+					if not item == None:
+						uri = item.getProperty('url')
+						self.client.playlistadd(playlist,uri)
+						self._status_notify(uri,STR_WAS_ADDED_TO_PLAYLIST%playlist)
 		if self.getFocusId() == ARTIST_BROWSER:
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_ADD_TO_PLAYLIST])
 			if ret == 0:
