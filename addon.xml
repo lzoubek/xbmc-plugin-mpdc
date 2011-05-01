@@ -12,8 +12,8 @@
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
     <summary lang="en">An MPD client</summary>
-    <summary lang="cz">MPD klient</summary>
+    <summary lang="cs">MPD klient</summary>
     <description lang="en">MPDClient allows you to drive your MPD server directly from XBMC. Currently supports 3 server profiles, player commands, queue navigation, file browser, artist browser, playlist browser. Please visit http://github.com/lzoubek/xbmc-plugin-mpdc for any issues or suggestions</description>
-    <description lang="cz">MPD klient umožňuje ovládat MPD server přímo z XBMC. Momentálně podporuje 3 profily, ovládání přehrávání, navigaci ve frontě, procházení souborů, umělců a playlistů. Pokud máte jakékoliv náměty nebo potíže, navštivte http://github.com/lzoubek/xbmc-plugin-mpdc</description>
+    <description lang="cs">MPD klient umožňuje ovládat MPD server přímo z XBMC. Momentálně podporuje 3 profily, ovládání přehrávání, navigaci ve frontě, procházení souborů, umělců a playlistů. Pokud máte jakékoliv náměty nebo potíže, navštivte http://github.com/lzoubek/xbmc-plugin-mpdc</description>
   </extension>
 </addon>
