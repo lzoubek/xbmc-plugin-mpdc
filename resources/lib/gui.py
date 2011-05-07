@@ -609,7 +609,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			stopped = self._stop_if_playing()
 			self.client.stop()
 			self.client.clear()
-			self._queue_item(play=stopped or play)
+			return self._queue_item(play=stopped or play)
 		if self.getFocusId() == PLAYLIST_DETAILS:
 			item = self.getControl(PLAYLIST_DETAILS).getSelectedItem()
 			self.client.add(item.getProperty('file'))
