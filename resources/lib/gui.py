@@ -670,6 +670,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						self.client.playlistadd(playlist,uri)
 						self._status_notify(uri,STR_WAS_ADDED_TO_PLAYLIST%playlist)
 		if self.getFocusId() == ARTIST_BROWSER:
+			if self.getControl(ARTIST_BROWSER).size() < 2:
+				return
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_ADD_TO_PLAYLIST])
 			if ret == 0:
 				self._queue_item()
@@ -699,6 +701,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 							self._status_notify(status,STR_WAS_ADDED_TO_PLAYLIST%playlist)
 
 		if self.getFocusId() == FILE_BROWSER:
+			if self.getControl(FILE_BROWSER).size() < 2:
+				return
 			ret = self.dialog(STR_SELECT_ACTION,[STR_QUEUE_ADD,STR_QUEUE_REPLACE,STR_ADD_TO_PLAYLIST,STR_UPDATE_LIBRARY])
 			if ret == 0:
 				self._queue_item()
@@ -808,6 +812,8 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		p.close()
 
 	def _playlist_contextmenu(self):
+		if self.getControl(PLAYLIST_BROWSER).size() < 1:
+			return
 		ret = self.dialog(STR_SELECT_ACTION,[STR_LOAD_ADD,STR_LOAD_REPLACE,STR_RENAME,STR_DELETE])
 		playlist = self.getControl(PLAYLIST_BROWSER).getSelectedItem().getLabel()
 		if ret == 0:
