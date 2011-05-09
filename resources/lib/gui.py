@@ -591,7 +591,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def update_playlist(self,state,current) :
 		self.update_fields(current,['id'])
 		itemid = current['id']
-		playlist = 	self.getControl(CURRENT_PLAYLIST)
+		playlist = self.getControl(CURRENT_PLAYLIST)
 		for i in range(0,playlist.size()):
 			item = playlist.getListItem(i)
 			item.setIconImage('')
@@ -612,16 +612,20 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return self._queue_item(play=stopped or play)
 		if self.getFocusId() == PLAYLIST_DETAILS:
 			item = self.getControl(PLAYLIST_DETAILS).getSelectedItem()
-			self.client.add(item.getProperty('file'))
-			self._status_notify(item.getProperty('file'),STR_WAS_QUEUED)
+			if not item == None:
+				self.client.add(item.getProperty('file'))
+				self._status_notify(item.getProperty('file'),STR_WAS_QUEUED)
 		if self.getFocusId() == FILE_BROWSER:
 				item = self.getControl(FILE_BROWSER).getSelectedItem()
 				uri = item.getProperty(item.getProperty('type'))
-				self.client.add(uri)
-				self._status_notify(uri,STR_WAS_QUEUED)
+				if not uri=='':
+					self.client.add(uri)
+					self._status_notify(uri,STR_WAS_QUEUED)
 		if self.getFocusId() == ARTIST_BROWSER:
 			item = self.getControl(ARTIST_BROWSER).getSelectedItem()
 			typ = item.getProperty('type')
+			if typ == '':
+				return
 			if typ == 'file':
 				self.client.add(item.getProperty(typ))
 				self._status_notify(item.getProperty(typ),STR_WAS_QUEUED)
