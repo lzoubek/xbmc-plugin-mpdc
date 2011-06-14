@@ -1,3 +1,5 @@
+[B]1.0.5[/B]
+- released for eden
 [B]1.0.4[/B]
 - added: Polish translation thanks to Marek Lawicki
 - fixed: items were queued twice when replacing queue
