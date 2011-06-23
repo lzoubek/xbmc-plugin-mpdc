@@ -1,4 +1,4 @@
-[B]1.0.5[/B]
+[B]2.0.4[/B]
 - released for eden
 [B]1.0.4[/B]
 - added: Polish translation thanks to Marek Lawicki
