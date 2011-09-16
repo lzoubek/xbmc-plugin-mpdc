@@ -325,13 +325,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			client = self.client
 		if artist_item==None:
 			self.getControl(ARTIST_BROWSER).reset()
-			artists = self.client.list('artist')
-			artists.sort()
+			#artists = self.client.list('artist')
+			#artists.sort()
 			listitem = xbmcgui.ListItem(label='..')
 			listitem.setIconImage('DefaultFolderBack.png')
 			listitem.setProperty('type','')
 			self.getControl(ARTIST_BROWSER).addItem(listitem)			
-			for item in artists:
+			for item in self.client.list('artist'):
 				if not item=='':
 					listitem = xbmcgui.ListItem(label=item)
 					listitem.setProperty('artist',item)
