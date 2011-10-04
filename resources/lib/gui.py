@@ -238,10 +238,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl( CURRENT_PLAYLIST ).reset()
 		for item in playlist:
 			self._update_song_item(item)
+			print [item]
 			listitem = xbmcgui.ListItem( label=item['title'])
 			listitem.setProperty( 'index', str(gen_index))
 			listitem.setProperty( 'id', item['id'] )
-			listitem.setProperty( 'artist', item['artist'] )
+			listitem.setProperty( 'artist', str(item['artist']) )
 			listitem.setProperty( 'album', item['album'] )
 			listitem.setProperty( 'track',item['track'] )
 			listitem.setProperty( 'url', item['file'] )
