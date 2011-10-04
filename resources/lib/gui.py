@@ -177,7 +177,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl(SONG_INFO_ALBUM_IMAGE).setVisible(self.album_fetch_enabled)
 		self.getControl( PROFILE ).setLabel(self.profile_name)
 		self.controls.init_playback_controls(self.getControl(PLAYBACK))
-		self.controls.init_player_controls(self.getControl(PLAYER_CONTROL))
 		self._connect()
 
 	def _connect(self):
@@ -198,11 +197,13 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			return
 		print 'Connected'
 		try:
+			status = self.client.status()
+			self.controls.init_player_controls(self.getControl(PLAYER_CONTROL),status)
 			self._status_notify(self.mpd_host+':'+self.mpd_port,STR_CONNECTED)
 			p.update(25,STR_GETTING_QUEUE)
 			self._force_settings()
 			self._handle_changes(self.client,['mixer','playlist','player','options'])
-			self._handle_time_changes(self.client,self.client.status())
+			self._handle_time_changes(self.client,status)
 			p.update(50,STR_GETTING_PLAYLISTS)
 			self._update_file_browser()
 			self._update_playlist_browser(self.client)

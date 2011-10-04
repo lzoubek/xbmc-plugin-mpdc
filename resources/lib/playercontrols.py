@@ -81,8 +81,11 @@ class Controls(object):
 		ctr
 	def init_playback_controls(self,listview):
 		listview.addItems([self._create_control('prev'),self._create_control('stop'),self._create_control('pause'),self._create_control('next')])
-	def init_player_controls(self,listview):
-		listview.addItems([self._create_control('random'),self._create_control('repeat'),self._create_control('single'),self._create_control('consume')])
+
+	def init_player_controls(self,listview,status):
+		for key in ['random','repeat','single','consume']:
+			if key in status:
+				listview.addItem(self._create_control(key))
 	
 	def update_playback_controls(self,listview,status):
 		item = listview.getListItem(2)
