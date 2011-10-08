@@ -409,7 +409,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _update_playlist_browser(self,client):
 		pos = self.getControl(PLAYLIST_BROWSER).getSelectedPosition()
 		self.getControl(PLAYLIST_BROWSER).reset()
-		self.playlists = client.listplaylists()
+		self.playlists = []
+		try:
+			self.playlists = client.listplaylists()
+		except:
+			#in case server does not support this command
+			pass
 		for item in self.playlists:
 			item['data'] = client.listplaylistinfo(item['playlist'])
 			time = 0
