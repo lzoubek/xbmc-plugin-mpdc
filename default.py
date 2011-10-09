@@ -27,8 +27,8 @@ ACTION_CLOSE = [9,10]
 STATUS = 100
 SETTINGS = 101
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
-import gui,xbmpc,dialog
-
+import gui,xbmpc
+import mpdcdialog as dialog
 STATUS_ON='on'
 STATUS_OFF='off'
 STR_CONNECTING=__addon__.getLocalizedString(30007)

@@ -20,7 +20,8 @@
 # */
 import sys,os,time,re,traceback,threading
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd,xbmpc,dialog,albumart,playercontrols
+import pmpd,xbmpc,albumart,playercontrols
+import mpdcdialog as dialog
 __scriptid__ = 'script.mpdc'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
 __scriptname__ = __addon__.getAddonInfo('name')
