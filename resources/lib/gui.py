@@ -154,7 +154,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.is_play_stream = False
 		if self.addon.getSetting(self.profile_id+'_play_stream') == 'true':
 			self.is_play_stream = True
-		art_dir = os.path.join( self.addon.getAddonInfo('profile'),'albums' )
+		art_dir = xbmc.translatePath(os.path.join( self.addon.getAddonInfo('profile'),'albums'))
 		if not os.path.exists(art_dir):
 			os.makedirs(art_dir)
 		fetcher_setting = self.addon.getSetting('fetch-albums')
