@@ -41,7 +41,8 @@ ACTIONS = dict({
 	'107':'self._action_mousemove()',
 	'117':'self._context_menu()',
 	'88':'self._volume(88)',
-	'89':'self._volume(89)'
+	'89':'self._volume(89)',
+	'92':'self._action_back()'
 	})
 CLICK_ACTIONS = dict({
 	'1401':'self._playlist_contextmenu()',
@@ -930,6 +931,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.seekid(seekid,0)
 			
 	def onAction(self, action):
+		print 'Action id=%s buttonCode=%s amount1=%s amount2=%s' % (action.getId(),action.getButtonCode(),action.getAmount1(),action.getAmount2())
 		if str(action.getId()) in ACTIONS:
 			command = ACTIONS[str(action.getId())]
 #			print 'action: '+command
