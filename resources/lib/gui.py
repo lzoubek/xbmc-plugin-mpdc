@@ -405,7 +405,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 				volume = volume - 5
 			elif action == ACTION_VOLUME_UP:
 				volume = volume + 5
-			if volume >=0 or volume <=100:
+			if volume >=0 and volume <=100:
 				self.client.setvol(volume)
 
 	def _update_playlist_browser(self,client):
