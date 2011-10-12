@@ -23,7 +23,7 @@ import xbmc,xbmcaddon,xbmcgui,xbmcplugin
 __scriptid__ = 'script.mpdc'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
 SERVER_LIST = 120
-ACTION_CLOSE = [9,10]
+ACTION_CLOSE = [9,10,92]
 STATUS = 100
 SETTINGS = 101
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
