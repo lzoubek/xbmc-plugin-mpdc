@@ -193,7 +193,7 @@
     </control>
 
 		<control type="group" id="600">
-		<posx>1050</posx>
+		<posx>1034</posx>
 		<posy>25</posy>
 		<description>player control group</description>
 		<control type="list" id="2000">
@@ -330,6 +330,8 @@
 			<posx>10</posx>
 			<posy>10</posy>
 			<onup>3000</onup>
+			<onleft>3000</onleft>
+			<onright>3000</onright>
 			<width>350</width>
 			<height>300</height>
 			<focusposition>0</focusposition>
