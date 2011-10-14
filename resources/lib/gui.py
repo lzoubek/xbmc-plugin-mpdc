@@ -50,6 +50,8 @@ CLICK_ACTIONS = dict({
 	'1301':'self._update_artist_browser(artist_item=self.getControl(1301).getSelectedItem())',
 	'1201':'self._update_file_browser(browser_item=self.getControl(1201).getSelectedItem())',
 	'2000':'self._playback_click()',
+	'2502':'self._volume(89)',
+	'2503':'self._volume(88)',
 	'3000':'self._player_control_click()',
 	'3101':'self._toggle_output()'
 	})
@@ -75,7 +77,8 @@ ACTION_VOLUME_UP=88
 ACTION_VOLUME_DOWN=89
 # control IDs
 TAB_CONTROL=1000
-VOLUME = 2001
+VOLUME_GROUP = 2500
+VOLUME_STATUS = 2501
 CURRENT_PLAYLIST = 1101
 FILE_BROWSER = 1201
 PROFILE=101
@@ -565,12 +568,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def _update_volume(self,state):
 		if state['volume']=='-1':
-			self.getControl(VOLUME).setVisible(False)
+			self.getControl(VOLUME_GROUP).setVisible(False)
 			self._can_volume=False
 		else:
 			self._can_volume=True
-			self.getControl(VOLUME).setVisible(True)
-			self.getControl(VOLUME).setPercent(int(state['volume']))
+			self.getControl(VOLUME_GROUP).setVisible(True)
+			self.getControl(VOLUME_STATUS).setPercent(int(state['volume']))
 
 	def _update_player_controls(self,current,state):
 		self.controls.update_playback_controls(self.getControl(PLAYBACK),state)
