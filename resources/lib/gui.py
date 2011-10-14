@@ -972,7 +972,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self.client.seekid(seekid,0)
 			
 	def onAction(self, action):
-		print 'Action id=%s buttonCode=%s amount1=%s amount2=%s' % (action.getId(),action.getButtonCode(),action.getAmount1(),action.getAmount2())
+		# print 'Action id=%s buttonCode=%s amount1=%s amount2=%s' % (action.getId(),action.getButtonCode(),action.getAmount1(),action.getAmount2())
 		if str(action.getId()) in ACTIONS:
 			command = ACTIONS[str(action.getId())]
 #			print 'action: '+command
