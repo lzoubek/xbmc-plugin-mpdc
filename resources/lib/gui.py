@@ -460,7 +460,6 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		except:
 			#in case server does not support this command
 			pass
-		print self.playlists
 		for item in self.playlists:
 			item['data'] = client.listplaylistinfo(item['playlist'])
 			time = 0
@@ -520,6 +519,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 	def _update_file_browser(self,browser_item=None,client=None,back=False):
 		select_index = 0
 		index = self.getControl(FILE_BROWSER).getSelectedPosition()
+		firstitem= None
 		if client==None:
 			client = self.client
 		if browser_item == None:
@@ -528,7 +528,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory','')
 			listitem.setIconImage('DefaultFolderBack.png')
-			self.getControl(FILE_BROWSER).addItem(listitem)
+			firstitem = listitem
 		elif browser_item.getProperty('type') == 'file':
 			return
 		else:
@@ -543,21 +543,29 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory',os.path.dirname(uri))
 			listitem.setIconImage('DefaultFolderBack.png')
-			self.getControl(FILE_BROWSER).addItem(listitem)
+			firstitem = listitem
+		file_items = []
+		dir_items = []
 		for item in dirs:
 			if 'directory' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['directory']))
 				listitem.setProperty('type','directory')
 				listitem.setProperty('directory',item['directory'])
 				listitem.setIconImage('DefaultFolder.png')
-				self.getControl(FILE_BROWSER).addItem(listitem)
+				dir_items.append(listitem)
 			elif 'file' in item:
 				listitem = xbmcgui.ListItem( label=os.path.basename(item['file']))
 				listitem.setProperty('type','file')
 				listitem.setProperty('directory',os.path.dirname(item['file']))
 				listitem.setProperty('file',item['file'])
 				listitem.setIconImage('DefaultAudio.png')
-				self.getControl(FILE_BROWSER).addItem(listitem)
+				file_items.append(listitem)
+		dir_items = sorted(dir_items,key=lambda i:i.getLabel())
+		if not firstitem == None:
+			dir_items.insert(0,firstitem)
+		for i in sorted(file_items,key=lambda i:i.getLabel()):
+			dir_items.append(i)
+		self.getControl(FILE_BROWSER).addItems(dir_items)
 		self.getControl(FILE_BROWSER).selectItem(select_index)
 
 	def _handle_time_changes(self,poller_client,status):
