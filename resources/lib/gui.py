@@ -456,10 +456,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.getControl(PLAYLIST_BROWSER).reset()
 		self.playlists = []
 		try:
-			self.playlists = client.listplaylists()
+			self.playlists = sorted(client.listplaylists(), key=lambda pls: pls['playlist'])
 		except:
 			#in case server does not support this command
 			pass
+		print self.playlists
 		for item in self.playlists:
 			item['data'] = client.listplaylistinfo(item['playlist'])
 			time = 0
