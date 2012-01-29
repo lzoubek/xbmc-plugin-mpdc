@@ -20,7 +20,7 @@
 # */
 import sys,os,time,re,traceback,threading
 import xbmc,xbmcaddon,xbmcgui,xbmcplugin
-import pmpd,xbmpc,albumart,playercontrols
+import pmpd,xbmpc,albumart,playercontrols,cache
 import mpdcdialog as dialog
 __scriptid__ = 'script.mpdc'
 __addon__ = xbmcaddon.Addon(id=__scriptid__)
@@ -157,6 +157,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
 		self.fb_indexes = []
 		self.ab_indexes = []
+		self.cache = cache.MPDCache(__addon__)
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
@@ -367,13 +368,16 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			client = self.client
 		if artist_item==None:
 			self.getControl(ARTIST_BROWSER).reset()
-			#artists = self.client.list('artist')
-			#artists.sort()
+			artists = self.cache.getArtists()
+			if [] == artists:
+				artists = self.client.list('artist')
+				artists.sort()
+				self.cache.putArtists(artists)
 			listitem = xbmcgui.ListItem(label='..')
 			listitem.setIconImage('DefaultFolderBack.png')
 			listitem.setProperty('type','')
 			self.getControl(ARTIST_BROWSER).addItem(listitem)			
-			for item in self.client.list('artist'):
+			for item in artists:
 				if not item=='':
 					listitem = xbmcgui.ListItem(label=item)
 					listitem.setProperty('artist',item)
@@ -603,6 +607,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if change == 'stored_playlist':
 				self._update_playlist_browser(poller_client)
 			if change == 'database':
+				self.cache.clear()
 				self._update_file_browser(client=poller_client)
 				self._update_artist_browser(client=poller_client)
 			if change == 'playlist':
