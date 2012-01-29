@@ -94,8 +94,8 @@ class PMPDClient(object):
 				pass
 			try:
 				print 'waiting for time poller thread'
+				self.time_event.set()
 				if self.time_thread.isAlive():
-					self.time_event.set()
 					self.time_thread.join(3)
 					self.time_event=None
 				print 'done'
