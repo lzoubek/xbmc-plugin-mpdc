@@ -157,7 +157,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
 		self.fb_indexes = []
 		self.ab_indexes = []
-		self.cache = cache.MPDCache(__addon__)
+		self.cache = cache.MPDCache(__addon__,self.profile_id)
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
@@ -378,17 +378,18 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem(label='..')
 			listitem.setIconImage('DefaultFolderBack.png')
 			listitem.setProperty('type','')
-			self.getControl(ARTIST_BROWSER).addItem(listitem)			
+			items_artists = [listitem]
 			for item in artists:
 				if not item=='':
 					listitem = xbmcgui.ListItem(label=item)
 					listitem.setProperty('artist',item)
 					listitem.setProperty('type','artist')
 					listitem.setIconImage('DefaultMusicArtists.png')
-					self.getControl(ARTIST_BROWSER).addItem(listitem)
+					items_artists.append(listitem)
 			if back:
 					if not self.ab_indexes == []:
 						select_index = self.ab_indexes.pop()
+			self.getControl(ARTIST_BROWSER).addItems(items_artists)
 			self.getControl(ARTIST_BROWSER).selectItem(select_index)
 		else:
 			typ = artist_item.getProperty('type')
