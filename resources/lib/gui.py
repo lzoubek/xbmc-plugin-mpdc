@@ -255,10 +255,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem( label=item['title'])
 			listitem.setProperty( 'index', str(gen_index))
 			listitem.setProperty( 'id', item['id'] )
-			listitem.setProperty( 'artist', item['artist'] )
-			listitem.setProperty( 'album', item['album'] )
-			listitem.setProperty( 'track',item['track'] )
-			listitem.setProperty( 'url', item['file'] )
+			listitem.setProperty( 'artist', unicode(item['artist']) )
+			listitem.setProperty( 'album', unicode(item['album']) )
+			listitem.setProperty( 'track', unicode(item['track']) )
+			listitem.setProperty( 'url', unicode(item['file']) )
 			try:
 				listitem.setProperty('track','%02d'%int(item['track']))
 			except:
