@@ -157,7 +157,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
 		self.fb_indexes = []
 		self.ab_indexes = []
-		self.cache = cache.MPDCache(__addon__,self.profile_id)
+		self.cache = cache.MPDCache(__addon__)
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
@@ -255,10 +255,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem( label=item['title'])
 			listitem.setProperty( 'index', str(gen_index))
 			listitem.setProperty( 'id', item['id'] )
-			listitem.setProperty( 'artist', unicode(item['artist']) )
-			listitem.setProperty( 'album', unicode(item['album']) )
-			listitem.setProperty( 'track', unicode(item['track']) )
-			listitem.setProperty( 'url', unicode(item['file']) )
+			listitem.setProperty( 'artist', item['artist'] )
+			listitem.setProperty( 'album', item['album'] )
+			listitem.setProperty( 'track',item['track'] )
+			listitem.setProperty( 'url', item['file'] )
 			try:
 				listitem.setProperty('track','%02d'%int(item['track']))
 			except:
@@ -378,18 +378,17 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			listitem = xbmcgui.ListItem(label='..')
 			listitem.setIconImage('DefaultFolderBack.png')
 			listitem.setProperty('type','')
-			items_artists = [listitem]
+			self.getControl(ARTIST_BROWSER).addItem(listitem)			
 			for item in artists:
 				if not item=='':
 					listitem = xbmcgui.ListItem(label=item)
 					listitem.setProperty('artist',item)
 					listitem.setProperty('type','artist')
 					listitem.setIconImage('DefaultMusicArtists.png')
-					items_artists.append(listitem)
+					self.getControl(ARTIST_BROWSER).addItem(listitem)
 			if back:
 					if not self.ab_indexes == []:
 						select_index = self.ab_indexes.pop()
-			self.getControl(ARTIST_BROWSER).addItems(items_artists)
 			self.getControl(ARTIST_BROWSER).selectItem(select_index)
 		else:
 			typ = artist_item.getProperty('type')
@@ -403,17 +402,27 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						select_index = self.ab_indexes.pop()
 				else:
 					self.ab_indexes.append(index)
+				# *srl_2013-06-24_resets*
+	                        srl_artist = artist_item.getProperty('artist')
+        	                srl_artist_album = artist_item.getProperty('album')
+				# *srl_2013-06-24_resets* end
 				self.getControl(ARTIST_BROWSER).reset()
 				if typ == 'artist':					
-					listitem = xbmcgui.ListItem(label='.. %s' % artist_item.getProperty('artist'))
+					# *srl_2013-06-24_resets* listitem = xbmcgui.ListItem(label='.. %s' % artist_item.getProperty('artist'))
+                                        listitem = xbmcgui.ListItem(label='.. %s' % srl_artist)
+					# *srl_2013-06-24_resets* end
 					listitem.setIconImage('DefaultFolderBack.png')
 					listitem.setProperty('type','')
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
-					albums = self.client.list('album','artist',artist_item.getProperty('artist'))
+					# *srl_2013-06-24_resets* albums = self.client.list('album','artist',artist_item.getProperty('artist'))
+                                        albums = self.client.list('album','artist',srl_artist)
+					# *srl_2013-06-24_resets* end
 					sorted_albums = {}
 					spaces=''
 					for item in albums:
-						date = self.client.list('date','album',item,'artist',artist_item.getProperty('artist'))
+						# *srl_2013-06-24_resets* date = self.client.list('date','album',item,'artist',artist_item.getProperty('artist'))
+                                                date = self.client.list('date','album',item,'artist',srl_artist)
+						# *srl_2013-06-24_resets* end
 						date = date[0]
 						if date =='':
 							date = spaces
@@ -421,24 +430,36 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 						sorted_albums[date[:4]] = item
 					for item in sorted(sorted_albums,reverse=True):
 						listitem = xbmcgui.ListItem(label=sorted_albums[item])
-						listitem.setProperty('artist',artist_item.getProperty('artist'))
+						# *srl_2013-06-24_resets* listitem.setProperty('artist',artist_item.getProperty('artist'))
+                                                listitem.setProperty('artist',srl_artist)
+						# *srl_2013-06-24_resets* end
 						listitem.setProperty('type','album')
 						listitem.setProperty('album',sorted_albums[item])
 						listitem.setIconImage('DefaultMusicAlbums.png')
 						listitem.setProperty( 'time', item )
 						self.getControl(ARTIST_BROWSER).addItem(listitem)
 				elif typ == 'album':
-					listitem = xbmcgui.ListItem(label='..  %s - %s'%(artist_item.getProperty('artist'),artist_item.getProperty('album')))
+					# *srl_2013-06-24_resets* listitem = xbmcgui.ListItem(label='..  %s - %s'%(artist_item.getProperty('artist'),artist_item.getProperty('album')))
+                                        listitem = xbmcgui.ListItem(label='..  %s - %s'%(srl_artist,srl_artist_album))
+					# *srl_2013-06-24_resets* end
 					listitem.setProperty('type','artist')
 					listitem.setIconImage('DefaultFolderBack.png')
-					listitem.setProperty('artist',artist_item.getProperty('artist'))
+                                        # *srl_2013-06-24_resets* listitem.setProperty('artist',artist_item.getProperty('artist'))
+ 					listitem.setProperty('artist',srl_artist)
+					# *srl_2013-06-24_resets* end
 					self.getControl(ARTIST_BROWSER).addItem(listitem)
-					for item in self.client.find('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
+					# *srl_2013-06-24_resets* for item in self.client.find('artist',artist_item.getProperty('artist'),'album',artist_item.getProperty('album')):
+                                        for item in self.client.find('artist',srl_artist,'album',srl_artist_album):
+					# *srl_2013-06-24_resets* end
 						listitem = xbmcgui.ListItem(label=item['title'])
-						listitem.setProperty('artist',artist_item.getProperty('artist'))
+						# *srl_2013-06-24_resets* listitem.setProperty('artist',artist_item.getProperty('artist'))
+                                                listitem.setProperty('artist',srl_artist)
+						# *srl_2013-06-24_resets* end
 						listitem.setProperty('type','file')
 						listitem.setProperty('file',item['file'])
-						listitem.setProperty('album',artist_item.getProperty('album'))
+						# *srl_2013-06-24_resets* listitem.setProperty('album',artist_item.getProperty('album'))
+                                                listitem.setProperty('album',srl_artist_album)
+						# *srl_2013-06-24_resets* end
 						listitem.setProperty( 'time', self._format_time(item['time']) )
 						listitem.setIconImage('DefaultAudio.png')
 						self.getControl(ARTIST_BROWSER).addItem(listitem)
@@ -540,8 +561,11 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 					select_index = self.fb_indexes.pop()
 			else:
 				self.fb_indexes.append(index)
-			self.getControl(FILE_BROWSER).reset()
-			uri = browser_item.getProperty('directory')
+			# *srl_2013-06-24_resets* self.getControl(FILE_BROWSER).reset()
+			# uri = browser_item.getProperty('directory')
+                        uri = browser_item.getProperty('directory')
+                        self.getControl(FILE_BROWSER).reset()
+			# *srl_2013-06-24_resets* end
 			dirs = client.lsinfo(uri)
 			listitem = xbmcgui.ListItem( label='..')
 			listitem.setProperty('directory',os.path.dirname(uri))
