@@ -157,7 +157,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.mpd_pass = self.addon.getSetting(self.profile_id+'_mpd_pass')
 		self.fb_indexes = []
 		self.ab_indexes = []
-		self.cache = cache.MPDCache(__addon__)
+		self.cache = cache.MPDCache(__addon__,self.profile_id)
 		if self.mpd_pass == '':
 			self.mpd_pass = None
 		self.is_play_stream = False
