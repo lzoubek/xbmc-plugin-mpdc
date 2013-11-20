@@ -16,7 +16,7 @@
     <summary lang="en">An MPD client</summary>
     <summary lang="cs">MPD klient</summary>
     <summary lang="pl">Klient MPD</summary>
-    <description lang="en">MPDClient allows you to drive your MPD server directly from XBMC. Currently supports player commands, queue navigation, file browser, artist browser, playlist browser.</description>
+    <description lang="en">MPDClient allows you to drive your MPD server directly from XBMC. Currently supports player commands, queue navigation, file browser, artist browser, playlist browser. (Icons by DryIcons)</description>
     <description lang="cs">MPD klient umožňuje ovládat MPD server přímo z XBMC. Momentálně podporuje ovládání přehrávání, navigaci ve frontě, procházení souborů, umělců a playlistů.</description>
     <description lang="pl">MPDClient umożliwia sterowanie serwerem MPD bezpośrednio z XBMC. Obecnie udostępnia 3 profile serwera, polecenia odtwarzania, nawigację kolejki, przeglądarkę plików, przeglądarkę wykonawców, przeglądarkę list odtwarzania.</description>
     <description lang="fr">MPDClient permet de piloter votre serveur MPD directement depuis XBMC. Il supporte les commandes de lecture, navigation dans les playlists, parcourir les fichiers, les artites et les

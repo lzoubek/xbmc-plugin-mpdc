@@ -69,11 +69,21 @@
   <string id="30062">Přidán do %s</string>
   <string id="30063"> * Nový playlist *</string>
   <string id="30064">Začít přehrávat při přidání položky do fronty</string>
+  <string id="30065">[B]Nové hledání[/B]</string>
+  <string id="30066">Přehrávat</string>
+  <string id="30067">Zastavit</string>
+  <string id="30068">Pozastavit</string>
+  <string id="30069">Předchozí skladba</string>
+  <string id="30070">Další skladba</string>
   <string id="200">Fronta</string>
   <string id="201">Soubory</string>
   <string id="202">Autoři</string>
   <string id="203">Playlisty</string>
   <string id="204">Vyprázdnit</string>
   <string id="205">Uložit jako</string>
+  <string id="206">Vyhledat autora</string>
+  <string id="207">Vyhledat album</string>
+  <string id="208">Vyhledat skladbu</string>
+  <string id="209">Vyhledat</string>
 </strings>
 

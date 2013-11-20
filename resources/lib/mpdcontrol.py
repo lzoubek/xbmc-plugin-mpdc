@@ -22,157 +22,343 @@
 import xbmcaddon,xbmcplugin,xbmc,xbmcgui
 import os,sys
 import mpdutil as util
+import xbmpc
 
-__addon__ = xbmcaddon.Addon(id='plugin.audio.mpdc')
-__str__ = __addon__.getLocalizedString
-__sett__ = __addon__.getSetting
+try:
+    __addon__ = xbmcaddon.Addon(id='plugin.audio.mpdc')
+    _ = __addon__.getLocalizedString
+except:
+    def lang(id):
+        return 'String ID %d' % id
+    _ = lang
 
-class MPDQueue(object):
-    def __init__(self,key,client):
+try:
+    import StorageServer
+except:
+    print 'Using dummy storage server'
+    import storageserverdummy as StorageServer
+
+class MPDController():
+
+    def __init__(self,host,port,password,settings):
+        self.host = host
+        self.port = port
+        self.password = password
+        self.settings = settings
+        self.mpd = None
+
+    def connect(self):
+        client = xbmpc.MPDClient()
+        print 'Connecting...'
+        client.connect(self.host,int(self.port))
+        if not self.password == '':
+            client.password(self.password)
+            print 'Password sent'
+        print 'Connected to MPD server'
         self.mpd = client
-        self.key = key
+
+    def disconnect(self):
+        self.mpd.close()
+        self.mpd.disconnect()
+        self.mpd = None
+
+    def modules(self):
+        if self.mpd == None:
+            raise Exception('Not connected, cannot initialize modules')
+        return [(MPDQueue(self.mpd,self.settings),True),
+                (MPDPlayerControl(self.mpd,self.settings),True),
+                (MPDSearchRoot(self.mpd,self.settings),True),
+                (MPDSearchArtist(self.mpd,self.settings),False),
+                (MPDSearchAlbum(self.mpd,self.settings),False),
+                (MPDSearchSong(self.mpd,self.settings),False),
+                (MPDArtists(self.mpd,self.settings),True),
+                (MPDFiles(self.mpd,self.settings),True),
+                (MPDPlaylists(self.mpd,self.settings),True)]
 
     def run(self,params):
         print params
-        action = params[self.key]
-        if 'list' == action:
-            self.list()
-        elif 'play' == action:
-            return self.play(params['id'])
-        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        modules = self.modules()
+        if params == {}:
+            result = []
+            for m,visible in modules:
+                if visible:
+                    result.append(m.root())
+            return result
+        if params.has_key('m'):
+            for m,visible in modules:
+                if params['m'] == m.key:
+                    return m.run(params)
+            else:
+                raise Exception('No module found to run')
+
+class MPDBase(object):
+    def __init__(self,key,name,client,settings,icon=''):
+        self.mpd = client
+        self.key = key
+        self.name = name
+        self.settings = settings
+        self.icon = icon
+        self.cache = StorageServer.StorageServer('script_mpdc_'+self.key, 24)
+
+    def getSetting(self,name):
+        if self.settings.has_key(name):
+            return self.settings[name]
+        return ''
+
+    def module(self,clazz):
+        return clazz(self.mpd,self.settings)
+
+    def run(self,params):
+        return []
+
+    def item_dummy(self):
+        return {'type':'dummy'}
+
+    def item_play(self,path=''):
+        return {'type':'play','path':path}
+
+    def item_dir(self,title='',params={},icon='',menu=[],info={}):
+        '''
+        creates a directory item        
+        '''
+        return {'type':'dir','m':self.key,'title':title,'icon':icon,'params':params,'menu':menu,'info':info}
+
+    def item_menu(self,params={}):
+        params.update({'m':self.key})
+        return params
+
+    def item_audio(self,title='',params={},icon='',menu=[],info={},playable=False):
+        return {'type':'audio','m':self.key,'title':title,'icon':icon,'params':params,'menu':menu,'info':info,'play':playable}
+    
+    def item_notify(self,title='',message='',icon=''):
+        return {'type':'notify','title':title,'message':message,'icon':icon}
+
+    def item_func(self,func=''):
+        return {'type':'func','func':func}
+
+    def item_refresh(self):
+        return self.item_func(func='Container.Refresh')
+    
+
+    def item_sort(self,keys=[]):
+        return {'type':'sort','keys':keys}
+
+    def root(self):
+        return self.item_dir(title=self.name,params={'root':''},icon=self.icon)
+
+def controls(func):
+    """
+        Decorator to 'inject' control menuItems
+    """
+    def wrap(*arg):
+        self = arg[0]
+        res = func(*arg)
+        return self.module(MPDPlayerControl).menu_items() + res
+    return wrap
+
+
+class MPDQueue(MPDBase):
+
+    def __init__(self,client,settings):
+        MPDBase.__init__(self,'queue',_(200),client,settings)
+
+    def run(self,params):
+        if params.has_key('play'):
+            return self.play(params['play'])
+        if params.has_key('qf'):
+            return self.queue_file(params['path'],params['replace'].lower() == 'true')
+        if params.has_key('qp'):
+            return self.queue_playlist(params['name'],params['replace'].lower() == 'true')
+        if params.has_key('qa'):
+            album = None
+            if params.has_key('album'):
+                album = params['album']
+            return self.queue_album(params['artist'],album,params['replace'].lower() == 'true')
+        else:
+            return self.list()
 
     def play(self,id):
         self.mpd.seekid(id,0)
-        xbmc.executebuiltin('Container.Refresh')
+        return [self.item_refresh()]
+
+    @controls
+    def menu_items(self):
+        return []
 
     def list(self):
         playlist = self.mpd.playlistinfo()
-        print playlist
         current = util.fix_keys(self.mpd.currentsong(),['id'])
+        yield self.item_dummy()
         for item in playlist:
             info = util.get_info_labels_from_queued_item(item)
             title = util.format_song(info)
             if current['id'] == item['id']:
-                title = '* %s' % title
-            util.add_song(title,{self.key:'play','id':item['id']},infoLabels=info,menuItems={})
+                title = '[B]* %s *[/B]' % title
+            yield self.item_audio(title=title,params={'play':item['id']},info=info,menu=self.menu_items())
 
-class MPDControl(object):
-    def __init__(self,key,client):
-        self.mpd = client
-        self.key = key
+    def item_menu_queue_file(self,path,replace):
+        return self.item_menu(params={'qf':'#','path':path,'replace':str(replace)})
 
-    def run(self,params):
-        print params
-        action = params[self.key]
-        if 'list' == action:
-            self.list()
-        elif 'play_stream' == action:
-            return self.play_stream()
-        elif 'play' == action:
-            self.mpd.play()
-            return self.refresh()
-        elif 'stop' == action:
-            self.mpd.stop()
-            return self.refresh()
-        elif 'pause' == action:
-            self.mpd.pause()
-            return self.refresh()
-        elif 'next' == action:
-            self.mpd.next()
-            return self.refresh()
-        elif 'prev' == action:
-            self.mpd.previous()
-            return self.refresh()
-        xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-    def refresh(self):
-        xbmc.executebuiltin('Container.Refresh')
-        util.notify_status(self.mpd)
-
-    def list(self):
-        status = self.mpd.status()
-        print status
-        print self.mpd.currentsong()
-        if status['state'] == 'pause' or status['state'] == 'stop':
-            util.add_song('Play',{self.key:'play'})
-        else:
-            util.add_song('Pause',{self.key:'pause'})
-
-        util.add_song('Stop',{self.key:'stop'})
-        util.add_song('Next',{self.key:'next'})
-        util.add_song('Previous',{self.key:'prev'})
-        if not __sett__('stream_url') == '' and status['state'] == 'play':
-            util.add_song(__str__(30039),{self.key:'play_stream'},playable='true')
-
-    def get_stream(self):
-        stream_url = __sett__('stream_url')
-        if not stream_url.startswith('http://'):
-            stream_url= 'http://'+stream_url
-        return stream_url
-
-    def play_stream(self):
-        stream = self.get_stream()
-        print 'Plaing MPD Stream '+stream
-        li = xbmcgui.ListItem(path=stream,iconImage='DefaulAudio.png')
-        return xbmcplugin.setResolvedUrl(int(0), True, li)
-
-class MPDArtists(object):
-    def __init__(self,key,client):
-        self.mpd = client
-        self.key = key
-
-    def run(self,params):
-        print params
-        action = params[self.key]
-        if 'list' == action:
-            self.list_artists()
-        elif 'artist' == action:
-            self.list_albums(params['name'])
-        elif 'album' == action:
-            self.list_tracks(params['art'],params['name'])
-        elif 'queue_add' == action or 'queue_repl' == action:
-            return self.add_to_queue(params)
-        xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-    def add_to_queue(self,params):
-        print params
-        if params[self.key] == 'queue_repl':
+    def item_menu_queue_artist(self,artist,replace):
+        return self.item_menu(params={'qa':'#','artist':artist,'replace':str(replace)})
+    
+    def item_menu_queue_album(self,artist,album,replace):
+        return self.item_menu(params={'qa':'#','artist':artist,'album':album,'replace':str(replace)})
+    
+    def item_menu_queue_playlist(self,name,replace):
+        return self.item_menu(params={'qp':'#','name':name,'replace':str(replace)})
+    
+    def queue_playlist(self,name,replace=False):
+        if replace:
             # replacing queue
             self.mpd.stop()
             self.mpd.clear()
-        if 'file' in params.keys():
-            self.mpd.add(params['file'])
-            util.notify(params['file'],__str__(30018))
-            return
-        if 'art' in params.keys():
-            files = []
-            notify = ''
-            if 'album' in params.keys():
-                files = self.mpd.find('artist',params['art'],'album',params['album'])
-                notify = '%s - %s' % (params['art'],params['album'])
-            else:
-                files = self.mpd.find('artist',params['art'])
-                notify = '%s' % (params['art'])
-            if len(files) > 0:
-                self.mpd.command_list_ok_begin()
-                for f in files:
-                    self.mpd.add(f['file'])
-                self.mpd.command_list_end()
-                util.notify(notify,__str__(30018))
+        self.mpd.load(name)
+        yield self.item_notify(title=_(30018),message=name)
+        if self.settings['play_on_queued']:
+            self.mpd.play()
+            yield self.item_notify(title='Status',message=_(30006))
+    
+    def queue_file(self,path,replace=False):
+        if replace:
+            # replacing queue
+            self.mpd.stop()
+            self.mpd.clear()
+        self.mpd.add(path)
+        yield self.item_notify(title=_(30018),message=path)
+        if self.settings['play_on_queued']:
+            self.mpd.play()
+            yield self.item_notify(title='Status',message=_(30006))
 
+    def queue_album(self,artist,album=None,replace=False):
+        if replace:
+            # replacing queue
+            self.mpd.stop()
+            self.mpd.clear()
+        files = []
+        item_notify = ''
+        if album:
+            files = self.mpd.find('artist',artist,'album',album)
+            item_notify = '%s - %s' % (artist, album)
+        else:
+            files = self.mpd.find('artist',artist)
+            item_notify = '%s' % (artist)
+        if len(files) > 0:
+            self.mpd.command_list_ok_begin()
+            for f in files:
+                self.mpd.add(f['file'])
+            self.mpd.command_list_end()
+            yield self.item_notify(title=_(30018),message=item_notify)
+            if self.settings['play_on_queued']:
+                self.mpd.play()
+                yield self.item_notify(title='Status',message=_(30006))
+
+    
+class MPDPlayerControl(MPDBase):
+    
+    def __init__(self,client,settings):
+        MPDBase.__init__(self,'player',_(30016),client,settings)
+
+    def run(self,params):
+        if params.has_key('play_stream'):
+            return self.play_stream()
+        elif params.has_key('play'):
+            self.mpd.play()
+        elif params.has_key('stop'):
+            self.mpd.stop()
+        elif params.has_key('pause'):
+            self.mpd.pause()
+        elif params.has_key('next'):
+            self.mpd.next()
+        elif params.has_key('prev'):
+            self.mpd.previous()
+        else:
+            return self.list()
+        return [self.status_notify(self.mpd.status()),self.item_refresh()]
+
+    def status_notify(self,status):
+        item = self.item_notify(title='Status')
+        if status['state'] == 'stop':
+            item['message'] = _(30003)
+        elif status['state'] == 'pause':
+            item['message'] = _(30004)
+        elif status['state'] == 'play':
+            item['message'] = _(30006)
+        return item
+            
+
+    def list(self):
+        status = self.mpd.status()
+        state = status['state']
+        #yield self.status_notify(status)
+        if status['state'] == 'pause' or status['state'] == 'stop':
+            yield self.item_audio(title=_(30066),params={'play':'#'},icon='play.png')
+        else:
+            yield self.item_audio(title=_(30068),params={'pause':'#'},icon='pause.png')
+
+        yield self.item_audio(title=_(30067),params={'stop':'#'},icon='stop.png')
+        yield self.item_audio(title=_(30069),params={'prev':'#'},icon='prev.png')
+        yield self.item_audio(title=_(30070),params={'next':'#'},icon='next.png')
+        if not self.getSetting('stream_url') == '' and status['state'] == 'play':
+            yield self.item_audio(title=_(30039),params={'play_stream':'#'},playable=True)
+
+    def menu_items(self):
+        return [
+            (_(30066)+' MPD',self.item_menu(params={'play':'#'})),
+            (_(30067)+' MPD',self.item_menu(params={'stop':'#'})),
+        ]
+
+    def play_stream(self):
+        stream_url = self.getSetting('stream_url')
+        if not stream_url.startswith('http://'):
+            stream_url= 'http://'+stream_url
+        return [self.item_play(path=stream_url)]
+
+class MPDArtists(MPDBase):
+    def __init__(self,client,settings):
+        MPDBase.__init__(self,'artists',_(202),client,settings)
+
+    def run(self,params):
+        if params.has_key('album') and params.has_key('artist'):
+            return self.list_tracks(params['artist'],params['album'])
+        elif params.has_key('artist'):
+            return self.list_albums(params['artist'])
+        return self.list_artists()
+
+    @controls
+    def menu_items_artist(self,artist):
+        q = self.module(MPDQueue)
+        return [
+            (_(30030),q.item_menu_queue_artist(artist,False)), #add to queue
+            (_(30031),q.item_menu_queue_artist(artist,True))   #replace in queue
+        ]
+
+    @controls    
+    def menu_items_album(self,artist,album):
+        q = self.module(MPDQueue)
+        return [
+            (_(30030),q.item_menu_queue_album(artist,album,False)), #add to queue
+            (_(30031),q.item_menu_queue_album(artist,album,True))   #replace in queue
+        ]
+
+    @controls
+    def menu_items_file(self,path):
+        q = self.module(MPDQueue)
+        return [
+            (_(30030),q.item_menu_queue_file(path,False)), #add to queue
+            (_(30031),q.item_menu_queue_file(path,True))   #replace in queue
+        ]
 
     def list_tracks(self,artist,album):
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_TRACKNUM)
+        yield self.item_dummy()
+        yield self.item_sort(['track'])
         for item in self.mpd.find('artist',artist,'album',album):
             info = util.get_info_labels_from_queued_item(item)
             title = '%02d %s' % (info['tracknumber'],item['title'])
-            menu={
-                    __str__(30030):{self.key:'queue_add','file':item['file']},
-                    __str__(30031):{self.key:'queue_repl','file':item['file']}
-            }
-            util.add_song(title,{self.key:'play','id':'id'},infoLabels=info,menuItems=menu,replace=True)
+            yield self.item_track(title=title,path=item['file'],info=info)
 
     def list_albums(self,artist):
+        yield self.item_dummy()
         for album in self.mpd.list('album','artist',artist):
             date = 0
             dates = self.mpd.list('date','album',album,'artist',artist)
@@ -185,119 +371,169 @@ class MPDArtists(object):
             if date > 0:
                 title = '%s (%d)' % (album,date)
             info={'year':date,'artist':artist}
-            menu={
-                    __str__(30030):{self.key:'queue_add','art':artist,'album':album},
-                    __str__(30031):{self.key:'queue_repl','art':artist,'album':album}
-            }
-            util.add_dir(title,{self.key:'album','name':album,'art':artist},infoLabels=info,menuItems=menu,replace=True)
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL, label2Mask="%X")
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE)
+            yield self.item_album(title,artist,album,info)
+        yield self.item_sort(['label','date'])
+
+    def item_track(self,title='',path='',info={}):
+        return self.item_audio(title=title,params={'path':path},menu=self.menu_items_file(path),info=info)
+
+    def item_album(self,title='',artist='',album='',info={}):
+            return self.item_dir(
+                    title=title,
+                    params={'album':album,'artist':artist},
+                    menu=self.menu_items_album(artist,album)
+            )
+
+    def item_artist(self,artist):
+        return self.item_dir(title=artist,params={'artist':artist},menu=self.menu_items_artist(artist))
 
     def list_artists(self):
+        yield self.item_dummy()
         for artist in self.mpd.list('artist'):
-            menu={
-                    __str__(30030):{self.key:'queue_add','art':artist},
-                    __str__(30031):{self.key:'queue_repl','art':artist}
-            }
-            util.add_dir(artist,{self.key:'artist','name':artist},infoLabels={},menuItems=menu,replace=True)
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL, label2Mask="%X")
+            yield self.item_artist(artist)
+        yield self.item_sort()
 
-class MPDFiles(object):
-    def __init__(self,key,client):
-        self.mpd = client
-        self.key = key
+class MPDFiles(MPDBase):
+    def __init__(self,client,settings):
+        MPDBase.__init__(self,'files',_(201),client,settings)
 
     def run(self,params):
-        print params
-        action = params[self.key]
-        if 'list' == action:
-            self.list(params)
-        elif 'queue_add' == action or 'queue_repl' == action:
-            return self.add_to_queue(params)
-        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        return self.list(params)
 
-    def add_to_queue(self,params):
-        print params
-        if params[self.key] == 'queue_repl':
-            # replacing queue
-            self.mpd.stop()
-            self.mpd.clear()
-        self.mpd.add(params['path'])
-        util.notify(params['path'],__str__(30018))
+    @controls
+    def menu_items(self,path):
+        q = self.module(MPDQueue)
+        return [
+            (_(30030),q.item_menu_queue_file(path,False)), #add to queue
+            (_(30031),q.item_menu_queue_file(path,True))   #replace in queue
+        ]
 
     def list(self,params):
+        yield self.item_dummy()
         uri = ''
         if 'path' in params.keys():
             uri = params['path']
         for item in self.mpd.lsinfo(uri):
-            print item
             if 'directory' in item:
-                menu={
-                    __str__(30030):{self.key:'queue_add','path':item['directory']},
-                    __str__(30031):{self.key:'queue_repl','path':item['directory']}
-                }
                 title = os.path.basename(item['directory'])
-                util.add_dir(title,{self.key:'list','path':item['directory']},infoLabels={},menuItems=menu,replace=True)
+                yield self.item_dir(title=title,params={'path':item['directory']},menu=self.menu_items(item['directory']))
             elif 'file' in item:
-                menu={
-                    __str__(30030):{self.key:'queue_add','path':item['file']},
-                    __str__(30031):{self.key:'queue_repl','path':item['file']}
-                }
                 title = os.path.basename(item['file'])
-                util.add_song(title,{self.key:'list','path':item['file']},infoLabels={},menuItems=menu,replace=True)
-
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL, label2Mask="%X")
+                yield self.item_audio(title=title,params={'path':item['file']},menu=self.menu_items(item['file']))
 
 
-
-class MPDPlaylists(object):
-    def __init__(self,key,client):
-        self.mpd = client
-        self.key = key
+class MPDPlaylists(MPDBase):
+    def __init__(self,client,settings):
+        MPDBase.__init__(self,'playlists',_(203),client,settings)
 
     def run(self,params):
         print params
-        action = params[self.key]
-        if 'list' == action:
-            self.list()
-        elif 'playlist' == action:
-            self.playlist(params['name'])
-        elif 'queue_add' == action or 'queue_repl' == action:
-            return self.add_to_queue(params)
-        xbmcplugin.endOfDirectory(int(sys.argv[1]))
+        if params.has_key('detail'):
+            return self.playlist(params['detail'])
+        return self.list()
+    
+    def menu_items_file(self,path):
+        q = self.module(MPDQueue)
+        return [
+            (_(30030),q.item_menu_queue_file(path,False)), #add to queue
+            (_(30031),q.item_menu_queue_file(path,True))   #replace in queue
+        ]
+        
+    @controls
+    def menu_items_playlist(self,name):
+        q = self.module(MPDQueue)
+        return [
+            (_(30030),q.item_menu_queue_playlist(name,False)), #add to queue
+            (_(30031),q.item_menu_queue_playlist(name,True))   #replace in queue
+        ]
 
-    def add_to_queue(self,params):
-        print params
-        if params[self.key] == 'queue_repl':
-            # replacing queue
-            self.mpd.stop()
-            self.mpd.clear()
-        if 'name' in params.keys():
-            self.mpd.load(params['name'])
-            util.notify(params['name'],__str__(30018))
-        elif 'file' in params.keys():
-            self.mpd.add(params['file'])
-            util.notify(params['file'],__str__(30018))
 
     def playlist(self,name):
         for item in self.mpd.listplaylistinfo(name):
-            print item
             info = util.get_info_labels_from_queued_item(item)
             title = util.format_song(info)
-            menu={
-                    __str__(30030):{self.key:'queue_add','file':item['file']},
-                    __str__(30031):{self.key:'queue_repl','file':item['file']}
-            }
-            util.add_song(title,{self.key:'play','id':'id'},infoLabels=info,menuItems=menu,replace=True)
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL, label2Mask="%X")
+            yield self.item_audio(title=title,params={'path':item['file']},menu=self.menu_items_file(item['file']))
     
     def list(self):
+        yield self.item_dummy()
         for item in self.mpd.listplaylists():
-            menu={
-                __str__(30030):{self.key:'queue_add','name':item['playlist']},
-                __str__(30031):{self.key:'queue_repl','name':item['playlist']}
-            }
-            title = item['playlist']
-            util.add_dir(title,{self.key:'playlist','name':item['playlist']},infoLabels={},menuItems=menu,replace=True)
-        xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL, label2Mask="%X")
+            yield self.item_dir(
+                    title=item['playlist'],
+                    params={'detail':item['playlist']},
+                    menu=self.menu_items_playlist(item['playlist'])
 
+                    )
+
+
+class MPDSearchRoot(MPDBase):
+    def __init__(self,client,settings):
+        MPDBase.__init__(self,'search-root',_(209),client,settings,'search.png')
+
+    def run(self,params):
+        yield self.module(MPDSearchArtist).root()
+        yield self.module(MPDSearchAlbum).root()
+        yield self.module(MPDSearchSong).root()
+    
+
+class MPDSearch(MPDBase):
+    def __init__(self,key,title,client,settings,category='artist'):
+        MPDBase.__init__(self,key,title,client,settings,'search.png')
+        self.category = category
+
+    def item_search(self,keyword=''):
+        return {'type':'search','m':self.key,'for':keyword,'func':self.do_search}
+    
+    def _get_history(self):
+        data = self.cache.get('search')
+        if data == None or data == '':
+            data = []
+        else:
+            data = eval(data)
+        return data
+
+    def do_search(self,keyword):
+        print 'searching '+keyword
+        yield self.item_dummy()
+        data = self._get_history()
+        if keyword in data:
+            data.remove(keyword)
+        data.insert(0,keyword)
+        self.cache.set('search',repr(data))
+        mod = self.module(MPDArtists)
+        yield self.item_sort()
+        if self.category == 'artist':
+            artists = set([])
+            for i in self.mpd.search('artist',keyword):
+                artists.add(i['artist'])
+            for i in artists:
+                yield mod.item_artist(i)
+        if self.category == 'album':
+            albums = {}
+            for i in self.mpd.search('album',keyword):
+                albums['[%s] %s' % (i['artist'],i['album'])] = {'artist':i['artist'],'album':i['album']}
+            for k,v in albums.items():
+                yield mod.item_album(title=k,artist=v['artist'],album=v['album'])
+        if self.category == 'song':
+            for i in self.mpd.search('title',keyword):
+                t = '%s (%s by %s)' % (i['title'],i['album'],i['artist'])
+                yield mod.item_track(title=t,path=i['file'])
+            
+
+    def run(self,params):
+        if params.has_key('do-search'):
+            yield self.item_search(keyword=params['do-search'])
+        yield self.item_dir(title=_(30065),params={'do-search':'#'},icon=self.icon)
+        for x in self._get_history(): yield self.item_dir(title=x,params={'do-search':x})
+
+
+class MPDSearchAlbum(MPDSearch):
+    def __init__(self,client,settings):
+        MPDSearch.__init__(self,'search-alb',_(207),client,settings,'album')
+
+class MPDSearchArtist(MPDSearch):
+    def __init__(self,client,settings):
+        MPDSearch.__init__(self,'search-art',_(206),client,settings,'artist')
+
+class MPDSearchSong(MPDSearch):
+    def __init__(self,client,settings):
+        MPDSearch.__init__(self,'search-song',_(208),client,settings,'song')

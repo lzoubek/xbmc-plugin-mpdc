@@ -68,11 +68,16 @@
 	<string id="30062">Added to %s</string>
 	<string id="30063"> * New playlist *</string>
 	<string id="30064">Start playing after item is queued</string>
+  <string id="30065">[B]New search[/B]</string>
+  <string id="30066">What do you search for?</string>
     <string id="200">Queue</string>
     <string id="201">Files</string>
     <string id="202">Artists</string>
     <string id="203">Playlists</string>
     <string id="204">Clear queue</string>
     <string id="205">Save As</string>
+  <string id="206">Search for artist</string>
+  <string id="207">Search for album</string>
+  <string id="208">Search for song</string>
 	</strings>
 

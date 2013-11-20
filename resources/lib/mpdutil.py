@@ -30,7 +30,7 @@ def add_dir(name,id,logo):
     liz.setInfo( type="Audio", infoLabels={ "Title": name } )
     return xbmcplugin.addDirectoryItem(handle=int(sys.argv[1]),url=u,listitem=liz,isFolder=True)
 
-def add_dir(name,params,logo='',infoLabels={},menuItems={},replace=False):
+def add_dir(name,params,logo='',infoLabels={},menuItems=[],replace=False):
 	if not 'title' in infoLabels:
 		infoLabels['title'] = name
 	if logo == None:
@@ -41,8 +41,7 @@ def add_dir(name,params,logo='',infoLabels={},menuItems={},replace=False):
 	except:
 		traceback.print_exc()
 	items = []
-	for mi in menuItems.keys():
-		action = menuItems[mi]
+	for mi,action in menuItems:
 		if not type(action) == type({}):
 			items.append((mi,action))
 		else:
@@ -71,7 +70,7 @@ def get_info_labels_from_queued_item(item):
         pass
     return labels
 
-def add_song(name,params={},logo='',infoLabels={},menuItems={},playable='false',replace=False):
+def add_song(name,params={},logo='',infoLabels={},menuItems=[],playable='false',replace=False):
 	if not 'Title' in infoLabels:
 		infoLabels['Title'] = name
 	url = _create_plugin_url(params)
@@ -79,8 +78,7 @@ def add_song(name,params={},logo='',infoLabels={},menuItems={},playable='false',
         li.setInfo( type='Audio', infoLabels=infoLabels )
 	li.setProperty('IsPlayable',playable)
 	items = []
-	for mi in menuItems.keys():
-		action = menuItems[mi]
+	for mi,action in menuItems:
 		if not type(action) == type({}):
 			items.append((mi,action))
 		else:

@@ -27,10 +27,9 @@ __sett__ = __addon__.getSetting
 
 sys.path.append( os.path.join ( __addon__.getAddonInfo('path'), 'resources','lib') )
 
-import xbmpc
 import mpdutil as util
 
-import mpdcontrol as mpd
+from mpdcontrol import MPDController
 
 def get_params(url=None):
     if url == None:
@@ -53,6 +52,35 @@ def get_params(url=None):
         param[p] = param[p].decode('hex')
     return param
 
+def notify(title=__addon__.getAddonInfo('name'),message=''):
+    try:
+        icon =  os.path.join(__addon__.getAddonInfo('path'),'icon.png')
+        xbmc.executebuiltin("XBMC.Notification(%s,%s,5000,%s)" % (title.encode('UTF-8','ignore'),message.encode('UTF-8','ignore'),icon))
+    except:
+        print 'Unable to display notify message'
+        traceback.print_exc()
+
+def icon(icon):
+    if len(icon) > 0:
+        return os.path.join(__addon__.getAddonInfo('path'),'resources','icons',icon)
+    return ''
+
+def sort_methods(keys):
+    if len(keys) == 0:
+        return xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL,label2Mask="%X")
+    else:
+        for key in keys:
+            if key == 'label':
+                xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_LABEL,label2Mask="%X")
+            elif key == 'date':
+                xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_DATE)
+            elif key == 'track':
+                xbmcplugin.addSortMethod( handle=int(sys.argv[1]), sortMethod=xbmcplugin.SORT_METHOD_TRACKNUM)
+            else:
+                print 'Unsupported sort method %s' % key
+
+
+
 def get_stream():
     stream_url = __sett__('stream_url')
     if not stream_url.startswith('http://'):
@@ -72,54 +100,56 @@ def auto_play_stream(client):
         else:
             xbmc.executebuiltin('PlayMedia(%s)' % stream_url)
 
-def connect():
-    client = xbmpc.MPDClient()
-    print 'Connecting...'
-    client.connect(__sett__('mpd_host'),int(__sett__('mpd_port')))
-    mpd_pass = __sett__('mpd_pass')
-    if not mpd_pass == '':
-        client.password(mpd_pass)
-        print 'Password sent'
-    print 'Connected to MPD server'
-    return client
+def render(data):
+    if data == None:
+        raise Exception('Addon error, no data returned')
+    listed = 0
+    for item in data:
+        if item['type'] == 'play':
+            print 'Playing MPD Stream '+item['path']
+            li = xbmcgui.ListItem(path=item['path'],iconImage='DefaulAudio.png')
+            return xbmcplugin.setResolvedUrl(int(sys.argv[1]), True, li)
+        if item['type'] == 'dummy':
+            listed+=1
+        if item['type'] == 'dir':
+            listed+=1
+            params = item['params']
+            params.update({'m':item['m']})
+            util.add_dir(item['title'],params,icon(item['icon']),menuItems=item['menu'],replace=True) 
+        if item['type'] == 'audio':
+            listed+=1
+            params = item['params']
+            params.update({'m':item['m']})
+            util.add_song(item['title'],params,icon(item['icon']),menuItems=item['menu'],playable=str(item['play']).lower(),replace=True) 
+        if item['type'] == 'func':
+            print 'Executing %s' % item['func']
+            xbmc.executebuiltin(item['func'])
+        if item['type'] == 'sort':
+            sort_methods(item['keys'])
+        if item['type'] == 'notify':
+            notify(item['title'],item['message'])
+        if item['type'] == 'search':
+            what = item['for']
+            if what == '#':
+                kb = xbmc.Keyboard('',__str__(30066),False)
+                kb.doModal()
+                if kb.isConfirmed():
+                    what = kb.getText()
+            if not (what == '' or what == '#'):
+                render(item['func'](what))
+            return
 
-def root():
-    util.add_dir(__str__(30016),{'ctrl':'list'},'')
-    util.add_dir(__str__(200),{'queue':'list'},'')
-    util.add_dir(__str__(201),{'files':'list'},'')
-    util.add_dir(__str__(202),{'artists':'list'},'')
-    util.add_dir(__str__(203),{'pls':'list'},'')
-#    util.add_dir(__str__(112),{'settings':'list'},'')
-    xbmcplugin.endOfDirectory(int(sys.argv[1]))
-
-
-def notify_status(client):
-    if notify:
-        util.notify_status(client)
-
-notify = __sett__('notify') == 'true'
+    if listed > 0:
+        xbmcplugin.endOfDirectory(int(sys.argv[1]))
 
 params=get_params()
-print params
-client = connect()
-    
-try:
-    auto_play_stream(client)
-    if params=={}:
-        root()
-        notify_status(client)
-    if 'queue' in params.keys():
-        mpd.MPDQueue('queue',client).run(params)
-    if 'ctrl' in params.keys():
-        mpd.MPDControl('ctrl',client).run(params)
-    if 'artists' in params.keys():
-        mpd.MPDArtists('artists',client).run(params)
-    if 'files' in params.keys():
-        mpd.MPDFiles('files',client).run(params)
-    if 'pls' in params.keys():
-        mpd.MPDPlaylists('pls',client).run(params)
-except:
-    traceback.print_exc()
-print 'Disconnecting'
-client.close()
-client.disconnect()
+ctrl = MPDController(
+        __sett__('mpd_host'),
+        __sett__('mpd_port'),
+        __sett__('mpd_pass'),
+        {'stream_url':__sett__('stream_url'),'play_on_queued':__sett__('play_on_queued') == 'true'})
+ctrl.connect()
+data = ctrl.run(params)
+render(data)
+auto_play_stream(ctrl.mpd)
+ctrl.disconnect()
