@@ -131,7 +131,7 @@ def render(data):
         if item['type'] == 'search':
             what = item['for']
             if what == '#':
-                kb = xbmc.Keyboard('',__str__(30066),False)
+                kb = xbmc.Keyboard('',__str__(30071),False)
                 kb.doModal()
                 if kb.isConfirmed():
                     what = kb.getText()
