@@ -116,28 +116,27 @@
 			<focusposition>0</focusposition>
 			<scrolltime>200</scrolltime>
 				<content>
-				  <item id="1001">
-					<label>SCRIPT200</label>
-					<onclick>Control.SetFocus(1101)</onclick>
-					<visible>true</visible>
-				  </item>
-				  <item id="1003">
-					<label>SCRIPT202</label>
-					<visible>true</visible>
-					<onclick>Control.SetFocus(1301)</onclick>
-				  </item>
-				  <item id="1004">
-					<label>SCRIPT203</label>
-					<visible>true</visible>
-					<onclick>Control.SetFocus(1401)</onclick>
-				  </item>
-				  <item id="1002">
-					<label>SCRIPT201</label>
-					<visible>true</visible>
-					<onclick>Control.SetFocus(1201)</onclick>
-					<onright>130</onright>
-				  </item>
-				</content>
+                        	<item id="1001">
+                        		<label>$ADDON[script.mpdc 200]</label>
+                        		<onclick>Control.SetFocus(1101)</onclick>
+                        		<visible>true</visible>
+                        	</item>
+                        	<item id="1003">
+                        		<label>$ADDON[script.mpdc 202]</label>
+                        		<visible>true</visible>
+                        		<onclick>Control.SetFocus(1301)</onclick>
+                        	</item>
+                        	<item id="1004">
+                      			<label>$ADDON[script.mpdc 203]</label>
+                      			<visible>true</visible>
+                      			<onclick>Control.SetFocus(1401)</onclick>
+	                        </item>
+	                        <item id="1002">
+                        		<label>$ADDON[script.mpdc 201]</label>
+                        		<visible>true</visible>
+                        		<onclick>Control.SetFocus(1201)</onclick>
+                        	</item>                        	
+                        </content>
 			      <itemlayout width="200" height="50">
 						<control type="image">
 							<posx>10</posx>
@@ -148,8 +147,8 @@
 							<texture>RecentAddedNF.png</texture>
 						</control>
 						<control type="label">
-							<posx>100</posx>
-							<posy>10</posy>
+							<posx>13</posx>
+					      <posy>17</posy>
 							<width>180</width>
 							<height>38</height>
 							<font>font24_title</font>
@@ -178,8 +177,8 @@
 							<visible>Control.HasFocus(1000)</visible>
 						</control> 
 						<control type="label">
-							<posx>100</posx>
-							<posy>5</posy>
+							<posx>0</posx>
+							<posy>6</posy>
 							<width>200</width>
 							<height>38</height>
 							<font>font28_title</font>
