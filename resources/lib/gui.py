@@ -133,6 +133,7 @@ STR_ADD_TO_PLAYLIST=__addon__.getLocalizedString(30060)
 STR_SELECT_PLAYLIST=__addon__.getLocalizedString(30061)
 STR_WAS_ADDED_TO_PLAYLIST=__addon__.getLocalizedString(30062)
 STR_NEW_PLAYLIST=__addon__.getLocalizedString(30063)
+STR_SHOW_ARTISTS=__addon__.getLocalizedString(30065)
 class GUI ( xbmcgui.WindowXMLDialog ) :
 
 	def __init__( self, *args, **kwargs ):
@@ -174,6 +175,7 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 		self.album_fetch_enabled = int(fetcher_setting) > 0
 		self.last_album=''
 		self.notification_enabled = self.addon.getSetting('notify') == 'true'
+		self.show_artists = self.addon.getSetting('show-artists') == 'true'
 		self.controls = playercontrols.Controls(self.skin)
 		self.stop_on_exit = self.addon.getSetting(self.profile_id+'_stop_on_exit') == 'true'
 		self.play_on_queued= self.addon.getSetting(self.profile_id+'_play_on_queued') == 'true'
@@ -219,10 +221,12 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			self._handle_changes(self.client,['mixer','playlist','player','options'])
 			self._handle_time_changes(self.client,status)
 			p.update(50,STR_GETTING_PLAYLISTS)
-			self._update_file_browser()
+			if self.show_artists:
+				self._update_file_browser()
 			self._update_playlist_browser(self.client)
 			p.update(75,STR_GETTING_ARTISTS)
-			self._update_artist_browser()
+			if self.show_artists:
+				self._update_artist_browser()
 			p.close()
 		except:
 			p.close()
@@ -395,7 +399,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if typ =='file':
 				return
 			if typ == '':
-				return self._update_artist_browser(back=True)
+				if self.show_artists:
+					return self._update_artist_browser(back=True)
+				else:
+					return
 			else:
 				if index == 0 or back:
 					if not self.ab_indexes == []:
@@ -643,9 +650,10 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if change == 'stored_playlist':
 				self._update_playlist_browser(poller_client)
 			if change == 'database':
-				self.cache.clear()
-				self._update_file_browser(client=poller_client)
-				self._update_artist_browser(client=poller_client)
+				self.cache.clear()				
+				if self.show_artists:
+					self._update_file_browser(client=poller_client)
+					self._update_artist_browser(client=poller_client)
 			if change == 'playlist':
 				self._update_current_queue(client=poller_client)
 			if change == 'output':
@@ -848,14 +856,16 @@ class GUI ( xbmcgui.WindowXMLDialog ) :
 			if self.getControl(FILE_BROWSER).getSelectedPosition() == 0:
 				self.setFocus(self.getControl(TAB_CONTROL))
 			else:
-				self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0),back=True)
+				if self.show_artists:
+					self._update_file_browser(browser_item=self.getControl(FILE_BROWSER).getListItem(0),back=True)
 		elif self.getFocusId() == PLAYLIST_DETAILS:
 			self.setFocus(self.getControl(PLAYLIST_BROWSER))
 		elif self.getFocusId() == ARTIST_BROWSER:
 			if self.getControl(ARTIST_BROWSER).getSelectedPosition() == 0:
 				self.setFocus(self.getControl(TAB_CONTROL))
 			else:
-				self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0),back=True)
+				if self.show_artists:
+					self._update_artist_browser(artist_item=self.getControl(ARTIST_BROWSER).getListItem(0),back=True)
 		elif self.getFocusId() == TAB_CONTROL:
 			self.exit()
 		elif self.getFocusId() in [PLAYBACK,PLAYER_CONTROL,PLAYLIST_BROWSER,CURRENT_PLAYLIST]:
