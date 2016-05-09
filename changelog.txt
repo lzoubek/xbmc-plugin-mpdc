@@ -1,3 +1,6 @@
+[B]2.0.9[/B]
+- settings.xml added option to hide artists and files
+- hide artists and files according to to setting
 [B]2.0.8[/B]
 - addon.xml added german translations
 - added German translations (by remschneid)
