@@ -73,7 +73,6 @@ class MpdProfile:
 			client.disconnect()
 			self.status = STR_HOST_ONLINE
 			self.stat=STATUS_ON
-			
 		except:
 			pass
 
@@ -123,20 +122,20 @@ class SelectMPDProfile ( xbmcgui.WindowXMLDialog ) :
 			seekid = self.getControl( SERVER_LIST ).getSelectedItem().getProperty('id')
 			if self.getControl( SERVER_LIST ).getSelectedItem().getProperty('stat') == STATUS_ON:
 				import gui
-				ui = gui.GUI( 'mpd-client-main.xml',__addon__.getAddonInfo('path'), self.skin,seekid)
+				ui = gui.GUI('mpd-client-main.xml',__addon__.getAddonInfo('path'), self.skin,seekid)
 				ui.doModal()
 				del ui
 
 skin = 'Confluence'
-current_skin=str(xbmc.getSkinDir().lower())
-#if current_skin.find('pm3') > -1:
-#	skin = 'PM3.HD'
-#if current_skin.find('transparency') > -1:
-#	skin = 'transparency'
 skip_selector = __addon__.getSetting('skip-selector')
+show_artists = __addon__.getSetting('show-artists')
+
 if 'true' == skip_selector:
 	import gui
-	ui = gui.GUI( 'mpd-client-main.xml',__addon__.getAddonInfo('path'), skin,'0')
+	if 'true' == show_artists:
+		ui = gui.GUI('mpd-client-main.xml',__addon__.getAddonInfo('path'), skin,'0')
+	else:
+		ui = gui.GUI('mpd-client-main-no-artists.xml',__addon__.getAddonInfo('path'), skin,'0')	
 	ui.doModal()
 	del ui
 else:
