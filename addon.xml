@@ -14,6 +14,11 @@
   </extension>
   <extension point="xbmc.addon.metadata">
     <platform>all</platform>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 3, 29 June 2007</license>
+    <forum>http://forum.kodi.tv/showthread.php?tid=79526</forum>
+    <website></website>
+    <email></email>
+    <source>https://github.com/lzoubek/xbmc-plugin-mpdc/tree/master</source>
     <summary lang="en">An MPD client</summary>
     <summary lang="cs">MPD klient</summary>
     <summary lang="pl">Klient MPD</summary>
