@@ -5,6 +5,7 @@
        provider-name="Libor Zoubek (lzoubek@jezzovo.net)">
   <requires>
     <import addon="xbmc.python" version="2.0"/>
+    <import addon="script.common.plugin.cache" version="2.5.5"/>
     <import addon="script.module.simplejson" version="2.0.10"/>
   </requires>
   <extension point="xbmc.python.pluginsource" provides="audio" library="default.py">
