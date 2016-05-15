@@ -68,6 +68,7 @@
 	<string id="30062">Dodane do %s</string>
 	<string id="30063"> * Nowa lista odtwarzania *</string>
 	<string id="30064">Rozpocznij odtwarzanie po dodaniu obiektu do kolejki</string>
+	<string id="30065">Show artists and files</string>
     <string id="200">Kolejka</string>
     <string id="201">Pliki</string>
     <string id="202">Wykonawcy</string>

@@ -4,6 +4,7 @@
 		<setting label="30013" type="bool" id="skip-selector" default="false" />
 		<setting label="30040" type="bool" id="time-polling" default="true" />
 		<setting label="30050" type="bool" id="use-idle" default="true" />
+		<setting label="30065" type="bool" id="show-artists" default="true" />
 		<setting label="30051" type="bool" id="notify" default="true" />
 		<setting label="30043" type="enum" id="fetch-albums" lvalues="30045|30046|30047" default="0" />
 		<setting label="30044" type="bool" id="fetch-cache" visible="eq(-1,1)" default="false" />
