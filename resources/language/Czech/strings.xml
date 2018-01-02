@@ -8,7 +8,7 @@
     <string id="30004">Pozastaven</string>
     <string id="30005">Nelze se připojit</string>
     <string id="30006">Přehrávám</string>
-    <string id="30007">Zjišťuji dosptupnost servrů, prosím počkejte...</string>
+    <string id="30007">Zjišťuji dostupnost servrů, prosím počkejte...</string>
     <string id="30008">Vyberte profil</string>
     <string id="30009">Dostupný</string>
     <string id="30010">Offline</string>
@@ -63,7 +63,7 @@
 	<string id="30056"> - Consume</string>
 	<string id="30057">%i skladeb, celkový čas %s</string>
 	<string id="30058">Při ukončení zastavit přehrávání</string>
-	<string id="30059">Odebat z playlistu</string>
+	<string id="30059">Odebrat z playlistu</string>
 	<string id="30060">Přidat do playlistu</string>
 	<string id="30061">Vyberte prosím playlist</string>
 	<string id="30062">Přidán do %s</string>
